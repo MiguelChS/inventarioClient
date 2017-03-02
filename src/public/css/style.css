@@ -1,0 +1,122 @@
+.wrapper-content{
+    padding: 0px 20px 40px;
+}
+body{
+    background-color: #f3f3f4;
+}
+.wrapperWhite{
+    background-color: white;
+}
+
+.litleHeader{
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 2px 0 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 5px 15px 5px;
+   /* min-height: 48px;*/
+}
+
+.litleHeader h5{
+    font-weight: 600;
+}
+
+.litleBody{
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 0;
+}
+.form-control{
+    border-radius: 0 !important;
+}
+.form-control[disabled]{
+    cursor: pointer;
+}
+
+.hr-line-dashed{
+    border-top: 1px dashed #e7eaec;
+    color: #ffffff;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 20px 0;
+}
+.btn-white {
+    color: inherit;
+    background: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(221, 221, 221);
+    border-image: initial;
+}
+.btn-white:hover {
+    border-color: rgb(189, 188, 188);
+}
+.btn-white:focus{
+    outline: none !important;
+    border-color: rgb(189, 188, 188);
+}
+
+.TableMiddle > tbody > tr > td{
+    vertical-align: middle;
+}
+.react-datepicker {
+    font-size: 1.3rem !important;
+}
+
+.react-datepicker__current-month {
+    font-size: 1.5rem !important;
+}
+
+.react-datepicker__header {
+    padding-top: 6px !important;
+}
+
+.react-datepicker__navigation {
+    top: 13px !important;
+}
+
+.react-datepicker__day-name, .react-datepicker__day {
+    margin: 0.5rem !important;
+}
+
+.boxConten{
+    padding: 10px 20px 10px 20px;
+    border-top: 1px solid #e7eaec;
+    border-bottom: 1px solid #e7eaec;
+    margin-bottom: 10px;
+}
+
+.btn-boxList{
+    width: 100%;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+.selectBoxlist{
+    height:160px !important;
+    border:1px solid #dddddd;
+    border-top:none
+}
+
+.selectBoxlist:focus{
+    box-shadow: none !important;
+    border-color: #dddddd !important;
+}
+
+.input-group-addon{
+    background-color: #fff;
+    border: 1px solid #cccccc;
+    border-radius: 1px;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    padding: 6px 12px;
+    text-align: center;
+    border-right: 0;
+}
