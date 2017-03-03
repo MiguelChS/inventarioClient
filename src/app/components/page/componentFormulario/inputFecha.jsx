@@ -4,13 +4,15 @@ import DatePicker from 'react-datepicker';
 let moment = require('moment');
 
 export default class InputFecha extends React.Component{
-    constructor(){
-        super()
+    constructor(props){
+        super(props);
+        let fecha1 = moment(this.props.default.date1);
+        let fecha2 = this.props.default.hasOwnProperty("date2") ? moment(this.props.default.date2) : moment();
         this.state={
-            min:moment(new Date()),
-            max:moment(new Date()),
-            fecha1:moment(),
-            fecha2:moment()
+            min:fecha1,
+            max:fecha2,
+            fecha1:fecha1,
+            fecha2:fecha2
         }
     }
 

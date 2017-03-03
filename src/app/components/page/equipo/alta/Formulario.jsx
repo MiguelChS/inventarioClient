@@ -1,9 +1,12 @@
 import React from 'react';
 import { Row,Col,Form,Button } from 'react-bootstrap';
-import AutoComplete from  '../../componentFormulario/autoComplete.jsx';
 import { connect } from  'react-redux';
-import InputSerie from '../../componentFormulario/InputSerie.jsx';
-import { cargarPlanta, altaNroSerie } from '../../../../actions/equipoAction.js';
+import { AutoComplete , InputSerie , Select, InputFecha} from '../../componentFormulario/index.js'
+import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
+    cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro, cargarGarantia,
+    cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo} from '../../../../actions/equipoAction.js';
+import DualListBox from '../../../dualListBox/dualListBox.jsx';
+
 
 @connect((store)=>{
     return {
@@ -18,18 +21,61 @@ export default class Formulario extends React.Component{
         console.log(this.props);
     }
 
+    buscarModelo(value){
+        this.refs.planta.refs.AutoComplete.setState({indiceSourceSelect:null,showResult:"none",text:'',result:[]});
+        this.refs.Modelo.refs.AutoComplete.setState({indiceSourceSelect:null,showResult:"none",text:'',result:[]});
+        this.props.dispatch(cargarMarca(value));
+        this.props.dispatch(cargarModelo(null));
+        this.props.dispatch(cargarPlanta(null));
+    }
+
+
     render(){
         let defaultAutoPlanta = this.props.Formulario.planta ? this.props.Formulario.planta["value"] : null;
+        let defaultSelectMarca = this.props.Formulario.marca ? this.props.Formulario.marca["value"] : null;
+        let defaultSelectModelo = this.props.Formulario.modelo ? this.props.Formulario.modelo["value"] : null;
+        let defaultSelectSNMP = this.props.Formulario.snmp ? this.props.Formulario.snmp["value"] : null;
+        let defaultSelectSO = this.props.Formulario.so ? this.props.Formulario.so["value"] : null;
+        let defaultSelectXFS = this.props.Formulario.xfs ? this.props.Formulario.xfs["value"] : null;
+        let defaultCarga = this.props.Formulario.carga ? this.props.Formulario.carga["value"] : null;
+        let defaultEstado = this.props.Formulario.estado ? this.props.Formulario.estado["value"] : null;
+        let defaultGarantia = this.props.Formulario.garantia ? this.props.Formulario.garantia["value"] : null;
+        let defaultTipoEquipo = this.props.Formulario.tipoEquipo ? this.props.Formulario.tipoEquipo["value"] : null;
         return(
             <Form horizontal>
                 <Row>
                     <Col xs={12} sm={6} md={4}>
+                        <Select
+                            label="Marca"
+                            id="idMarca"
+                            dataSource={this.props.Source.marcas}
+                            default={defaultSelectMarca}
+                            returnSelect={(value)=>{
+                                this.buscarModelo(value);
+                            }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
                         <AutoComplete label="Planta" id="idPlanta"
-                                      dataSource={this.props.Source.planta}
+                                      ref="planta"
+                                      dataSource={this.props.Source.planta[defaultSelectMarca] ? this.props.Source.planta[defaultSelectMarca] : []}
                                       default={defaultAutoPlanta}
                                       resultadoAutoComplete={(value)=>{
                                           this.props.dispatch(cargarPlanta(value))
-                                      }}/>
+                                      }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <AutoComplete
+                            label="Modelo"
+                            id="idModelo"
+                            ref="Modelo"
+                            dataSource={this.props.Source.modelo[defaultSelectMarca] ? this.props.Source.modelo[defaultSelectMarca] : []}
+                            default={defaultSelectModelo}
+                            resultadoAutoComplete={(value)=>{
+                                this.props.dispatch(cargarModelo(value))
+                            }}
+                        />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
                         <InputSerie label="Serie"
@@ -39,8 +85,118 @@ export default class Formulario extends React.Component{
                                     storeValueNoTipeo={this.props.Formulario.planta}
                                     changeInput={(value)=>{
                                         this.props.dispatch(altaNroSerie(value))
-                                    }} />
+                                    }}
+                        />
                     </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="Tipo" id="idEquipo"
+                                dataSource={this.props.Source.tipoEquipo}
+                                default={defaultTipoEquipo}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarTipoEquipo(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="SNMP" id="idSNMP"
+                                dataSource={this.props.Source.snmp}
+                                default={defaultSelectSNMP}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarSNMP(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="SO" id="idSO"
+                                dataSource={this.props.Source.so}
+                                default={defaultSelectSO}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarSO(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="xfs"
+                                id="idxfs"
+                                dataSource={this.props.Source.xfs}
+                                default={defaultSelectXFS}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarXFS(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="Carga" id="idCarga"
+                                dataSource={this.props.Source.carga}
+                                default={defaultCarga}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarCarga(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="Estado" id="idEstado"
+                                dataSource={this.props.Source.estado}
+                                default={defaultEstado}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarEstado(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <InputFecha label="Retiro" id="idRetiro"
+                                    format="DD-MM-YYYY"
+                                    default={{date1:this.props.Formulario.fRetiro}}
+                                    returnDateInput={(value)=>{
+                                        this.props.dispatch(cargarFRetiro(value))
+                                    }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <Select label="Garantia" id="idGarantia"
+                                dataSource={this.props.Source.garantia}
+                                default={defaultGarantia}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(cargarGarantia(value))
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <InputFecha label="Garantia" id="idGarantia"
+                                    format="DD-MM-YYYY"
+                                    dual="true"
+                                    default={{date1:this.props.Formulario.iniGarantia,date2:this.props.Formulario.finGarantia}}
+                                    returnDateInput={(value)=>{
+                                        this.props.dispatch(cargarFechaGarantia(value))
+                                    }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <InputFecha label="Entrega" id="idEntrega"
+                                    format="DD-MM-YYYY"
+                                    default={{date1:this.props.Formulario.fEntrega}}
+                                    returnDateInput={(value)=>{
+                                        this.props.dispatch(cargarFechaEntrega(value))
+                                    }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <InputFecha label="Instalacion" id="idInstalacion"
+                                    format="DD-MM-YYYY"
+                                    default={{date1:this.props.Formulario.fInstalacion}}
+                                    col={{label:3,input:9}}
+                                    returnDateInput={(value)=>{
+                                        this.props.dispatch(cargarFechaInstalacion(value))
+                                    }}
+                        />
+                    </Col>
+                    <Row bsClass="row boxConten">
+                        <Col xs={12}>
+                            <DualListBox
+                                dataSource={this.props.Source.modulos[defaultTipoEquipo] ? this.props.Source.modulos[defaultTipoEquipo] : []}
+                            />
+                        </Col>
+                    </Row>
                 </Row>
                 <Row>
                     <Col xs={12} bsClass="text-center col">
@@ -51,50 +207,3 @@ export default class Formulario extends React.Component{
         )
     }
 }
-/*
-
-<Col xs={12} sm={6} md={4}>
- <Input label="Serie" id="idSerial" placeHolder="N° Serie" returnInput={(e)=>{}}/>
- </Col>
-              <Col xs={12} sm={6} md={4}>
- <Select label="Marca" id="idMarca" dataSource={this.state.source.marcas} returnSelect={}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <AutoComplete label="Modelo" id="idModelo" ref="Modelo" dataSource={this.state.source.modelo} resultadoAutoComplete={(e)=>{this.setState({Modelo:e})}} />
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="SNMP" id="idSNMP" dataSource={this.state.source.snmp} returnSelect={(e)=>{this.setState({Snmp:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="SO" id="idSO" dataSource={this.state.source.so} returnSelect={(e)=>{this.setState({So:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="xfs" id="idxfs" dataSource={this.state.source.xfs} returnSelect={(e)=>{this.setState({xfs:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="Carga" id="idCarga" dataSource={this.state.source.carga} returnSelect={(e)=>{this.setState({Carga:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="Estado" id="idEstado" dataSource={this.state.source.estado} returnSelect={(e)=>{this.setState({Estado:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <InputFecha label="Retiro" id="idRetiro" format="DD-MM-YYYY" returnDateInput={(e)=>{this.setState({fRetiro:e})}} />
- </Col>
- <Col xs={12} sm={6} md={4}>
- <Select label="Garantia" id="idGarantia" dataSource={this.state.source.garantia} returnSelect={(e)=>{this.setState({Garantia:e})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <InputFecha label="Garantia" id="idGarantia" format="DD-MM-YYYY" dual="true" returnDateInput={(e)=>{this.setState({iniGarantia:e.f1,finGarantia:e.f2})}}/>
- </Col>
- <Col xs={12} sm={6} md={4}>
- <InputFecha label="Entrega" id="idEntrega" format="DD-MM-YYYY" returnDateInput={(e)=>{this.setState({fEntrega:e})}} />
- </Col>
- <Col xs={12} sm={6} md={4}>
- <InputFecha label="Instalacion" id="idInstalacion" format="DD-MM-YYYY" col={{label:3,input:9}} returnDateInput={(e)=>{this.setState({fInstalacion:e})}}/>
- </Col>
- <Row bsClass="row boxConten">
- <Col xs={12}>
- <DualListBox dataSource={this.state.testModulos}/>
- </Col>
- </Row>
- */

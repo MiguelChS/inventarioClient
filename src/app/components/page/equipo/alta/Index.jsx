@@ -14,7 +14,6 @@ import {BuscarSource} from '../../../../actions/equipoAction.js';
 export default class Index extends React.Component{
     componentDidMount(){
         if(!this.props.source.complete){
-            console.log("buscar de nuevo");
             this.props.dispatch(BuscarSource());
         }
     }

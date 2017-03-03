@@ -5,7 +5,6 @@ import Trim from 'trim';
 export default class AutoComplete extends React.Component{
     constructor(props){
         super(props);
-        console.log("autoComplete ---> ",this.props);
         let defaultSelect = {
             text:'',
             indiceSourceSelect: null
@@ -26,7 +25,7 @@ export default class AutoComplete extends React.Component{
         for(let i = 0;i < this.props.dataSource.length ;i++){
             if(this.props.dataSource[i].value == idValue){
                 defaultSelect.text = this.props.dataSource[i].label;
-                defaultSelect.indiceSourceSelect = this.props.dataSource[i].value;
+                defaultSelect.indiceSourceSelect = i;
                 return;
             }
         }
@@ -59,6 +58,7 @@ export default class AutoComplete extends React.Component{
         let regex = new RegExp(`${value.toUpperCase()}.*`);
         for(let i = 0;i < this.props.dataSource.length ;i++){
             if(regex.test(this.props.dataSource[i].label.toUpperCase())){
+
                 resultado.push(
                     <ItemResult
                         key={i}
@@ -68,7 +68,7 @@ export default class AutoComplete extends React.Component{
                 )
             }
         }
-
+        console.log("data source -->>",this.props.dataSource,"--->",resultado);
         if(resultado.length == 0) {
             this.setState({
                     showResult:"none",
