@@ -4,7 +4,8 @@ import { connect } from  'react-redux';
 import { AutoComplete , InputSerie , Select, InputFecha} from '../../componentFormulario/index.js'
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro, cargarGarantia,
-    cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo} from '../../../../actions/equipoAction.js';
+    cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo,changeSelectModule,
+    changeDefaultModule,changeSelectModuleAll,changeShowModule} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
 
 
@@ -93,6 +94,7 @@ export default class Formulario extends React.Component{
                                 dataSource={this.props.Source.tipoEquipo}
                                 default={defaultTipoEquipo}
                                 returnSelect={(value)=>{
+                                    this.props.dispatch(changeDefaultModule());
                                     this.props.dispatch(cargarTipoEquipo(value))
                                 }}
                         />
@@ -190,13 +192,23 @@ export default class Formulario extends React.Component{
                                     }}
                         />
                     </Col>
-                    <Row bsClass="row boxConten">
-                        <Col xs={12}>
-                            <DualListBox
-                                dataSource={this.props.Source.modulos[defaultTipoEquipo] ? this.props.Source.modulos[defaultTipoEquipo] : []}
-                            />
-                        </Col>
-                    </Row>
+                </Row>
+                <Row bsClass="row boxConten">
+                    <Col xs={12}>
+                        <DualListBox
+                            ref="DualBox"
+                            dataSource={this.props.Source.modulos[defaultTipoEquipo] ? this.props.Source.modulos[defaultTipoEquipo] : []}
+                            select={(value)=>{
+                                this.props.dispatch(changeSelectModule(value))
+                            }}
+                            selectAll={(value)=>{
+                                this.props.dispatch(changeSelectModuleAll(value))
+                            }}
+                            changeShow={(value)=>{
+                                this.props.dispatch(changeShowModule(value))
+                            }}
+                        />
+                    </Col>
                 </Row>
                 <Row>
                     <Col xs={12} bsClass="text-center col">

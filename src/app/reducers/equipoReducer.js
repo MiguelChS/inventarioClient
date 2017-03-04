@@ -93,6 +93,56 @@ let inicializar ={
         case "INGRESAR_TIPO_EQUIPO_EQUIPO":{
             return {...state,formulario:{...state.formulario,tipoEquipo:action.value}}
         }
+        case "CHANGE_SELECTED_MODULES":{
+            let objModulo = {...state.source.modulos};
+            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
+                if (obj.value == action.value.value && action.value.show) {
+                    obj.selected = action.value.selected;
+                }
+                return obj;
+            });
+            return {...state,source:{...state.source,modulos:objModulo}}
+        }
+
+        case "CHANGE_SHOW_MODULES":{
+            let objModulo = {...state.source.modulos};
+            //mostramos todos
+            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
+                if(action.value.selected == obj.selected){
+                    obj.show = 1;
+                }
+                return obj;
+            });
+            //escondemos a los que nesecitamos
+            let indices = action.value.indice;
+            for(let i = 0; i < indices.length;i++){
+                objModulo[action.value.idTipo][indices[i]].show = 0;
+            }
+            return {...state,source:{...state.source,modulos:objModulo}}
+        }
+
+        case "CHANGE_MODULE_DEFAULT_ALL":{
+            let objModulo = {...state.source.modulos};
+            for(let i in objModulo){
+                objModulo[i] = objModulo[i].map((obj)=>{
+                    obj.selected = 0;
+                    obj.show = 1;
+                    return obj;
+                })
+            }
+            return {...state,source:{...state.source,modulos:objModulo}}
+        }
+
+        case "CHANGE_MODULE_SELECTED_ALL":{
+            let objModulo = {...state.source.modulos};
+            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
+                if(obj.show){
+                    obj.selected = action.value.selected;
+                }
+                return obj;
+            });
+            return {...state,source:{...state.source,modulos:objModulo}}
+        }
         default:
             return state;
     }

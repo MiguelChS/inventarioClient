@@ -122,17 +122,28 @@ export function cargarTipoEquipo(valor) {
     }
 }
 
-export function searchSourceModelo(valor) {
-    return function(dispatch) {
-        request.get(`http://localhost:4000/controllerEquipo/findModelo/${valor}`)
-            .then((result)=>{
-                dispatch({
-                    type:"CARGAR_SOURCE_MODELO_EQUIPO",
-                    value: result.data.modelo
-                })
-            })
-            .catch((err)=>{
-                console.log(err);
-            });
+export function changeSelectModule(valor) {
+    return {
+        type:"CHANGE_SELECTED_MODULES",
+        value: valor
+    }
+}
+
+export function changeDefaultModule() {
+    return {
+        type:"CHANGE_MODULE_DEFAULT_ALL"
+    }
+}
+
+export function changeSelectModuleAll(valor) {
+    return {
+        type:"CHANGE_MODULE_SELECTED_ALL",
+        value: valor
+    }
+}
+export function changeShowModule(valor) {
+    return {
+        type:"CHANGE_SHOW_MODULES",
+        value: valor
     }
 }
