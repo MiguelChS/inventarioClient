@@ -120,13 +120,18 @@ export default class AutoComplete extends React.Component{
             width:"100%"
         };
 
+        let classRequire = "form-control";
+        if(this.props.required && this.state.indiceSourceSelect == null){
+            classRequire = "form-control require-inv";
+        }
+
         return (
             <div style={styleDiv}>
                 <input type="text" style={styleInput}
                        onChange={this.filtrarSource.bind(this)}
                        onBlur={this.offFocus.bind(this)}
                        value={this.state.text}
-                       className="form-control" />
+                       className={classRequire} />
                 <div style={styleResul}
                      ref="result"
                      onMouseOver={()=>{ this.hoverOnResult = true;}}

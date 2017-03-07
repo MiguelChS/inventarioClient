@@ -6,9 +6,9 @@ import moment from 'moment';
 let inicializar ={
     formulario:{
         marca:null,
-        nroSerie:'',
+        nroSerie:null,
         modelo:null,
-        modulos:[],
+        modulos:null,
         carga:null,
         garantia:null,
         iniGarantia:moment().format("YYYY-MM-DD"),
@@ -36,7 +36,8 @@ let inicializar ={
         tipoEquipo:[],
         modulos:[],
         complete: false
-    }
+    },
+    tabla:[]
 };
 
 
@@ -95,13 +96,16 @@ let inicializar ={
         }
         case "CHANGE_SELECTED_MODULES":{
             let objModulo = {...state.source.modulos};
+            let auxModulo = [];
             objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
                 if (obj.value == action.value.value && action.value.show) {
                     obj.selected = action.value.selected;
                 }
+                if(obj.selected == 1) auxModulo.push({...obj});
                 return obj;
             });
-            return {...state,source:{...state.source,modulos:objModulo}}
+            auxModulo = auxModulo.length ? auxModulo : null;
+            return {...state,source:{...state.source,modulos:objModulo},formulario:{...state.formulario,modulos:auxModulo}}
         }
 
         case "CHANGE_SHOW_MODULES":{
@@ -135,13 +139,27 @@ let inicializar ={
 
         case "CHANGE_MODULE_SELECTED_ALL":{
             let objModulo = {...state.source.modulos};
+            let auxModulo = [];
             objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
                 if(obj.show){
                     obj.selected = action.value.selected;
                 }
+                if(obj.selected == 1) auxModulo.push({...obj});
                 return obj;
             });
-            return {...state,source:{...state.source,modulos:objModulo}}
+            auxModulo = auxModulo.length ? auxModulo : null;
+            return {...state,source:{...state.source,modulos:objModulo},formulario:{...state.formulario,modulos:auxModulo}}
+        }
+
+        case "VALIDAR_FORMULARIO_EQUIPO":{
+            let form = state.formulario;
+            debugger;
+            if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.garantia && form.snmp && form.so && form.tipoEquipo && form.estado && form.planta){
+                alert("completo")
+            }else{
+                alert("incompleto")
+            }
+            return {...state}
         }
         default:
             return state;

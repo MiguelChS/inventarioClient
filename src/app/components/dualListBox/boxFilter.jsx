@@ -45,11 +45,23 @@ export default class BoxFilter extends React.Component{
      }
 
     render(){
+        let total = 0;
+        let option = this.props.dataSource.map((value,indice)=>{
+            if(value.selected == this.props.selected){
+                total++;
+                if(value.show){
+                    return (<option key={indice} value={indice}>{value.label}</option>)
+                }
+            }
+        });
+        let styleRequire = "#919496";
+        if(this.props.required && !total){
+            styleRequire = "#ed5565";
+        }
         return(
             <div className="col-sm-6">
                 <div style={{paddingBottom:'5px'}}>
-                    <span style={{color:"#919496"}}>Showing all 12</span>
-                    <button type="button" className="btn pull-right btn-white btn-xs" style={{display:this.state.btnShowAll}}>show all</button>
+                    <span style={{color:styleRequire}}>Total {total} </span>
                 </div>
                 <input className="filter form-control" type="text" placeholder="Filter" onChange={this.filtrar.bind(this)}/>
                 <div style={{width:"100%"}}>
@@ -58,12 +70,8 @@ export default class BoxFilter extends React.Component{
                         <i className={`glyphicon glyphicon-arrow-${this.props.orientation}`}/>
                     </button>
                 </div>
-                <select multiple="multiple" className="form-control selectBoxlist">
-                    {this.props.dataSource.map((value,indice)=>{
-                        if(value.selected == this.props.selected && value.show){
-                            return (<option key={indice} value={indice} onClick={this.selected.bind(this)} >{value.label}</option>)
-                        }
-                    })}
+                <select multiple="multiple" className="form-control selectBoxlist" onChange={this.selected.bind(this)}>
+                    {option}
                 </select>
             </div>
         )

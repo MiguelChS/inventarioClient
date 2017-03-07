@@ -15,7 +15,7 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     presets: ['react', 'es2015', 'stage-0'],
-                    plugins: ['react-html-attrs', 'transform-decorators-legacy', 'transform-class-properties','transform-object-assign'],
+                    plugins: ['react-html-attrs','es6-promise', 'transform-decorators-legacy', 'transform-class-properties','transform-object-assign'],
                 }
             }
         ]

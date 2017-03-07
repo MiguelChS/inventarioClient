@@ -33,13 +33,17 @@ export default class Select extends React.Component{
     }
 
     render(){
+        let classRequire = "form-control";
+        if(this.props.required && this.state.value == "-1"){
+            classRequire = "form-control require-inv";
+        }
         return(
             <FormGroup controlId={this.props.id}>
                 <Col componentClass={ControlLabel} xs={12} sm={( typeof this.props.col == 'undefined' ? 2 : this.props.col.label)}>
                     {this.props.label}
                 </Col>
                 <Col xs={12} sm={( typeof this.props.col == 'undefined' ? 10 : this.props.col.input)}>
-                    <select className="form-control" onChange={this.clickSelect.bind(this)} value={this.state.value}>
+                    <select className={classRequire} onChange={this.clickSelect.bind(this)} value={this.state.value}>
                         <option value="-1">Seleccione</option>
                         {this.props.dataSource.map((obj,index)=>{
                             return <option key={index} value={index} >{obj.label}</option>

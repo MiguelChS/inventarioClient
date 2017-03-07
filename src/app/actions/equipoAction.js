@@ -147,3 +147,9 @@ export function changeShowModule(valor) {
         value: valor
     }
 }
+
+export function validarFormulario() {
+    return {
+        type:"VALIDAR_FORMULARIO_EQUIPO",
+    }
+}

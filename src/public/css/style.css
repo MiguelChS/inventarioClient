@@ -120,3 +120,10 @@ body{
     text-align: center;
     border-right: 0;
 }
+
+.require-inv{
+    border-color: #ed5565 !important;
+}
+.require-inv:focus{
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px #ed5565 !important;
+}

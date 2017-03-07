@@ -15,7 +15,12 @@ export default class AutoCompleteForm extends React.Component{
                     {this.props.label}
                 </Col>
                 <Col xs={12} sm={10}>
-                    <AutoComplete ref="AutoComplete" dataSource={this.props.dataSource} default={this.props.default} resultado={this.resultado.bind(this)}/>
+                    <AutoComplete ref="AutoComplete"
+                                  dataSource={this.props.dataSource}
+                                  default={this.props.default}
+                                  resultado={this.resultado.bind(this)}
+                                  required={this.props.required}
+                    />
                 </Col>
             </FormGroup>
         )

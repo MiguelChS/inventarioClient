@@ -23,6 +23,7 @@ export default class DualListBox extends React.Component{
                 <div className="row">
                     <BoxFilter
                         orientation="right"
+                        required={false}
                         dataSource={this.props.dataSource}
                         selectModule={this.selectModule.bind(this)}
                         selected={0}
@@ -36,6 +37,7 @@ export default class DualListBox extends React.Component{
                         selectAll={this.selectALLModule.bind(this)}
                         changeShow={this.props.changeShow.bind(this)}
                         selected={1}
+                        required={this.props.required}
                     />
                 </div>
         )
