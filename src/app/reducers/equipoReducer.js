@@ -2,6 +2,7 @@
  * Created by mc185249 on 1/11/2017.
  */
 import moment from 'moment';
+import AutoCompleteReducer from './AutoCompleReducer';
 
 let inicializar ={
     formulario:{
@@ -21,8 +22,15 @@ let inicializar ={
         fRetiro:moment().format("YYYY-MM-DD"),
         estado:null,
         fEntrega:moment().format("YYYY-MM-DD"),
-        planta:null
+        planta:null,
+        id_posicion:null,
+        id_institucion:null
     },
+    autoComplete:[
+        AutoCompleteReducer({id:"idPlanta"}),
+        AutoCompleteReducer({id:"idModelo"})
+    ]
+    ,
     source:{
         carga:[],
         estado:[],
@@ -152,15 +160,54 @@ let inicializar ={
         }
 
         case "VALIDAR_FORMULARIO_EQUIPO":{
-            let form = state.formulario;
-            debugger;
+            let form = {...state.formulario};
+            let tabla = [];
             if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.garantia && form.snmp && form.so && form.tipoEquipo && form.estado && form.planta){
-                alert("completo")
+                tabla.push({
+                    numPosTable: (tabla.length + 1),
+                    numSerie: form.nroSerie,
+                    nameSuc:"",
+                    posicion:"",
+                    button:Date.now()
+                });
+                let storeAuto = [AutoCompleteReducer({id:"idPlanta"}),AutoCompleteReducer({id:"idModelo"})];
+                return {...state,tabla:[...tabla],formulario:{...inicializar.formulario},autoComplete:storeAuto}
             }else{
-                alert("incompleto")
+                alert("incompleto");
+                return state;
             }
-            return {...state}
         }
+
+        case "NO_SELECT_AUTO":{
+            let auxAuto = [...state.autoComplete];
+            auxAuto = auxAuto.map((store)=>{
+                        if(store.getState().id !== action.value.id) return store;
+                        store.dispatch({type:action.type,value:action.value.value});
+                        return AutoCompleteReducer(store.getState())
+                    });
+            return {...state,autoComplete:auxAuto};
+        }
+
+        case "RESULT_FILTER_AUTO":{
+            let auxAuto = [...state.autoComplete];
+            auxAuto = auxAuto.map((store)=>{
+                if(store.getState().id !== action.value.id) return store;
+                store.dispatch({type:action.type,value:{value:action.value.value,text:action.value.text}});
+                return AutoCompleteReducer(store.getState())
+            });
+            return {...state,autoComplete:auxAuto};
+        }
+
+        case "SELECT_AUTO":{
+            let auxAuto = [...state.autoComplete];
+            auxAuto = auxAuto.map((store)=>{
+                if(store.getState().id !== action.value.id) return store;
+                store.dispatch({type:action.type,value:{indice:action.value.indice,text:action.value.text}});
+                return AutoCompleteReducer(store.getState())
+            });
+            return {...state,autoComplete:auxAuto};
+        }
+
         default:
             return state;
     }

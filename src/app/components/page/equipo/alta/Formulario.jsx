@@ -7,12 +7,15 @@ import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo,changeSelectModule,
     changeDefaultModule,changeSelectModuleAll,changeShowModule,validarFormulario} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
+import { noSelect } from '../../../../actions/autoCompleteAction.js';
 
 
 @connect((store)=>{
     return {
         Formulario: store.equipo.formulario,
-        Source: store.equipo.source
+        Source: store.equipo.source,
+        AutoPlanta: store.equipo.autoComplete[0],
+        AutoModelo: store.equipo.autoComplete[1]
     }
 })
 
@@ -22,19 +25,20 @@ export default class Formulario extends React.Component{
         this.props.dispatch(validarFormulario());
     }
 
-    buscarModelo(value){
-        this.refs.planta.refs.AutoComplete.setState({indiceSourceSelect:null,showResult:"none",text:'',result:[]});
-        this.refs.Modelo.refs.AutoComplete.setState({indiceSourceSelect:null,showResult:"none",text:'',result:[]});
+    insertMarca(value){
+        let storePlanta = this.props.AutoPlanta.getState();
+        let storeModelo = this.props.AutoModelo.getState();
+
+        this.props.dispatch(noSelect({id:storePlanta.id,value:""}));
+        this.props.dispatch(noSelect({id:storeModelo.id,value:""}));
+
         this.props.dispatch(cargarMarca(value));
         this.props.dispatch(cargarModelo(null));
         this.props.dispatch(cargarPlanta(null));
     }
 
-
     render(){
-        let defaultAutoPlanta = this.props.Formulario.planta ? this.props.Formulario.planta["value"] : null;
         let defaultSelectMarca = this.props.Formulario.marca ? this.props.Formulario.marca["value"] : null;
-        let defaultSelectModelo = this.props.Formulario.modelo ? this.props.Formulario.modelo["value"] : null;
         let defaultSelectSNMP = this.props.Formulario.snmp ? this.props.Formulario.snmp["value"] : null;
         let defaultSelectSO = this.props.Formulario.so ? this.props.Formulario.so["value"] : null;
         let defaultSelectXFS = this.props.Formulario.xfs ? this.props.Formulario.xfs["value"] : null;
@@ -53,15 +57,15 @@ export default class Formulario extends React.Component{
                             default={defaultSelectMarca}
                             required={true}
                             returnSelect={(value)=>{
-                                this.buscarModelo(value);
+                                this.insertMarca(value);
                             }}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
-                        <AutoComplete label="Planta" id="idPlanta"
-                                      ref="planta"
+                        <AutoComplete label="Planta"
+                                      id="idPlanta"
                                       dataSource={this.props.Source.planta[defaultSelectMarca] ? this.props.Source.planta[defaultSelectMarca] : []}
-                                      default={defaultAutoPlanta}
+                                      Store={this.props.AutoPlanta}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
                                           this.props.dispatch(cargarPlanta(value))
@@ -72,10 +76,9 @@ export default class Formulario extends React.Component{
                         <AutoComplete
                             label="Modelo"
                             id="idModelo"
-                            ref="Modelo"
+                            Store={this.props.AutoModelo}
                             required={true}
                             dataSource={this.props.Source.modelo[defaultSelectMarca] ? this.props.Source.modelo[defaultSelectMarca] : []}
-                            default={defaultSelectModelo}
                             resultadoAutoComplete={(value)=>{
                                 this.props.dispatch(cargarModelo(value))
                             }}

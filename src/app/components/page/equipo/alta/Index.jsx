@@ -3,7 +3,6 @@ import { Row,Col,Button } from 'react-bootstrap';
 import Formulario from './Formulario.jsx';
 import TableEquipo from './TableEquipo.jsx';
 import {connect} from  'react-redux';
-import axios from 'axios';
 import {BuscarSource} from '../../../../actions/equipoAction.js';
 
 @connect((store)=>{

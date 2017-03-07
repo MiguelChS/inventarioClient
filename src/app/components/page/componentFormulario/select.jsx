@@ -3,24 +3,13 @@ import { FormGroup , Col, ControlLabel} from 'react-bootstrap';
 
 export default class Select extends React.Component{
 
-    constructor(props){
-        super(props);
-        let value = -1;
-
-        if(this.props.default){
-            value = this.searchDefault(this.props.default);
-        }
-        this.state = {
-            value: value
-        }
-    }
-
     searchDefault(value){
         for(let i = 0; i< this.props.dataSource.length ; i++){
             if(this.props.dataSource[i].value == value){
                 return  i ;
             }
         }
+        return -1;
     }
 
 
@@ -34,7 +23,8 @@ export default class Select extends React.Component{
 
     render(){
         let classRequire = "form-control";
-        if(this.props.required && this.state.value == "-1"){
+        let value = this.searchDefault(this.props.default);
+        if(this.props.required && value == -1 ){
             classRequire = "form-control require-inv";
         }
         return(
@@ -43,7 +33,7 @@ export default class Select extends React.Component{
                     {this.props.label}
                 </Col>
                 <Col xs={12} sm={( typeof this.props.col == 'undefined' ? 10 : this.props.col.input)}>
-                    <select className={classRequire} onChange={this.clickSelect.bind(this)} value={this.state.value}>
+                    <select className={classRequire} onChange={this.clickSelect.bind(this)} value={this.searchDefault(this.props.default)}>
                         <option value="-1">Seleccione</option>
                         {this.props.dataSource.map((obj,index)=>{
                             return <option key={index} value={index} >{obj.label}</option>

@@ -20,6 +20,7 @@ export default class AutoCompleteForm extends React.Component{
                                   default={this.props.default}
                                   resultado={this.resultado.bind(this)}
                                   required={this.props.required}
+                                  Store={this.props.Store}
                     />
                 </Col>
             </FormGroup>
