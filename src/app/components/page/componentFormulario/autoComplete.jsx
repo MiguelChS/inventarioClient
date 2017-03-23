@@ -21,6 +21,7 @@ export default class AutoCompleteForm extends React.Component{
                                   resultado={this.resultado.bind(this)}
                                   required={this.props.required}
                                   Store={this.props.Store}
+                                  dispatch={this.props.dispatch}
                     />
                 </Col>
             </FormGroup>

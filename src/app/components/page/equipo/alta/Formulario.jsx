@@ -5,32 +5,35 @@ import { AutoComplete , InputSerie , Select, InputFecha} from '../../componentFo
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro, cargarGarantia,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo,changeSelectModule,
-    changeDefaultModule,changeSelectModuleAll,changeShowModule,validarFormulario} from '../../../../actions/equipoAction.js';
+    changeDefaultModule,changeSelectModuleAll,changeShowModule,validarFormulario,cargarEquipo,limpiarModulos} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
-import { noSelect } from '../../../../actions/autoCompleteAction.js';
+import { noSelect,loadAuto } from '../../../../actions/autoCompleteAction.js';
 
 
 @connect((store)=>{
     return {
         Formulario: store.equipo.formulario,
         Source: store.equipo.source,
-        AutoPlanta: store.equipo.autoComplete[0],
-        AutoModelo: store.equipo.autoComplete[1]
+        AutoPlanta: store.AutoComplete.find( obj => obj.id == "idPlanta"),
+        AutoModelo: store.AutoComplete.find( obj => obj.id == "idModelo")
     }
 })
 
 export default class Formulario extends React.Component{
 
     validar(){
-        this.props.dispatch(validarFormulario());
+        this.props.dispatch(validarFormulario([{...this.props.AutoPlanta},{...this.props.AutoModelo}]));
+        this.props.dispatch(changeDefaultModule());
+        this.props.dispatch(loadAuto({id:this.props.AutoPlanta.id,state:{}}));
+        this.props.dispatch(loadAuto({id:this.props.AutoModelo.id,state:{}}));
     }
 
     insertMarca(value){
-        let storePlanta = this.props.AutoPlanta.getState();
-        let storeModelo = this.props.AutoModelo.getState();
+        let storePlanta = this.props.AutoPlanta;
+        let storeModelo = this.props.AutoModelo;
 
-        this.props.dispatch(noSelect({id:storePlanta.id,value:""}));
-        this.props.dispatch(noSelect({id:storeModelo.id,value:""}));
+        this.props.dispatch(loadAuto({id:storePlanta.id,state:{}}));
+        this.props.dispatch(loadAuto({id:storeModelo.id,state:{}}));
 
         this.props.dispatch(cargarMarca(value));
         this.props.dispatch(cargarModelo(null));
@@ -38,14 +41,15 @@ export default class Formulario extends React.Component{
     }
 
     render(){
+        console.log(this.props);
         let defaultSelectMarca = this.props.Formulario.marca ? this.props.Formulario.marca["value"] : null;
         let defaultSelectSNMP = this.props.Formulario.snmp ? this.props.Formulario.snmp["value"] : null;
         let defaultSelectSO = this.props.Formulario.so ? this.props.Formulario.so["value"] : null;
         let defaultSelectXFS = this.props.Formulario.xfs ? this.props.Formulario.xfs["value"] : null;
         let defaultCarga = this.props.Formulario.carga ? this.props.Formulario.carga["value"] : null;
         let defaultEstado = this.props.Formulario.estado ? this.props.Formulario.estado["value"] : null;
-        let defaultGarantia = this.props.Formulario.garantia ? this.props.Formulario.garantia["value"] : null;
         let defaultTipoEquipo = this.props.Formulario.tipoEquipo ? this.props.Formulario.tipoEquipo["value"] : null;
+        let defaultEquipo = this.props.Formulario.Equipos ? this.props.Formulario.Equipos["value"] : null;
         return(
             <Form horizontal>
                 <Row>
@@ -70,6 +74,7 @@ export default class Formulario extends React.Component{
                                       resultadoAutoComplete={(value)=>{
                                           this.props.dispatch(cargarPlanta(value))
                                       }}
+                                      dispatch={this.props.dispatch}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
@@ -82,6 +87,7 @@ export default class Formulario extends React.Component{
                             resultadoAutoComplete={(value)=>{
                                 this.props.dispatch(cargarModelo(value))
                             }}
+                            dispatch={this.props.dispatch}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
@@ -97,12 +103,24 @@ export default class Formulario extends React.Component{
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
+                        <Select label="Equipo" id="idEquipo"
+                                dataSource={this.props.Source.Equipos}
+                                default={defaultEquipo}
+                                required={true}
+                                returnSelect={(value)=>{
+                                    this.props.dispatch(limpiarModulos());
+                                    this.props.dispatch(changeDefaultModule());
+                                    this.props.dispatch(cargarEquipo(value));
+
+                                }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
                         <Select label="Tipo" id="idEquipo"
-                                dataSource={this.props.Source.tipoEquipo}
+                                dataSource={this.props.Source.tipoEquipo[defaultEquipo] ? this.props.Source.tipoEquipo[defaultEquipo] : [] }
                                 default={defaultTipoEquipo}
                                 required={true}
                                 returnSelect={(value)=>{
-                                    this.props.dispatch(changeDefaultModule());
                                     this.props.dispatch(cargarTipoEquipo(value))
                                 }}
                         />
@@ -158,16 +176,6 @@ export default class Formulario extends React.Component{
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
-                        <Select label="Garantia" id="idGarantia"
-                                dataSource={this.props.Source.garantia}
-                                default={defaultGarantia}
-                                required={true}
-                                returnSelect={(value)=>{
-                                    this.props.dispatch(cargarGarantia(value))
-                                }}
-                        />
-                    </Col>
-                    <Col xs={12} sm={6} md={4}>
                         <InputFecha label="Entrega" id="idEntrega"
                                     format="DD-MM-YYYY"
                                     default={{date1:this.props.Formulario.fEntrega}}
@@ -187,10 +195,10 @@ export default class Formulario extends React.Component{
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
-                        <InputFecha label="Garantia" id="idGarantia"
+                        <InputFecha label="Fin Garantia" id="idGarantia"
                                     format="DD-MM-YYYY"
-                                    dual="true"
-                                    default={{date1:this.props.Formulario.iniGarantia,date2:this.props.Formulario.finGarantia}}
+                                    default={{date1:this.props.Formulario.finGarantia}}
+                                    col={{label:3,input:9}}
                                     returnDateInput={(value)=>{
                                         this.props.dispatch(cargarFechaGarantia(value))
                                     }}
@@ -210,7 +218,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12}>
                         <DualListBox
                             ref="DualBox"
-                            dataSource={this.props.Source.modulos[defaultTipoEquipo] ? this.props.Source.modulos[defaultTipoEquipo] : []}
+                            dataSource={this.props.Source.modulos[defaultEquipo] ? this.props.Source.modulos[defaultEquipo] : []}
                             required={true}
                             select={(value)=>{
                                 this.props.dispatch(changeSelectModule(value))

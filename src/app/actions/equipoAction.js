@@ -2,6 +2,7 @@
  * Created by mc185249 on 1/17/2017.
  */
 import request from '../Request/Request';
+import {loadAuto} from './autoCompleteAction';
 
 export function altaNroSerie(valor) {
     return {
@@ -24,6 +25,19 @@ export function BuscarSource() {
             });
     }
 }
+
+export function FinishEA(data) {
+    return function (dispatch) {
+        request.post('',data)
+            .then((result)=>{
+                console.log(result);
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+    }
+}
+
 
 export function cargarPlanta(valor) {
     return {
@@ -148,8 +162,62 @@ export function changeShowModule(valor) {
     }
 }
 
-export function validarFormulario() {
+export function validarFormulario(valor) {
     return {
         type:"VALIDAR_FORMULARIO_EQUIPO",
+        value:valor
+    }
+}
+
+export function cargarFormulario(value) {
+    let form = JSON.parse(localStorage.getItem(value));
+    let statePlanta = form.AutoComplete.find(obj => obj.id == "idPlanta");
+    let stateModelo = form.AutoComplete.find(obj => obj.id == "idModelo");
+    return [
+        {
+        type:"CARGAR_FORMULARIO",
+        value:form.form
+        },
+        loadAuto({id:statePlanta.id,state:statePlanta}),
+        loadAuto({id:stateModelo.id,state:stateModelo})
+    ]
+}
+
+export function cargarEquipo(value) {
+    return {
+        type:"INGRESAR_EQUIPO",
+        value:value
+    }
+}
+
+export function limpiarModulos() {
+    return {
+        type:"INGRESAR_MODULOS"
+    }
+}
+
+export function assignPosition(value) {
+    return {
+        type:"ASSIGN_AUTO",
+        value:value
+    }
+}
+
+export function deleteForm(value) {
+    return {
+        type:"DELETE_FORM",
+        idform:value
+    }
+}
+
+export function LimpiarEA() {
+    return {
+        type:"CLEAR_EA"
+    }
+}
+
+export function LoadTablaEA() {
+    return {
+        type:"LOAD_TABLE"
     }
 }

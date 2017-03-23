@@ -127,3 +127,28 @@ body{
 .require-inv:focus{
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px #ed5565 !important;
 }
+
+.sinBordeModal > .modal-content{
+    border-radius: 0 !important;
+}
+
+.AutoCompleteResult > div:hover {
+    background-color: #e7eaec;
+}
+
+.AutoCompleteResult > div:focus {
+    background-color: #e7eaec;
+}
+
+.modal-body {
+    padding: 20px 30px 30px 30px;
+}
+
+.separarButton {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.titleModal {
+    margin-top: 0;
+    margin-bottom: -6px;
+}

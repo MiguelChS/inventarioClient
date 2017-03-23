@@ -12,23 +12,14 @@ export default class ItemResult extends React.Component{
         this.props.select(this.state.index)
     }
 
-    hoverOn(e){
-        e.target.style.backgroundColor = "#e7eaec";
-    }
-
-    hoverOff(e){
-        e.target.style.backgroundColor = "white";
-    }
-
     render(){
         const styleDivItem = {
-            padding:"3px 10px 3px 20px",
-            cursor:"pointer"
-        };
+            padding: "3px 10px 3px 20px",
+            cursor: "pointer",
+            backgroundColor: this.focus ? this.focus : "while"
+        }
         return(
             <div style={styleDivItem}
-                 onMouseOut={this.hoverOff.bind(this)}
-                 onMouseEnter={this.hoverOn.bind(this)}
                  onClick={this.returnResult.bind(this)}>
                 {this.state.label}
             </div>

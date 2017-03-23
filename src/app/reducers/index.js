@@ -5,8 +5,12 @@ import { combineReducers } from 'redux';
 
 import equipo from './equipoReducer';
 import site from  './siteReducer';
+import modal from './ModalReducer';
+import autoComp from './AutoCompleteReducer';
 
 export default combineReducers({
     equipo: equipo,
-    site:site
+    site:site,
+    modal:modal,
+    AutoComplete:autoComp
 })

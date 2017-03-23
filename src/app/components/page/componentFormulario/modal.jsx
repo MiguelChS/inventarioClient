@@ -1,30 +1,32 @@
 import React from 'react';
-import {Modal,Button} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
+import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
+
 
 export default class ModalForm extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            showModal:false
-        }
-    }
 
-    close() {
-        this.setState({ showModal: false });
+    componenteResult(){
+        let store = this.props.store;
+        switch (store.body){
+            case 1:{
+                return <AssignPosition
+                    store={this.props.storeAll}
+                    dispatch={this.props.dispatch}
+                    idModal={store.id}
+                    data={store.data}
+                />
+            }
+            default:
+                return "";
+        }
     }
 
     render(){
         return(
-            <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{this.props.title}</Modal.Title>
-                </Modal.Header>
+            <Modal show={true} backdrop="static" dialogClassName="sinBordeModal">
                 <Modal.Body>
-
+                    {this.componenteResult()}
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={this.close.bind(this)}>close</Button>
-                </Modal.Footer>
             </Modal>
         )
     }

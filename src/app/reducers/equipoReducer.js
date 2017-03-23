@@ -2,35 +2,30 @@
  * Created by mc185249 on 1/11/2017.
  */
 import moment from 'moment';
-import AutoCompleteReducer from './AutoCompleReducer';
 
 let inicializar ={
     formulario:{
+        idform:null,
         marca:null,
         nroSerie:null,
         modelo:null,
         modulos:null,
         carga:null,
-        garantia:null,
-        iniGarantia:moment().format("YYYY-MM-DD"),
         finGarantia:moment().format("YYYY-MM-DD"),
         snmp:null,
         so:null,
         xfs:null,
+        Equipos:null,
         tipoEquipo:null,
         fInstalacion:moment().format("YYYY-MM-DD"),
         fRetiro:moment().format("YYYY-MM-DD"),
         estado:null,
         fEntrega:moment().format("YYYY-MM-DD"),
         planta:null,
-        id_posicion:null,
+        position:null,
+        site:null,
         id_institucion:null
     },
-    autoComplete:[
-        AutoCompleteReducer({id:"idPlanta"}),
-        AutoCompleteReducer({id:"idModelo"})
-    ]
-    ,
     source:{
         carga:[],
         estado:[],
@@ -41,67 +36,92 @@ let inicializar ={
         so:[],
         xfs:[],
         modelo:[],
+        Equipos:[],
         tipoEquipo:[],
         modulos:[],
+        site:[],
+        position:[],
         complete: false
     },
-    tabla:[]
+    tabla:[],
 };
-
 
  function reducer(state=inicializar,action){
     switch (action.type){
         case "ALTA_SERIE_EQUIPO":{
             return {...state,formulario:{...state.formulario,nroSerie:action.value}}
         }
+
         case "CARGAR_SOURCE_EQUIPO":{
             return {...state,source:{...state.source,...action.value,complete:true}}
         }
+
         case "CARGAR_SOURCE_MODELO_EQUIPO":{
             return {...state,source:{...state.source,modelo:action.value}}
         }
+
         case "INGRESAR_PLANTA_EQUIPO":{
             return {...state,formulario:{...state.formulario,planta:action.value}}
         }
+
         case "INGRESAR_SNMP_EQUIPO":{
             return {...state,formulario:{...state.formulario,snmp:action.value}}
         }
+
         case "INGRESAR_SO_EQUIPO":{
             return {...state,formulario:{...state.formulario,so:action.value}}
         }
+
         case "INGRESAR_XFS_EQUIPO":{
             return {...state,formulario:{...state.formulario,xfs:action.value}}
         }
+
         case "INGRESAR_MODELO_EQUIPO":{
             return {...state,formulario:{...state.formulario,modelo:action.value}}
         }
+
         case "INGRESAR_MARCA_EQUIPO":{
             return {...state,formulario:{...state.formulario,marca:action.value}}
         }
+
         case "INGRESAR_CARGA_EQUIPO":{
             return {...state,formulario:{...state.formulario,carga:action.value}}
         }
+
         case "INGRESAR_ESTADO_EQUIPO":{
             return {...state,formulario:{...state.formulario,estado:action.value}}
         }
+
         case "INGRESAR_FECHA_RETIRO_EQUIPO":{
             return {...state,formulario:{...state.formulario,fRetiro:action.value}}
         }
+
         case "INGRESAR_GARANTIA_EQUIPO":{
             return {...state,formulario:{...state.formulario,garantia:action.value}}
         }
+
         case "INGRESAR_FECHA_GARANTIA_EQUIPO":{
-            return {...state,formulario:{...state.formulario,iniGarantia:action.value.f1,finGarantia:action.value.f2}}
+            return {...state,formulario:{...state.formulario,finGarantia:action.value}}
         }
+
         case "INGRESAR_FECHA_INSTALACION_EQUIPO":{
             return {...state,formulario:{...state.formulario,fInstalacion:action.value}}
         }
+
         case "INGRESAR_FECHA_ENTREGA_EQUIPO":{
             return {...state,formulario:{...state.formulario,fEntrega:action.value}}
         }
+
         case "INGRESAR_TIPO_EQUIPO_EQUIPO":{
             return {...state,formulario:{...state.formulario,tipoEquipo:action.value}}
         }
+
+        case "INGRESAR_EQUIPO":{
+            return {...state,formulario:{...state.formulario,Equipos:action.value}}
+        }
+
+
+
         case "CHANGE_SELECTED_MODULES":{
             let objModulo = {...state.source.modulos};
             let auxModulo = [];
@@ -133,6 +153,10 @@ let inicializar ={
             return {...state,source:{...state.source,modulos:objModulo}}
         }
 
+        case "INGRESAR_MODULOS":{
+            return {...state,formulario:{...state.formulario,modulos:null}}
+        }
+
         case "CHANGE_MODULE_DEFAULT_ALL":{
             let objModulo = {...state.source.modulos};
             for(let i in objModulo){
@@ -159,53 +183,117 @@ let inicializar ={
             return {...state,source:{...state.source,modulos:objModulo},formulario:{...state.formulario,modulos:auxModulo}}
         }
 
+
+
         case "VALIDAR_FORMULARIO_EQUIPO":{
             let form = {...state.formulario};
-            let tabla = [];
-            if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.garantia && form.snmp && form.so && form.tipoEquipo && form.estado && form.planta){
-                tabla.push({
-                    numPosTable: (tabla.length + 1),
-                    numSerie: form.nroSerie,
-                    nameSuc:"",
-                    posicion:"",
-                    button:Date.now()
-                });
-                let storeAuto = [AutoCompleteReducer({id:"idPlanta"}),AutoCompleteReducer({id:"idModelo"})];
-                return {...state,tabla:[...tabla],formulario:{...inicializar.formulario},autoComplete:storeAuto}
+            let tabla = [...state.tabla];
+            if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta){
+                let AutoComp = action.value;
+                if(form.idform){
+                     tabla = tabla.map((obj)=>{
+                         if(form.idform != obj.idform) return obj;
+                         obj.numSerie = `${form.planta.prefijo}-${form.nroSerie}`;
+                         return obj;
+                     });
+                     let aux = JSON.parse(localStorage.getItem(form.idform)).AutoComplete;
+                     AutoComp = aux.map(obj => {
+                         switch (obj.id){
+                             case "idPlanta":{
+                                 return action.value[0]
+                             }
+                             case "idModelo":{
+                                 return action.value[1]
+                             }
+                             default:
+                                 return obj;
+                         }
+                     })
+                }else{
+                    form.idform = `${Date.now()}_EA`;
+                    tabla.push({
+                        numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
+                        nameSuc:null,
+                        posicion:null,
+                        idform:form.idform
+                    });
+                }
+                localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:AutoComp}));
+                return {...state,tabla:[...tabla],formulario:{...inicializar.formulario}}
             }else{
                 alert("incompleto");
                 return state;
             }
         }
 
-        case "NO_SELECT_AUTO":{
-            let auxAuto = [...state.autoComplete];
-            auxAuto = auxAuto.map((store)=>{
-                        if(store.getState().id !== action.value.id) return store;
-                        store.dispatch({type:action.type,value:action.value.value});
-                        return AutoCompleteReducer(store.getState())
-                    });
-            return {...state,autoComplete:auxAuto};
+        case "CARGAR_FORMULARIO": {
+            let form = action.value;
+            //modificamos el estado del source modulos
+            let objModulo = {...state.source.modulos};
+            for(let i=0;i < form.modulos.length;i++){
+                let obj_mod = form.modulos[i];
+                objModulo[form.Equipos.value] = objModulo[form.Equipos.value].map((obj)=> {
+                    if(obj_mod.value == obj.value){
+                        obj.selected = 1;
+                    }
+                    return obj;
+                });
+            }
+            return {...state,formulario:{...form},source:{...state.source,modulos:objModulo}}
         }
 
-        case "RESULT_FILTER_AUTO":{
-            let auxAuto = [...state.autoComplete];
-            auxAuto = auxAuto.map((store)=>{
-                if(store.getState().id !== action.value.id) return store;
-                store.dispatch({type:action.type,value:{value:action.value.value,text:action.value.text}});
-                return AutoCompleteReducer(store.getState())
+
+        case "ASSIGN_AUTO":{
+            let tabla = [...state.tabla];
+            let form = JSON.parse(localStorage.getItem(action.value.formid)).form;
+            let siteState = action.value.site;
+            let positionState = action.value.position;
+            tabla = tabla.map((obj)=>{
+                if(form.idform != obj.idform) return obj;
+                obj.nameSuc =  siteState.resultSelect ? siteState.resultSelect.label : null;
+                obj.posicion = positionState.resultSelect ? positionState.resultSelect.label : null;
+                return obj;
             });
-            return {...state,autoComplete:auxAuto};
+            let aux = JSON.parse(localStorage.getItem(form.idform)).AutoComplete;
+            aux = aux.filter(obj => {
+                if(obj.id != "idSite" && obj.id != "idPosicion") return obj;
+            });
+            aux.push(siteState);
+            aux.push(positionState);
+            form.position = positionState.resultSelect;
+            form.site = siteState.resultSelect;
+            localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:[...aux]}));
+            return {...state,tabla:[...tabla]}
         }
 
-        case "SELECT_AUTO":{
-            let auxAuto = [...state.autoComplete];
-            auxAuto = auxAuto.map((store)=>{
-                if(store.getState().id !== action.value.id) return store;
-                store.dispatch({type:action.type,value:{indice:action.value.indice,text:action.value.text}});
-                return AutoCompleteReducer(store.getState())
-            });
-            return {...state,autoComplete:auxAuto};
+        case "DELETE_FORM":{
+            let tabla = [...state.tabla];
+            tabla = tabla.filter( row => row.idform != action.idform);
+            localStorage.removeItem(action.idform);
+            return{...state,tabla:[...tabla]};
+        }
+
+        case "CLEAR_EA":{
+            let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
+            for(let i = 0 ; i < EA.length; i++){
+                localStorage.removeItem(EA[i]);
+            }
+            return {...state,tabla:[],formulario:{...inicializar.formulario}}
+        }
+
+        case "LOAD_TABLE":{
+            let tabla = [];
+            let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
+            for(let i = 0 ; i < EA.length; i++){
+                let form = JSON.parse(localStorage.getItem(EA[i])).form;
+                tabla.push({
+                    numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
+                    nameSuc: form.site ? form.site.label : null,
+                    posicion: form.position ? form.position.label : null,
+                    idform:form.idform
+                });
+            }
+            return {...state,tabla:[...tabla]};
         }
 
         default:

@@ -1,10 +1,8 @@
 import React from 'react';
 import ItemResult from './itemResult.jsx';
 import Trim from 'trim';
-import { connect } from  'react-redux';
-import { noSelect,filter,select } from '../../actions/autoCompleteAction.js'
+import { noSelect,filter,select,hidden } from '../../actions/autoCompleteAction.js'
 
-@connect()
 export default class AutoComplete extends React.Component{
     constructor(props){
         super(props);
@@ -13,13 +11,26 @@ export default class AutoComplete extends React.Component{
 
     selectResult(indice){
         let value = this.props.dataSource[indice].label;
-        let store = this.props.Store.getState();
-        this.props.dispatch(select({id:store.id,indice:indice,text:value}));
+        let store = this.props.Store;
+        this.props.dispatch(select({id:store.id,indice:indice,text:value,objResult:this.props.dataSource[indice]}));
         this.props.resultado(this.props.dataSource[indice]);
+        this.hoverOnResult = false;
+    }
+
+    keyDown(event){
+        switch(event.key){
+            case "ArrowUp":{
+                break;
+            }
+            case "ArrowDown":{
+
+                break;
+            }
+        }
     }
 
     filtrarSource(event){
-        let store = this.props.Store.getState();
+        let store = this.props.Store;
         let value = Trim(event.target.value);
         if(value.length < 2) {
             this.props.dispatch(noSelect({id:store.id,value:value}));
@@ -33,6 +44,7 @@ export default class AutoComplete extends React.Component{
                 resultado.push(
                     <ItemResult
                         key={i}
+                        focus={false}
                         select={this.selectResult.bind(this)}
                         value={{index:i,label:this.props.dataSource[i].label}}
                     />
@@ -51,7 +63,7 @@ export default class AutoComplete extends React.Component{
 
     offFocus(){
         if(this.hoverOnResult) return;
-        let store = this.props.Store.getState();
+        let store = this.props.Store;
         let value = Trim(store.text).toUpperCase();
         if(store.indiceSourceSelect == null){
             this.props.dispatch(noSelect({id:store.id,value:""}));
@@ -60,11 +72,14 @@ export default class AutoComplete extends React.Component{
 
         if(Trim(this.props.dataSource[store.indiceSourceSelect].label).toUpperCase() != value){
             this.props.dispatch(noSelect({id:store.id,value:""}));
+            return;
         }
+        this.props.resultado(this.props.dataSource[store.indiceSourceSelect]);
+        this.props.dispatch(select({id:store.id,indice:store.indiceSourceSelect,text:store.text,objResult:this.props.dataSource[store.indiceSourceSelect]}));
     }
 
     render() {
-        let store = this.props.Store.getState();
+        let store = this.props.Store;
         const styleDiv = {
             position:"relative",
         };
@@ -74,26 +89,39 @@ export default class AutoComplete extends React.Component{
             border:"1px solid #e7eaec",
             width:"100%",
             display: store.showResult,
-            zIndex :"10"
+            zIndex :"10",
+            maxHeight:"250px",
+            overflowX:"hidden",
+            overflowY:"scroll",
+
         };
         const styleInput = {
             width:"100%"
+        };
+        const styleConta = {
+            position: "absolute",
+            right: "2px",
+            color: "#7b7b7b",
+            fontSize: "10px",
+            bottom: "2px"
         };
 
         let classRequire = "form-control";
         if(this.props.required && store.indiceSourceSelect == null){
             classRequire = "form-control require-inv";
         }
-        console.log(store);
+
         return (
             <div style={styleDiv}>
+                <span style={styleConta}>{this.props.dataSource.length}</span>
                 <input type="text" style={styleInput}
                        onChange={this.filtrarSource.bind(this)}
                        onBlur={this.offFocus.bind(this)}
                        value={store.text}
-                       className={classRequire} />
-                <div style={styleResul}
-                     ref="result"
+                       className={classRequire}
+                       onKeyDown={this.keyDown.bind(this)}
+                />
+                <div className="AutoCompleteResult" style={styleResul}
                      onMouseOver={()=>{ this.hoverOnResult = true;}}
                      onMouseOut={()=>{ this.hoverOnResult = false;}}>
                     {store.result}
@@ -102,3 +130,4 @@ export default class AutoComplete extends React.Component{
         )
     }
 }
+///
