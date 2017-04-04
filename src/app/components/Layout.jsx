@@ -3,6 +3,7 @@ import Nav from './nav/nav.jsx'
 import {connect} from  'react-redux';
 import Modal from './page/componentFormulario/modal.jsx';
 import {addAuto} from '../actions/autoCompleteAction';
+import {addFormPos} from '../actions/formPositionAction';
 
 @connect((store)=>{
     return {

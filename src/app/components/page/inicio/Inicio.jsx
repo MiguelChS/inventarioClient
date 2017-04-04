@@ -1,9 +1,10 @@
 import React from 'react';
+import { InputHorario } from '../componentFormulario/index'
 
 export class Inicio extends React.Component{
     render(){
         return(
-            <h1>Soy el inicio</h1>
+          <p>Soy el Inicio</p>
         )
     }
 }

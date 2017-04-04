@@ -2,7 +2,7 @@ import React from 'react';
 import { Row,Col,Form } from 'react-bootstrap';
 import { AutoComplete } from '../../componentFormulario/index.js'
 import { noSelect } from '../../../../actions/autoCompleteAction.js'
-import { hiddenModal } from '../../../../actions/modalAction.js'
+import { hiddenModal,addModal } from '../../../../actions/modalAction.js'
 import { assignPosition } from '../../../../actions/equipoAction.js';
 
 export default class AsignarPosicion extends React.Component{
@@ -23,6 +23,10 @@ export default class AsignarPosicion extends React.Component{
 
     cancelar(){
         this.props.dispatch(hiddenModal(this.props.idModal))
+    }
+
+    newPosition(){
+        this.props.dispatch(addModal({body:2,data:null,size:"xl"}))
     }
 
     render(){
@@ -71,7 +75,7 @@ export default class AsignarPosicion extends React.Component{
                 <Row>
                     <div className="col-xs-12 text-right">
                         <div className="btn-group separarButton">
-                            <button type="button" disabled={this.disabledBtnPos} className="btn btn-white">
+                            <button type="button" disabled={this.disabledBtnPos} onClick={this.newPosition.bind(this)} className="btn btn-white">
                                 Nueva Posicion
                             </button>
                         </div>

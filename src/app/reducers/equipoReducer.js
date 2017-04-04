@@ -22,8 +22,14 @@ let inicializar ={
         estado:null,
         fEntrega:moment().format("YYYY-MM-DD"),
         planta:null,
-        position:null,
-        site:null,
+        position:{
+            label:"SIN DATO",
+            value: 0
+        },
+        site:{
+            label:"SIN DATO",
+            value: 0
+        },
         id_institucion:null
     },
     source:{
@@ -213,8 +219,8 @@ let inicializar ={
                     form.idform = `${Date.now()}_EA`;
                     tabla.push({
                         numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
-                        nameSuc:null,
-                        posicion:null,
+                        nameSuc: form.site.label,
+                        posicion: form.position.label,
                         idform:form.idform
                     });
                 }
@@ -263,7 +269,9 @@ let inicializar ={
             form.position = positionState.resultSelect;
             form.site = siteState.resultSelect;
             localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:[...aux]}));
-            return {...state,tabla:[...tabla]}
+            let sourcePosicion = {...state.source.position};
+            sourcePosicion[siteState.resultSelect.value][positionState.indiceSourceSelect].flag = 0;
+            return {...state,tabla:[...tabla],source:{...state.source,position:sourcePosicion}}
         }
 
         case "DELETE_FORM":{
@@ -295,6 +303,7 @@ let inicializar ={
             }
             return {...state,tabla:[...tabla]};
         }
+
 
         default:
             return state;

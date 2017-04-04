@@ -1,13 +1,14 @@
 let init = {
     body:null,
     id:null,
-    data:null
+    data:null,
+    size:null
 };
 
 function reducer(state=init,action){
     switch (action.type) {
         case "ADD_MODAL":{
-           return {...state,body:action.value.body,id:Date.now(),data:action.value.data}
+           return {...state,body:action.value.body,id:Date.now(),data:action.value.data,size:action.value.size}
         }
         default:
             return state;

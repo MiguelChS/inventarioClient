@@ -7,3 +7,4 @@ export Input from './Input.jsx';
 export InputFecha from './inputFecha.jsx';
 export InputSerie from './InputSerie.jsx';
 export Modal from './modal.jsx';
+export InputHorario from './inputHorarios.jsx';

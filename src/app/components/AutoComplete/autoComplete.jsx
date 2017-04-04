@@ -17,26 +17,9 @@ export default class AutoComplete extends React.Component{
         this.hoverOnResult = false;
     }
 
-    keyDown(event){
-        switch(event.key){
-            case "ArrowUp":{
-                break;
-            }
-            case "ArrowDown":{
-
-                break;
-            }
-        }
-    }
-
     filtrarSource(event){
         let store = this.props.Store;
         let value = Trim(event.target.value);
-        if(value.length < 2) {
-            this.props.dispatch(noSelect({id:store.id,value:value}));
-            this.props.resultado(null);
-            return;
-        }
         let resultado = [];
         let regex = new RegExp(`${value.toUpperCase()}.*`);
         for(let i = 0;i < this.props.dataSource.length ;i++){
@@ -51,7 +34,6 @@ export default class AutoComplete extends React.Component{
                 )
             }
         }
-
         if(resultado.length == 0) {
             this.props.dispatch(noSelect({id:store.id,value:value}));
             this.props.resultado(null);
@@ -76,6 +58,26 @@ export default class AutoComplete extends React.Component{
         }
         this.props.resultado(this.props.dataSource[store.indiceSourceSelect]);
         this.props.dispatch(select({id:store.id,indice:store.indiceSourceSelect,text:store.text,objResult:this.props.dataSource[store.indiceSourceSelect]}));
+    }
+
+    onFocus(){
+        let store = this.props.Store;
+        let resultado = [];
+        let value = store.text;
+        let regex = new RegExp(`${value.toUpperCase()}.*`);
+        for(let i = 0;i < this.props.dataSource.length ;i++) {
+            if(regex.test(this.props.dataSource[i].label.toUpperCase())){
+                resultado.push(
+                    <ItemResult
+                        key={i}
+                        focus={false}
+                        select={this.selectResult.bind(this)}
+                        value={{index:i,label:this.props.dataSource[i].label}}
+                    />
+                )
+            }
+        }
+        this.props.dispatch(filter({id:store.id,value:resultado,text:store.text}));
     }
 
     render() {
@@ -119,7 +121,7 @@ export default class AutoComplete extends React.Component{
                        onBlur={this.offFocus.bind(this)}
                        value={store.text}
                        className={classRequire}
-                       onKeyDown={this.keyDown.bind(this)}
+                       onFocus={this.onFocus.bind(this)}
                 />
                 <div className="AutoCompleteResult" style={styleResul}
                      onMouseOver={()=>{ this.hoverOnResult = true;}}
@@ -130,4 +132,3 @@ export default class AutoComplete extends React.Component{
         )
     }
 }
-///

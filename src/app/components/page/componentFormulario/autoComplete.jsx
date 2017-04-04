@@ -11,10 +11,10 @@ export default class AutoCompleteForm extends React.Component{
     render(){
         return(
             <FormGroup controlId={this.props.id}>
-                <Col componentClass={ControlLabel} xs={12} sm={2}>
+                <Col componentClass={ControlLabel} xs={12} sm={(this.props.col ? this.props.col.label : 2 )}>
                     {this.props.label}
                 </Col>
-                <Col xs={12} sm={10}>
+                <Col xs={12} sm={(this.props.col ? this.props.col.input : 10 )}>
                     <AutoComplete ref="AutoComplete"
                                   dataSource={this.props.dataSource}
                                   default={this.props.default}

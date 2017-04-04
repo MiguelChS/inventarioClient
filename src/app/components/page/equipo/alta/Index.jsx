@@ -39,9 +39,28 @@ export default class Index extends React.Component{
         if(!this.disabledBtnTerm){
             let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
             let form = EA.map((key)=>{
-                return JSON.parse(localStorage.getItem(key)).form;
+                let formAux = JSON.parse(localStorage.getItem(key)).form;
+                return {
+                    "id_tipo_eq": formAux.tipoEquipo.value,
+                    "f_entrega":formAux.fEntrega,
+                    "id_estado":formAux.estado.value,
+                    "id_institucion": 0,
+                    "id_posicion":formAux.position.value,
+                    "f_retiro":formAux.fRetiro,
+                    "f_inst":formAux.fInstalacion,
+                    "f_fin_garantia":formAux.finGarantia,
+                    "f_inicio_garantia":formAux.fEntrega,
+                    "id_xfs":formAux.xfs.value,
+                    "id_so":formAux.so.value,
+                    "id_snmp":formAux.snmp.value,
+                    "id_carga":formAux.carga.value,
+                    "id_modulos":formAux.modulos.map( obj => obj.value),
+                    "id_modelo":formAux.modelo.value,
+                    "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
+                    "id_planta":formAux.planta.value
+                }
             });
-            this.props.dispatch(FinishEA(form))
+            console.log(form);
         }
     }
 

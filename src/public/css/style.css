@@ -39,7 +39,7 @@ body{
 }
 
 .hr-line-dashed{
-    border-top: 1px dashed #e7eaec;
+    border-top: 1px dashed #cccccc;
     color: #ffffff;
     background-color: #ffffff;
     height: 1px;
@@ -151,4 +151,20 @@ body{
 .titleModal {
     margin-top: 0;
     margin-bottom: -6px;
+}
+
+@media (min-width: 1300px){
+    .modal-xl {
+        width: 1250px;
+    }
+}
+
+@media (min-width: 1500px){
+    .modal-xl {
+        width: 1450px;
+    }
+}
+
+.formCompotAl > div > div {
+    min-height: 68px;
 }

@@ -29,8 +29,12 @@ export default class TablaEquipo extends React.Component{
         this.props.dispatch([
             loadAuto({id:"idSite",state:autoSite ? autoSite : {}}),
             loadAuto({id:"idPosicion",state:autoPosi ? autoPosi : {}}),
-            addModal({body:1,data:data})
+            addModal({body:1,data:data,size:null})
         ]);
+    }
+
+    desAsignar(data){
+
     }
 
     deleteForm(data){
@@ -84,7 +88,7 @@ export default class TablaEquipo extends React.Component{
                                     <ButtonTable
                                         data={obj.idform}
                                         text="Desasignar"
-                                        click={()=>{}}
+                                        click={this.desAsignar.bind(this)}
                                     />
                                 </td>
                             </tr>
