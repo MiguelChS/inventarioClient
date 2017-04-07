@@ -69618,7 +69618,7 @@
 	
 	function searchSource() {
 	    return function (dispatch) {
-	        _Request2.default.get('http://localhost:4000/api/sourceInventario').then(function (result) {
+	        _Request2.default.get('http://lnxsrv01:3012/api/sourceInventario').then(function (result) {
 	            dispatch({
 	                type: "LOAD_SOURCE",
 	                value: result.data

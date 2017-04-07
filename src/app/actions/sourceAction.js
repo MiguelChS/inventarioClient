@@ -7,7 +7,7 @@ import {ingresarModulos} from './equipoAction';
 
 export function searchSource() {
     return function(dispatch) {
-        request.get('http://localhost:4000/api/sourceInventario')
+        request.get('http://lnxsrv01:3012/api/sourceInventario')
             .then((result)=>{
                 dispatch({
                     type:"LOAD_SOURCE",
