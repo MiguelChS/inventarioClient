@@ -11,6 +11,7 @@ let inicializar ={
         modelo:null,
         modulos:null,
         carga:null,
+        equipoNcr:null,
         finGarantia:moment().format("YYYY-MM-DD"),
         snmp:null,
         so:null,
@@ -32,24 +33,7 @@ let inicializar ={
         },
         id_institucion:null
     },
-    source:{
-        carga:[],
-        estado:[],
-        garantia:[],
-        marcas:[],
-        planta:[],
-        snmp:[],
-        so:[],
-        xfs:[],
-        modelo:[],
-        Equipos:[],
-        tipoEquipo:[],
-        modulos:[],
-        site:[],
-        position:[],
-        complete: false
-    },
-    tabla:[],
+    tabla:[]
 };
 
  function reducer(state=inicializar,action){
@@ -126,67 +110,12 @@ let inicializar ={
             return {...state,formulario:{...state.formulario,Equipos:action.value}}
         }
 
-
-
-        case "CHANGE_SELECTED_MODULES":{
-            let objModulo = {...state.source.modulos};
-            let auxModulo = [];
-            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
-                if (obj.value == action.value.value && action.value.show) {
-                    obj.selected = action.value.selected;
-                }
-                if(obj.selected == 1) auxModulo.push({...obj});
-                return obj;
-            });
-            auxModulo = auxModulo.length ? auxModulo : null;
-            return {...state,source:{...state.source,modulos:objModulo},formulario:{...state.formulario,modulos:auxModulo}}
-        }
-
-        case "CHANGE_SHOW_MODULES":{
-            let objModulo = {...state.source.modulos};
-            //mostramos todos
-            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
-                if(action.value.selected == obj.selected){
-                    obj.show = 1;
-                }
-                return obj;
-            });
-            //escondemos a los que nesecitamos
-            let indices = action.value.indice;
-            for(let i = 0; i < indices.length;i++){
-                objModulo[action.value.idTipo][indices[i]].show = 0;
-            }
-            return {...state,source:{...state.source,modulos:objModulo}}
+        case "INGRESO_EQUIPO_NCR_EQUIPO":{
+            return {...state,formulario:{...state.formulario,equipoNcr:action.value}}
         }
 
         case "INGRESAR_MODULOS":{
-            return {...state,formulario:{...state.formulario,modulos:null}}
-        }
-
-        case "CHANGE_MODULE_DEFAULT_ALL":{
-            let objModulo = {...state.source.modulos};
-            for(let i in objModulo){
-                objModulo[i] = objModulo[i].map((obj)=>{
-                    obj.selected = 0;
-                    obj.show = 1;
-                    return obj;
-                })
-            }
-            return {...state,source:{...state.source,modulos:objModulo}}
-        }
-
-        case "CHANGE_MODULE_SELECTED_ALL":{
-            let objModulo = {...state.source.modulos};
-            let auxModulo = [];
-            objModulo[action.value.idTipo] = objModulo[action.value.idTipo].map((obj)=> {
-                if(obj.show){
-                    obj.selected = action.value.selected;
-                }
-                if(obj.selected == 1) auxModulo.push({...obj});
-                return obj;
-            });
-            auxModulo = auxModulo.length ? auxModulo : null;
-            return {...state,source:{...state.source,modulos:objModulo},formulario:{...state.formulario,modulos:auxModulo}}
+            return {...state,formulario:{...state.formulario,modulos:action.value}}
         }
 
 
@@ -233,20 +162,9 @@ let inicializar ={
         }
 
         case "CARGAR_FORMULARIO": {
-            let form = action.value;
-            //modificamos el estado del source modulos
-            let objModulo = {...state.source.modulos};
-            for(let i=0;i < form.modulos.length;i++){
-                let obj_mod = form.modulos[i];
-                objModulo[form.Equipos.value] = objModulo[form.Equipos.value].map((obj)=> {
-                    if(obj_mod.value == obj.value){
-                        obj.selected = 1;
-                    }
-                    return obj;
-                });
-            }
-            return {...state,formulario:{...form},source:{...state.source,modulos:objModulo}}
+            return {...state,formulario:{...action.value}};
         }
+
 
 
         case "ASSIGN_AUTO":{
@@ -269,10 +187,10 @@ let inicializar ={
             form.position = positionState.resultSelect;
             form.site = siteState.resultSelect;
             localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:[...aux]}));
-            let sourcePosicion = {...state.source.position};
-            sourcePosicion[siteState.resultSelect.value][positionState.indiceSourceSelect].flag = 0;
-            return {...state,tabla:[...tabla],source:{...state.source,position:sourcePosicion}}
+            return {...state,tabla:[...tabla]}
         }
+
+
 
         case "DELETE_FORM":{
             let tabla = [...state.tabla];

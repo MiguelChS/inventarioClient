@@ -1,20 +1,22 @@
 import React from 'react';
+import axios from 'axios';
 import { Row,Col,Button } from 'react-bootstrap';
 import Formulario from './Formulario.jsx';
 import TableEquipo from './TableEquipo.jsx';
 import {connect} from  'react-redux';
-import {BuscarSource,LoadTablaEA,FinishEA} from '../../../../actions/equipoAction.js';
+import {LoadTablaEA,FinishEA} from '../../../../actions/equipoAction.js';
+import { searchSource } from '../../../../actions/sourceAction';
 
 @connect((store)=>{
     return {
-        source: store.equipo.source,
+        source: store.source,
         tabla: store.equipo.tabla
     }
 })
 export default class Index extends React.Component{
     componentDidMount(){
         if(!this.props.source.complete){
-            this.props.dispatch(BuscarSource());
+            this.props.dispatch(searchSource());
         }
         let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
         if(EA.length > 0){
@@ -42,6 +44,7 @@ export default class Index extends React.Component{
                 let formAux = JSON.parse(localStorage.getItem(key)).form;
                 return {
                     "id_tipo_eq": formAux.tipoEquipo.value,
+                    "id_tipo_equipo":formAux.Equipos.value,
                     "f_entrega":formAux.fEntrega,
                     "id_estado":formAux.estado.value,
                     "id_institucion": 0,
@@ -57,9 +60,18 @@ export default class Index extends React.Component{
                     "id_modulos":formAux.modulos.map( obj => obj.value),
                     "id_modelo":formAux.modelo.value,
                     "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
-                    "id_planta":formAux.planta.value
+                    "id_planta":formAux.planta.value,
+                    "id_user":0,
+                    "id_equipo_ncr":formAux.equipoNcr
                 }
             });
+            axios.post("http://153.72.46.242:3000/equipo",form[0])
+                .then((resul)=>{
+                    console.log(resul);
+                })
+                .catch((err)=>{
+                   console.log(err);
+                });
             console.log(form);
         }
     }

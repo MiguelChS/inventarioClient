@@ -1,7 +1,8 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import {connect} from  'react-redux';
-import { cargarFormulario,changeDefaultModule,deleteForm } from '../../../../actions/equipoAction.js';
+import { cargarFormulario,deleteForm } from '../../../../actions/equipoAction.js';
+import { changeDefaultModule } from '../../../../actions/sourceAction';
 import { loadAuto } from '../../../../actions/autoCompleteAction';
 import ButtonTable from './ButtonTable.jsx';
 import { addModal } from '../../../../actions/modalAction';
@@ -11,14 +12,14 @@ import { addModal } from '../../../../actions/modalAction';
     return {
         tabla: store.equipo.tabla,
         AutoComplete: store.equipo.autoComplete,
-        source: store.equipo.source
+        source: store.source
     }
 })
 export default class TablaEquipo extends React.Component{
 
     modificar(data){
         this.props.dispatch(changeDefaultModule());
-        this.props.dispatch(cargarFormulario(data))
+        this.props.dispatch(cargarFormulario(data,this.props.source))
     }
 
     asignar(data){

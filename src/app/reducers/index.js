@@ -9,6 +9,7 @@ import modal from './ModalReducer';
 import autoComp from './AutoCompleteReducer';
 import formPosition from './ReducerFormularioPosition';
 import dateGrafic from './dateGraficReducer';
+import source from './SourceReducer';
 
 export default combineReducers({
     equipo: equipo,
@@ -16,5 +17,6 @@ export default combineReducers({
     modal:modal,
     AutoComplete:autoComp,
     formPosition:formPosition,
-    dateGrafic:dateGrafic
+    dateGrafic:dateGrafic,
+    source:source
 })

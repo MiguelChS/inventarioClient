@@ -4,7 +4,6 @@ import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
 import Formulario from '../posicion/alta/Formulario.jsx';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
 
-
 export default class ModalForm extends React.Component{
 
     componenteResult(){
@@ -12,15 +11,15 @@ export default class ModalForm extends React.Component{
         switch (store.body){
             case 1:{
                 return <AssignPosition
-                    store={this.props.storeAll}
-                    dispatch={this.props.dispatch}
                     idModal={store.id}
                     data={store.data}
                 />
             }
+
             case 2:{
                 return <Formulario/>
             }
+
             case 3:{
                 return <DateGrafic
                         id={store.data.id}
@@ -28,6 +27,7 @@ export default class ModalForm extends React.Component{
                         idModal={store.id}
                         />
             }
+
             default:
                 return "";
         }

@@ -3,26 +3,12 @@
  */
 import request from '../Request/Request';
 import {loadAuto} from './autoCompleteAction';
+import {loadModule} from  './sourceAction';
 
 export function altaNroSerie(valor) {
     return {
         type:"ALTA_SERIE_EQUIPO",
         value: valor
-    }
-}
-
-export function BuscarSource() {
-    return function(dispatch) {
-        request.get('http://localhost:4000/api/sourceIvenEquipo')
-            .then((result)=>{
-                dispatch({
-                    type:"CARGAR_SOURCE_EQUIPO",
-                    value: result.data
-                })
-            })
-            .catch((err)=>{
-                console.log(err);
-            });
     }
 }
 
@@ -37,7 +23,6 @@ export function FinishEA(data) {
             });
     }
 }
-
 
 export function cargarPlanta(valor) {
     return {
@@ -66,24 +51,28 @@ export function cargarSNMP(valor) {
         value: valor
     }
 }
+
 export function cargarSO(valor) {
     return {
         type:"INGRESAR_SO_EQUIPO",
         value: valor
     }
 }
+
 export function cargarXFS(valor) {
     return {
         type:"INGRESAR_XFS_EQUIPO",
         value: valor
     }
 }
+
 export function cargarCarga(valor) {
     return {
         type:"INGRESAR_CARGA_EQUIPO",
         value: valor
     }
 }
+
 export function cargarEstado(valor) {
     return {
         type:"INGRESAR_ESTADO_EQUIPO",
@@ -98,14 +87,6 @@ export function cargarFRetiro(valor) {
     }
 }
 
-
-export function cargarGarantia(valor) {
-    return {
-        type:"INGRESAR_GARANTIA_EQUIPO",
-        value: valor
-    }
-}
-
 export function cargarFechaGarantia(valor) {
     return {
         type:"INGRESAR_FECHA_GARANTIA_EQUIPO",
@@ -113,14 +94,12 @@ export function cargarFechaGarantia(valor) {
     }
 }
 
-
 export function cargarFechaInstalacion(valor) {
     return {
         type:"INGRESAR_FECHA_INSTALACION_EQUIPO",
         value: valor
     }
 }
-
 
 export function cargarFechaEntrega(valor) {
     return {
@@ -136,28 +115,9 @@ export function cargarTipoEquipo(valor) {
     }
 }
 
-export function changeSelectModule(valor) {
+export function cargarEquipoNcr(valor) {
     return {
-        type:"CHANGE_SELECTED_MODULES",
-        value: valor
-    }
-}
-
-export function changeDefaultModule() {
-    return {
-        type:"CHANGE_MODULE_DEFAULT_ALL"
-    }
-}
-
-export function changeSelectModuleAll(valor) {
-    return {
-        type:"CHANGE_MODULE_SELECTED_ALL",
-        value: valor
-    }
-}
-export function changeShowModule(valor) {
-    return {
-        type:"CHANGE_SHOW_MODULES",
+        type:"INGRESO_EQUIPO_NCR_EQUIPO",
         value: valor
     }
 }
@@ -169,11 +129,24 @@ export function validarFormulario(valor) {
     }
 }
 
-export function cargarFormulario(value) {
+export function cargarFormulario(value,store) {
     let form = JSON.parse(localStorage.getItem(value));
     let statePlanta = form.AutoComplete.find(obj => obj.id == "idPlanta");
     let stateModelo = form.AutoComplete.find(obj => obj.id == "idModelo");
+    let auxForm = form.form;
+    //modificamos el estado del source modulos
+    let objModulo = {...store.modulos};
+    for(let i=0;i < auxForm.modulos.length;i++){
+        let obj_mod = auxForm.modulos[i];
+        objModulo[auxForm.Equipos.value] = objModulo[auxForm.Equipos.value].map((obj)=> {
+            if(obj_mod.value == obj.value){
+                obj.selected = 1;
+            }
+            return obj;
+        });
+    }
     return [
+        loadModule(objModulo),
         {
         type:"CARGAR_FORMULARIO",
         value:form.form
@@ -190,11 +163,14 @@ export function cargarEquipo(value) {
     }
 }
 
-export function limpiarModulos() {
+export function ingresarModulos(valor) {
     return {
-        type:"INGRESAR_MODULOS"
+        type:"INGRESAR_MODULOS",
+        value: valor
     }
 }
+
+
 
 export function assignPosition(value) {
     return {
@@ -202,6 +178,8 @@ export function assignPosition(value) {
         value:value
     }
 }
+
+
 
 export function deleteForm(value) {
     return {

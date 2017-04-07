@@ -1,9 +1,17 @@
 import React from 'react';
+import { connect } from  'react-redux';
 import { Row,Col,Form } from 'react-bootstrap';
 import { AutoComplete } from '../../componentFormulario/index.js'
 import { noSelect } from '../../../../actions/autoCompleteAction.js'
 import { hiddenModal,addModal } from '../../../../actions/modalAction.js'
 import { assignPosition } from '../../../../actions/equipoAction.js';
+
+@connect((store)=>{
+    return{
+        source:store.source,
+        AutoComplete: store.AutoComplete
+    }
+})
 
 export default class AsignarPosicion extends React.Component{
 
@@ -27,12 +35,12 @@ export default class AsignarPosicion extends React.Component{
 
     newPosition(){
         this.props.dispatch(addModal({body:2,data:null,size:"xl"}))
-    }
+}
 
     render(){
-        let source = this.props.store.equipo.source;
-        this.AutoSite = this.props.store.AutoComplete.find( obj => obj.id == "idSite");
-        this.AutoPosition = this.props.store.AutoComplete.find( obj => obj.id == "idPosicion");
+        let source = this.props.source;
+        this.AutoSite = this.props.AutoComplete.find( obj => obj.id == "idSite");
+        this.AutoPosition = this.props.AutoComplete.find( obj => obj.id == "idPosicion");
         let idSite = this.AutoSite.indiceSourceSelect != null ? source.site[this.AutoSite.indiceSourceSelect]["value"] : null;
 
         this.disabledBtnPos = true;

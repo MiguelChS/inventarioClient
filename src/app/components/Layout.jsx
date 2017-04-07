@@ -3,12 +3,13 @@ import Nav from './nav/nav.jsx'
 import {connect} from  'react-redux';
 import Modal from './page/componentFormulario/modal.jsx';
 import {addAuto} from '../actions/autoCompleteAction';
-import {addFormPos} from '../actions/formPositionAction';
+import { searchSource } from '../actions/sourceAction';
 
 @connect((store)=>{
     return {
         modal:store.modal,
-        store:store
+        store:store,
+        source:store.source
     }
 })
 export default class Layout extends React.Component{
@@ -18,8 +19,10 @@ export default class Layout extends React.Component{
             addAuto({id:"idPlanta"}),
             addAuto({id:"idModelo"}),
             addAuto({id:"idSite"}),
-            addAuto({id:"idPosicion"})
+            addAuto({id:"idPosicion"}),
+            searchSource()
         ]);
+
     }
 
     render(){

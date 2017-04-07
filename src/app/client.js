@@ -10,7 +10,6 @@ import { Router,browserHistory } from 'react-router';
 import store from './store';
 import router from './router.jsx';
 
-
 const app = document.getElementById('app');
 
 render(
