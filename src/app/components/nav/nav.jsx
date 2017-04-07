@@ -10,7 +10,7 @@ export default class Navegador extends React.Component{
             <Navbar style={{borderRadius:"0px"}} inverse collapseOnSelect >
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <Link to="/"> Inventario </Link>
+                        <Link to="/inventario"> Inventario </Link>
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>

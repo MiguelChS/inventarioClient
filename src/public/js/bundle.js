@@ -71579,7 +71579,7 @@
 	                        null,
 	                        _react2.default.createElement(
 	                            _reactRouter.Link,
-	                            { to: '/' },
+	                            { to: '/inventario' },
 	                            ' Inventario '
 	                        )
 	                    ),
