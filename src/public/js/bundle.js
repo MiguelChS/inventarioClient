@@ -46411,7 +46411,7 @@
 	
 	exports.default = _react2.default.createElement(
 	        _reactRouter.Route,
-	        { path: '/inventario/', component: _Layout2.default },
+	        { path: '/inventario', component: _Layout2.default },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _index.Inicio }),
 	        _react2.default.createElement(_reactRouter.Route, { path: 'equipo', component: _index.AltaEquipo }),
 	        _react2.default.createElement(_reactRouter.Route, { path: 'site', component: _index.AltaSite }),

@@ -5,7 +5,7 @@ import {AltaSite,Inicio,AltaEquipo,AltaPosicion,ModificacionEquipo} from './comp
 import Layout from './components/Layout.jsx';
 
 export default (
-    <Route path="/inventario/" component={Layout}>
+    <Route path="/inventario" component={Layout}>
             <IndexRoute component={Inicio} />
             <Route path="equipo" component={AltaEquipo} />
             <Route path="site" component={AltaSite} />
