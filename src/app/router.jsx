@@ -4,12 +4,12 @@ import {AltaSite,Inicio,AltaEquipo,AltaPosicion,ModificacionEquipo} from './comp
 
 import Layout from './components/Layout.jsx';
 
-module.exports = (
+export default (
     <Route path="/" component={Layout}>
-        <IndexRoute component={Inicio} />
-        <Route path="equipo" component={AltaEquipo} />
-        <Route path="site" component={AltaSite} />
-        <Route path="posicion" component={AltaPosicion} />
-        <Route path="modEquipo" component={ModificacionEquipo} />
+            <IndexRoute component={Inicio} />
+            <Route path="equipo" component={AltaEquipo} />
+            <Route path="site" component={AltaSite} />
+            <Route path="posicion" component={AltaPosicion} />
+            <Route path="modEquipo" component={ModificacionEquipo} />
     </Route>
 );
