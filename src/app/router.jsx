@@ -7,9 +7,9 @@ import Layout from './components/Layout.jsx';
 export default (
     <Route path="/inventario" component={Layout}>
             <IndexRoute component={Inicio} />
-            <Route path="equipo" component={AltaEquipo} />
-            <Route path="site" component={AltaSite} />
-            <Route path="posicion" component={AltaPosicion} />
-            <Route path="modEquipo" component={ModificacionEquipo} />
+            <Route path="/equipo" component={AltaEquipo} />
+            <Route path="/site" component={AltaSite} />
+            <Route path="/posicion" component={AltaPosicion} />
+            <Route path="/modEquipo" component={ModificacionEquipo} />
     </Route>
 );

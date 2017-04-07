@@ -46413,10 +46413,10 @@
 	        _reactRouter.Route,
 	        { path: '/inventario', component: _Layout2.default },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _index.Inicio }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'equipo', component: _index.AltaEquipo }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'site', component: _index.AltaSite }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'posicion', component: _index.AltaPosicion }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'modEquipo', component: _index.ModificacionEquipo })
+	        _react2.default.createElement(_reactRouter.Route, { path: '/equipo', component: _index.AltaEquipo }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/site', component: _index.AltaSite }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/posicion', component: _index.AltaPosicion }),
+	        _react2.default.createElement(_reactRouter.Route, { path: '/modEquipo', component: _index.ModificacionEquipo })
 	);
 
 /***/ },
