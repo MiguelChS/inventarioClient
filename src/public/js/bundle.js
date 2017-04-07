@@ -45174,19 +45174,19 @@
 	 * Created by mc185249 on 3/21/2017.
 	 */
 	var init = {
-	    carga: null,
-	    estado: null,
-	    marcas: null,
-	    planta: null,
-	    snmp: null,
-	    so: null,
-	    xfs: null,
-	    modelo: null,
-	    Equipos: null,
-	    tipoEquipo: null,
-	    modulos: null,
-	    site: null,
-	    position: null,
+	    carga: [],
+	    estado: [],
+	    marcas: [],
+	    planta: [],
+	    snmp: [],
+	    so: [],
+	    xfs: [],
+	    modelo: [],
+	    Equipos: [],
+	    tipoEquipo: [],
+	    modulos: [],
+	    site: [],
+	    position: [],
 	    complete: false
 	};
 	
@@ -67565,14 +67565,15 @@
 	            var _this2 = this;
 	
 	            this.disabledBtn();
-	            var defaultSelectMarca = this.props.Formulario.marca ? this.props.Formulario.marca["value"] : null;
-	            var defaultSelectSNMP = this.props.Formulario.snmp ? this.props.Formulario.snmp["value"] : null;
-	            var defaultSelectSO = this.props.Formulario.so ? this.props.Formulario.so["value"] : null;
-	            var defaultSelectXFS = this.props.Formulario.xfs ? this.props.Formulario.xfs["value"] : null;
-	            var defaultCarga = this.props.Formulario.carga ? this.props.Formulario.carga["value"] : null;
-	            var defaultEstado = this.props.Formulario.estado ? this.props.Formulario.estado["value"] : null;
-	            var defaultTipoEquipo = this.props.Formulario.tipoEquipo ? this.props.Formulario.tipoEquipo["value"] : null;
-	            var defaultEquipo = this.props.Formulario.Equipos ? this.props.Formulario.Equipos["value"] : null;
+	            var form = this.props.Formulario;
+	            var defaultSelectMarca = form.marca ? form.marca["value"] : null;
+	            var defaultSelectSNMP = form.snmp ? form.snmp["value"] : null;
+	            var defaultSelectSO = form.so ? form.so["value"] : null;
+	            var defaultSelectXFS = form.xfs ? form.xfs["value"] : null;
+	            var defaultCarga = form.carga ? form.carga["value"] : null;
+	            var defaultEstado = form.estado ? form.estado["value"] : null;
+	            var defaultTipoEquipo = form.tipoEquipo ? form.tipoEquipo["value"] : null;
+	            var defaultEquipo = form.Equipos ? form.Equipos["value"] : null;
 	            return _react2.default.createElement(
 	                _reactBootstrap.Form,
 	                { horizontal: true },

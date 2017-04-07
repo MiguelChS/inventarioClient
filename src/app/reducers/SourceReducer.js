@@ -2,19 +2,19 @@
  * Created by mc185249 on 3/21/2017.
  */
 let init = {
-    carga:null,
-    estado:null,
-    marcas:null,
-    planta:null,
-    snmp:null,
-    so:null,
-    xfs:null,
-    modelo:null,
-    Equipos:null,
-    tipoEquipo:null,
-    modulos:null,
-    site:null,
-    position:null,
+    carga:[],
+    estado:[],
+    marcas:[],
+    planta:[],
+    snmp:[],
+    so:[],
+    xfs:[],
+    modelo:[],
+    Equipos:[],
+    tipoEquipo:[],
+    modulos:[],
+    site:[],
+    position:[],
     complete: false
 };
 

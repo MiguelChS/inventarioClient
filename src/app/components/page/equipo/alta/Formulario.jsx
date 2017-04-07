@@ -57,14 +57,15 @@ export default class Formulario extends React.Component{
 
     render(){
         this.disabledBtn();
-        let defaultSelectMarca = this.props.Formulario.marca ? this.props.Formulario.marca["value"] : null;
-        let defaultSelectSNMP = this.props.Formulario.snmp ? this.props.Formulario.snmp["value"] : null;
-        let defaultSelectSO = this.props.Formulario.so ? this.props.Formulario.so["value"] : null;
-        let defaultSelectXFS = this.props.Formulario.xfs ? this.props.Formulario.xfs["value"] : null;
-        let defaultCarga = this.props.Formulario.carga ? this.props.Formulario.carga["value"] : null;
-        let defaultEstado = this.props.Formulario.estado ? this.props.Formulario.estado["value"] : null;
-        let defaultTipoEquipo = this.props.Formulario.tipoEquipo ? this.props.Formulario.tipoEquipo["value"] : null;
-        let defaultEquipo = this.props.Formulario.Equipos ? this.props.Formulario.Equipos["value"] : null;
+        let form = this.props.Formulario;
+        let defaultSelectMarca = form.marca ? form.marca["value"] : null;
+        let defaultSelectSNMP = form.snmp ? form.snmp["value"] : null;
+        let defaultSelectSO = form.so ? form.so["value"] : null;
+        let defaultSelectXFS = form.xfs ? form.xfs["value"] : null;
+        let defaultCarga = form.carga ? form.carga["value"] : null;
+        let defaultEstado = form.estado ? form.estado["value"] : null;
+        let defaultTipoEquipo = form.tipoEquipo ? form.tipoEquipo["value"] : null;
+        let defaultEquipo = form.Equipos ? form.Equipos["value"] : null;
         return(
             <Form horizontal>
                 <Row>
