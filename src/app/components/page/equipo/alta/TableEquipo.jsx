@@ -57,7 +57,7 @@ export default class TablaEquipo extends React.Component{
                 </thead>
                 <tbody>
                     {this.props.tabla.map((obj,indice)=>{
-                        let classOK = obj.posicion ? "glyphicon glyphicon-ok" : "glyphicon glyphicon-remove" ;
+                        let classOK = obj.posicion != 'SIN DATO' ? "glyphicon glyphicon-ok" : "glyphicon glyphicon-remove" ;
                         return(
                             <tr key={indice}>
                                 <td>{indice + 1}</td>

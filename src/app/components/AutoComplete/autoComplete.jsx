@@ -1,8 +1,14 @@
 import React from 'react';
 import ItemResult from './itemResult.jsx';
 import Trim from 'trim';
-import { noSelect,filter,select,hidden } from '../../actions/autoCompleteAction.js'
+import { noSelect,filter,select,addAuto } from '../../actions/autoCompleteAction.js'
+import { connect } from  'react-redux';
 
+@connect((store)=>{
+    return {
+        Store: store.AutoComplete
+    }
+})
 export default class AutoComplete extends React.Component{
     constructor(props){
         super(props);
@@ -11,14 +17,14 @@ export default class AutoComplete extends React.Component{
 
     selectResult(indice){
         let value = this.props.dataSource[indice].label;
-        let store = this.props.Store;
+        let store = this.Store;
         this.props.dispatch(select({id:store.id,indice:indice,text:value,objResult:this.props.dataSource[indice]}));
         this.props.resultado(this.props.dataSource[indice]);
         this.hoverOnResult = false;
     }
 
     filtrarSource(event){
-        let store = this.props.Store;
+        let store = this.Store;
         let value = Trim(event.target.value);
         let resultado = [];
         let regex = new RegExp(`${value.toUpperCase()}.*`);
@@ -45,7 +51,7 @@ export default class AutoComplete extends React.Component{
 
     offFocus(){
         if(this.hoverOnResult) return;
-        let store = this.props.Store;
+        let store = this.Store;
         let value = Trim(store.text).toUpperCase();
         if(store.indiceSourceSelect == null){
             this.props.dispatch(noSelect({id:store.id,value:""}));
@@ -61,7 +67,7 @@ export default class AutoComplete extends React.Component{
     }
 
     onFocus(){
-        let store = this.props.Store;
+        let store = this.Store;
         let resultado = [];
         let value = store.text;
         let regex = new RegExp(`${value.toUpperCase()}.*`);
@@ -80,8 +86,16 @@ export default class AutoComplete extends React.Component{
         this.props.dispatch(filter({id:store.id,value:resultado,text:store.text}));
     }
 
+    componentDidMount(){
+        if(!this.Store){
+            this.props.dispatch(addAuto({id:this.props.id}))
+        }
+    }
+
     render() {
-        let store = this.props.Store;
+        this.Store = this.props.Store.find(obj => obj.id == this.props.id);
+        if(!this.Store) return null;
+        let store = this.Store;
         const styleDiv = {
             position:"relative",
         };
@@ -112,7 +126,6 @@ export default class AutoComplete extends React.Component{
         if(this.props.required && store.indiceSourceSelect == null){
             classRequire = "form-control require-inv";
         }
-
         return (
             <div style={styleDiv}>
                 <span style={styleConta}>{this.props.dataSource.length}</span>

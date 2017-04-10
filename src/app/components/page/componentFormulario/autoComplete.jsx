@@ -17,11 +17,9 @@ export default class AutoCompleteForm extends React.Component{
                 <Col xs={12} sm={(this.props.col ? this.props.col.input : 10 )}>
                     <AutoComplete ref="AutoComplete"
                                   dataSource={this.props.dataSource}
-                                  default={this.props.default}
                                   resultado={this.resultado.bind(this)}
                                   required={this.props.required}
-                                  Store={this.props.Store}
-                                  dispatch={this.props.dispatch}
+                                  id={this.props.id}
                     />
                 </Col>
             </FormGroup>

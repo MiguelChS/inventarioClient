@@ -6,20 +6,23 @@ import { addAuto } from '../../../../actions/autoCompleteAction';
 
 @connect((store)=>{
     return {
-        form: store.formPosition.find(obj => obj.id == "formPosModalEA"),
+        form: store.formPosition.find(obj => obj.id == "FormPosicionAlta"),
         ncrAuto: store.AutoComplete.find(obj => obj.id == "autoNcr"),
         SiteAuto: store.AutoComplete.find(obj => obj.id == "autoSite"),
+        source:store.source
     }
 })
 
 export default class Formulario extends React.Component{
 
     componentDidMount(){
-        this.props.dispatch([
-            addAuto({id:"autoNcr"}),
-            addAuto({id:"autoSite"}),
-            addFormPos({id:"formPosModalEA"})
-        ])
+        if (!this.props.form && !this.props.ncrAuto){
+            this.props.dispatch([
+                addAuto({id:"autoNcr"}),
+                addAuto({id:"autoSite"}),
+                addFormPos({id:"FormPosicionAlta"})
+            ])
+        }
     }
 
     render(){
@@ -27,8 +30,6 @@ export default class Formulario extends React.Component{
         let store = this.props.form;
         return (
             <form className="form-horizontal">
-                <h4 className="titleModal">Nueva Posicion</h4>
-                <div className="hr-line-dashed"/>
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <Input
@@ -55,20 +56,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Site"
                                       id="idSite"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
-                                      Store={this.props.SiteAuto}
-                                      required={true}
-                                      resultadoAutoComplete={(value)=>{
-                                          console.log(value);
-                                      }}
-                                      dispatch={this.props.dispatch}
-                        />
-                    </div>
-                    <div className="col-md-4 col-sm-6 col-xs-12">
-                        <AutoComplete label="Site Client"
-                                      id="idSiteClient"
-                                      col={{label:3,input:9}}
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.site}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -80,7 +68,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Gaveta"
                                       id="idGaveta"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.gavetas}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -92,7 +80,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Status"
                                       id="idTableStatus"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.tablaStatus}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -104,7 +92,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Script"
                                       id="idScript"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.callingScript}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -117,7 +105,7 @@ export default class Formulario extends React.Component{
                         <AutoComplete label="Command"
                                       id="idCommand"
                                       col={{label:3,input:9}}
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.commandScript}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -130,7 +118,7 @@ export default class Formulario extends React.Component{
                         <AutoComplete label="Community"
                                       id="idCommunity"
                                       col={{label:3,input:9}}
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.community}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -153,7 +141,7 @@ export default class Formulario extends React.Component{
                         <AutoComplete label="comunicacion"
                                       id="idComunicacion"
                                       col={{label:3,input:9}}
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.comunicacion}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -165,7 +153,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="SLM"
                                       id="idSLM"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.slm}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -177,7 +165,7 @@ export default class Formulario extends React.Component{
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="FLM"
                                       id="idFLM"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.flm}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -190,7 +178,7 @@ export default class Formulario extends React.Component{
                         <AutoComplete label="Prestacion"
                                       id="idPrestacion"
                                       col={{label:3,input:9}}
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
+                                      dataSource={this.props.source.prestacion}
                                       Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
@@ -204,7 +192,7 @@ export default class Formulario extends React.Component{
                             label="Ubicacion"
                             id="idUbicacion"
                             col={{label:3,input:9}}
-                            dataSource={[]}
+                            dataSource={this.props.source.ubicacionSite}
                             default={{}}
                             required={true}
                             returnSelect={(value)=>{

@@ -15,8 +15,7 @@ import { changeSelectModule,changeDefaultModule,changeSelectModuleAll,changeShow
     return {
         Formulario: store.equipo.formulario,
         Source: store.source,
-        AutoPlanta: store.AutoComplete.find( obj => obj.id == "idPlanta"),
-        AutoModelo: store.AutoComplete.find( obj => obj.id == "idModelo")
+        AutoComplete:store.AutoComplete
     }
 })
 
@@ -27,20 +26,22 @@ export default class Formulario extends React.Component{
     }
 
     validar(){
+        let storePlanta = this.props.AutoComplete.find( obj => obj.id == "idPlanta");
+        let storeModelo = this.props.AutoComplete.find( obj => obj.id == "idModelo");
         let form = this.props.Formulario;
         if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr){
-            this.props.dispatch(validarFormulario([{...this.props.AutoPlanta},{...this.props.AutoModelo}]));
+            this.props.dispatch(validarFormulario([{...storePlanta},{...storeModelo}]));
             this.props.dispatch(changeDefaultModule());
-            this.props.dispatch(loadAuto({id:this.props.AutoPlanta.id,state:{}}));
-            this.props.dispatch(loadAuto({id:this.props.AutoModelo.id,state:{}}));
+            this.props.dispatch(loadAuto({id:storePlanta.id,state:{}}));
+            this.props.dispatch(loadAuto({id:storeModelo.id,state:{}}));
         }else{
             alert("esta imcompleto el formulario");
         }
     }
 
     insertMarca(value){
-        let storePlanta = this.props.AutoPlanta;
-        let storeModelo = this.props.AutoModelo;
+        let storePlanta = this.props.AutoComplete.find( obj => obj.id == "idPlanta");
+        let storeModelo = this.props.AutoComplete.find( obj => obj.id == "idModelo");
 
         this.props.dispatch(loadAuto({id:storePlanta.id,state:{}}));
         this.props.dispatch(loadAuto({id:storeModelo.id,state:{}}));
@@ -98,25 +99,21 @@ export default class Formulario extends React.Component{
                         <AutoComplete label="Planta"
                                       id="idPlanta"
                                       dataSource={this.props.Source.planta[defaultSelectMarca] ? this.props.Source.planta[defaultSelectMarca] : []}
-                                      Store={this.props.AutoPlanta}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
                                           this.props.dispatch(cargarPlanta(value))
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
                         <AutoComplete
                             label="Modelo"
                             id="idModelo"
-                            Store={this.props.AutoModelo}
                             required={true}
                             dataSource={this.props.Source.modelo[defaultSelectMarca] ? this.props.Source.modelo[defaultSelectMarca] : []}
                             resultadoAutoComplete={(value)=>{
                                 this.props.dispatch(cargarModelo(value))
                             }}
-                            dispatch={this.props.dispatch}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>

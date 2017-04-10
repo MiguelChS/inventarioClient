@@ -15,13 +15,7 @@ import { searchSource } from '../actions/sourceAction';
 export default class Layout extends React.Component{
 
     componentDidMount(){
-        this.props.dispatch([
-            addAuto({id:"idPlanta"}),
-            addAuto({id:"idModelo"}),
-            addAuto({id:"idSite"}),
-            addAuto({id:"idPosicion"}),
-            searchSource()
-        ]);
+        this.props.dispatch(searchSource());
     }
 
     render(){

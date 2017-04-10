@@ -15,6 +15,16 @@ let init = {
     modulos:[],
     site:[],
     position:[],
+    gavetas:[],
+    tablaStatus:[],
+    commandScript:[],
+    callingScript:[],
+    community:[],
+    comunicacion:[],
+    slm:[],
+    flm:[],
+    prestacion:[],
+    ubicacionSite:[],
     complete: false
 };
 

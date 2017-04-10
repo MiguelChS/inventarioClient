@@ -28,25 +28,27 @@ export default class AsignarPosicion extends React.Component{
         }
     }
 
-
     cancelar(){
         this.props.dispatch(hiddenModal(this.props.idModal))
     }
 
     newPosition(){
         this.props.dispatch(addModal({body:2,data:null,size:"xl"}))
-}
+    }
 
     render(){
         let source = this.props.source;
         this.AutoSite = this.props.AutoComplete.find( obj => obj.id == "idSite");
         this.AutoPosition = this.props.AutoComplete.find( obj => obj.id == "idPosicion");
-        let idSite = this.AutoSite.indiceSourceSelect != null ? source.site[this.AutoSite.indiceSourceSelect]["value"] : null;
-
+        let sourcePosition = [];
+        if(this.AutoSite){
+            let idSite = this.AutoSite.indiceSourceSelect != null ? source.site[this.AutoSite.indiceSourceSelect]["value"] : null;
+            sourcePosition = source.position[idSite] ? source.position[idSite] : [];
+        }
         this.disabledBtnPos = true;
         this.disabledBtnAssign = true;
-        if(this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect == null) this.disabledBtnPos = false;
-        if(this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect != null) this.disabledBtnAssign = false;
+        if(this.AutoSite && this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect == null) this.disabledBtnPos = false;
+        if(this.AutoPosition && this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect != null) this.disabledBtnAssign = false;
 
         return(
             <Form horizontal>
@@ -57,13 +59,11 @@ export default class AsignarPosicion extends React.Component{
                         <AutoComplete label="Site"
                                       id="idSite"
                                       dataSource={source.site}
-                                      Store={this.AutoSite}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
                                           if(value) return;
                                           this.props.dispatch(noSelect({id:this.AutoPosition.id,value:""}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </Col>
                 </Row>
@@ -71,12 +71,10 @@ export default class AsignarPosicion extends React.Component{
                     <Col xs={12} >
                         <AutoComplete label="Posicion"
                                       id="idPosicion"
-                                      dataSource={source.position[idSite] ? source.position[idSite] : []}
-                                      Store={this.AutoPosition}
+                                      dataSource={sourcePosition}
                                       required={true}
                                       resultadoAutoComplete={()=>{
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </Col>
                 </Row>
@@ -103,3 +101,10 @@ export default class AsignarPosicion extends React.Component{
         )
     }
 }
+
+/*
+*
+
+
+
+* */
