@@ -23,15 +23,7 @@ export default class TablaEquipo extends React.Component{
     }
 
     asignar(data){
-        //cargando los los auto complete
-        let autoComp = JSON.parse(localStorage.getItem(data)).AutoComplete;
-        let autoSite = autoComp.find(obj => obj.id == "idSite");
-        let autoPosi = autoComp.find(obj => obj.id == "idPosicion");
-        this.props.dispatch([
-            loadAuto({id:"idSite",state:autoSite ? autoSite : {}}),
-            loadAuto({id:"idPosicion",state:autoPosi ? autoPosi : {}}),
-            addModal({body:1,data:data,size:null})
-        ]);
+        this.props.dispatch(addModal({body:1,data:data,size:null}));
     }
 
     desAsignar(data){

@@ -1,14 +1,12 @@
 import React from 'react';
 import { connect } from  'react-redux';
 import { AutoComplete , Select, Input,InputHorario } from '../../componentFormulario/index.js'
-import { addFormPos,insertClient } from '../../../../actions/formPositionAction';
-import { addAuto } from '../../../../actions/autoCompleteAction';
+import { addFormPos,insertClient,insertNCR,insertIP,insertSite,insertGaveta,insertTableStatus,insertScript,insertCommand,insertCommunityString,
+insertComunicacion,insertSLM,insertFLM,insertPRESTACION,insertUbicacion} from '../../../../actions/formPositionAction';
 
 @connect((store)=>{
     return {
-        form: store.formPosition.find(obj => obj.id == "FormPosicionAlta"),
-        ncrAuto: store.AutoComplete.find(obj => obj.id == "autoNcr"),
-        SiteAuto: store.AutoComplete.find(obj => obj.id == "autoSite"),
+        fomPos:store.formPosition,
         source:store.source
     }
 })
@@ -16,89 +14,85 @@ import { addAuto } from '../../../../actions/autoCompleteAction';
 export default class Formulario extends React.Component{
 
     componentDidMount(){
-        if (!this.props.form && !this.props.ncrAuto){
-            this.props.dispatch([
-                addAuto({id:"autoNcr"}),
-                addAuto({id:"autoSite"}),
-                addFormPos({id:"FormPosicionAlta"})
-            ])
+        if(!this.store){
+            this.props.dispatch(addFormPos({id:this.props.id}))
         }
     }
 
     render(){
-        if (!this.props.form && !this.props.ncrAuto) return null;
-        let store = this.props.form;
+        this.store = this.props.fomPos.find(obj => obj.id == this.props.id);
+        if(!this.store) return null;
         return (
             <form className="form-horizontal">
                 <div className="row">
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <Input
-                            value={store.cliente ? store.cliente: ""}
+                            value={this.store.cliente ? this.store.cliente: ""}
                             label="Cliente"
                             placeHolder="name Cliente"
                             returnValue={(value)=>{
-                                this.props.dispatch(insertClient({id:store.id,text:value}));
+                                this.props.dispatch(insertClient({id:this.store.id,text:value}));
                             }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
-                        <AutoComplete label="ncr"
-                                      id="ncr_id"
-                                      dataSource={[{label:"miguel",value:45},{label:"nancy",value:25}]}
-                                      Store={this.props.ncrAuto}
-                                      required={true}
-                                      resultadoAutoComplete={(value)=>{
-                                          console.log(value);
-                                      }}
-                                      dispatch={this.props.dispatch}
+                        <Input
+                            value={this.store.ncr ? this.store.ncr: ""}
+                            label="NCR"
+                            placeHolder="NCR"
+                            returnValue={(value)=>{
+                                this.props.dispatch(insertNCR({id:this.store.id,text:value}));
+                            }}
+                        />
+                    </div>
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <Input
+                            value={this.store.ip ? this.store.ip: ""}
+                            label="IP"
+                            placeHolder="IP"
+                            returnValue={(value)=>{
+                                this.props.dispatch(insertIP({id:this.store.id,text:value}));
+                            }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Site"
                                       id="idSite"
                                       dataSource={this.props.source.site}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertSite({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Gaveta"
                                       id="idGaveta"
                                       dataSource={this.props.source.gavetas}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertGaveta({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Status"
                                       id="idTableStatus"
                                       dataSource={this.props.source.tablaStatus}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertTableStatus({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="Script"
                                       id="idScript"
                                       dataSource={this.props.source.callingScript}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertScript({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -106,12 +100,10 @@ export default class Formulario extends React.Component{
                                       id="idCommand"
                                       col={{label:3,input:9}}
                                       dataSource={this.props.source.commandScript}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertCommand({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -119,22 +111,10 @@ export default class Formulario extends React.Component{
                                       id="idCommunity"
                                       col={{label:3,input:9}}
                                       dataSource={this.props.source.community}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertCommunityString({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
-                        />
-                    </div>
-                    <div className="col-md-4 col-sm-6 col-xs-12">
-                        <Input
-                            value={store.cliente ? store.cliente: ""}
-                            label="IP"
-                            placeHolder="IP"
-                            returnValue={(value)=>{
-                                this.props.dispatch(insertClient({id:store.id,text:value}));
-                            }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -142,36 +122,30 @@ export default class Formulario extends React.Component{
                                       id="idComunicacion"
                                       col={{label:3,input:9}}
                                       dataSource={this.props.source.comunicacion}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertComunicacion({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="SLM"
                                       id="idSLM"
                                       dataSource={this.props.source.slm}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertSLM({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <AutoComplete label="FLM"
                                       id="idFLM"
                                       dataSource={this.props.source.flm}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertFLM({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -179,12 +153,10 @@ export default class Formulario extends React.Component{
                                       id="idPrestacion"
                                       col={{label:3,input:9}}
                                       dataSource={this.props.source.prestacion}
-                                      Store={this.props.SiteAuto}
                                       required={true}
                                       resultadoAutoComplete={(value)=>{
-                                          console.log(value);
+                                          this.props.dispatch(insertPRESTACION({id:this.store.id,value:value}));
                                       }}
-                                      dispatch={this.props.dispatch}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
@@ -193,33 +165,72 @@ export default class Formulario extends React.Component{
                             id="idUbicacion"
                             col={{label:3,input:9}}
                             dataSource={this.props.source.ubicacionSite}
-                            default={{}}
+                            default={this.store.ubicacion_en_site ? this.store.ubicacion_en_site["value"]:null}
                             required={true}
                             returnSelect={(value)=>{
-                                console.log(value)
+                                this.props.dispatch(insertUbicacion({id:this.store.id,value:value}));
                             }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <InputHorario
-                            label="Horarios"
+                            label="Branch Hours"
+                            col={{label:4,input:8}}
                             data={{
                                 id:"horaBranch",
                                 radioConf:[
-                                    {label:"Branch Hour",color:"red",id:1},
-                                    {label:"After Hour",color:"blue",id:2},
-                                    {label:"Other Hour",color:"green",id:3}]
+                                    {label:"Branch Hour",color:"red",id:2},
+                                    {label:"After Hour",color:"blue",id:1},
+                                    {label:"Other Hour",color:"green",id:4}
+                                ]
                             }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <InputHorario
                             label="SLA"
+                            data={{
+                                id:"horaSLA",
+                                radioConf:[
+                                    {label:"SLA",color:"red",id:7}
+                                ]
+                            }}
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
                         <InputHorario
                             label="Acceso"
+                            data={{
+                                id:"horaAcceso",
+                                radioConf:[
+                                    {label:"Acceso",color:"green",id:8}
+                                ]
+                            }}
+                        />
+                    </div>
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <InputHorario
+                            label="Hour Peak"
+                            col={{label:3,input:9}}
+                            data={{
+                                id:"horaPeak",
+                                radioConf:[
+                                    {label:"Peak Hour",color:"green",id:5},
+                                    {label:"OffPeak Hour",color:"green",id:6}
+                                ]
+                            }}
+                        />
+                    </div>
+                    <div className="col-md-4 col-sm-6 col-xs-12">
+                        <InputHorario
+                            label="Hour Operation"
+                            col={{label:4,input:8}}
+                            data={{
+                                id:"horaOperation",
+                                radioConf:[
+                                    {label:"Operation",color:"green",id:3}
+                                ]
+                            }}
                         />
                     </div>
                 </div>

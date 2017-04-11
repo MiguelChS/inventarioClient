@@ -38,6 +38,10 @@ function arrayReducer(state=[],action){
             return [...state,reducer(init,action)]
         }
 
+        case 'REMOVE_AUTO':{
+            return state.filter( store => store.id !== action.value.id);
+        }
+
         case 'NO_SELECT_AUTO':{
             return state.map((store) => {
                if(store.id != action.value.id) return store;

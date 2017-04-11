@@ -65,7 +65,7 @@ export default class Index extends React.Component{
                     "id_equipo_ncr":formAux.equipoNcr
                 }
             });
-            axios.post("http://153.72.46.242:3000/equipo",form[0])
+            axios.post("http://lnxsrv01:5000/equipo",form[0])
                 .then((resul)=>{
                     console.log(resul);
                 })

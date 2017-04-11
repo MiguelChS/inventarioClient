@@ -5,6 +5,7 @@ import { AutoComplete } from '../../componentFormulario/index.js'
 import { noSelect } from '../../../../actions/autoCompleteAction.js'
 import { hiddenModal,addModal } from '../../../../actions/modalAction.js'
 import { assignPosition } from '../../../../actions/equipoAction.js';
+import { loadAuto } from '../../../../actions/autoCompleteAction';
 
 @connect((store)=>{
     return{
@@ -36,6 +37,26 @@ export default class AsignarPosicion extends React.Component{
         this.props.dispatch(addModal({body:2,data:null,size:"xl"}))
     }
 
+    componentDidMount(){
+        //comprobamos si tiene un json preCargado
+        let autoComp = JSON.parse(localStorage.getItem(this.props.data)).AutoComplete;
+        let autoSite = autoComp.find(obj => obj.id == "idSite");
+        let autoPosi = autoComp.find(obj => obj.id == "idPosicion");
+        if(autoSite && autoPosi){
+            this.props.dispatch([
+                loadAuto({id:"idSite",state:autoSite}),
+                loadAuto({id:"idPosicion",state:autoPosi}),
+            ])
+        }else{
+            if(autoSite){
+                this.props.dispatch(loadAuto({id:"idSite",state:autoSite}))
+            }
+            if(autoPosi){
+                this.props.dispatch(loadAuto({id:"idSite",state:autoPosi}))
+            }
+        }
+    }
+
     render(){
         let source = this.props.source;
         this.AutoSite = this.props.AutoComplete.find( obj => obj.id == "idSite");
@@ -47,9 +68,10 @@ export default class AsignarPosicion extends React.Component{
         }
         this.disabledBtnPos = true;
         this.disabledBtnAssign = true;
-        if(this.AutoSite && this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect == null) this.disabledBtnPos = false;
-        if(this.AutoPosition && this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect != null) this.disabledBtnAssign = false;
-
+        if(this.AutoSite && this.AutoPosition){
+            if(this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect == null) this.disabledBtnPos = false;
+            if(this.AutoSite.indiceSourceSelect != null && this.AutoPosition.indiceSourceSelect != null) this.disabledBtnAssign = false;
+        }
         return(
             <Form horizontal>
                 <h4 className="titleModal">Asignar Posicion</h4>

@@ -9,6 +9,13 @@ export function addAuto(valor) {
     }
 }
 
+export function deleteAuto(valor) {
+    return {
+        type:"REMOVE_AUTO",
+        value: valor
+    }
+}
+
 export function noSelect(valor) {
     return {
         type:"NO_SELECT_AUTO",

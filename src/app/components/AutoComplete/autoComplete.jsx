@@ -1,7 +1,7 @@
 import React from 'react';
 import ItemResult from './itemResult.jsx';
 import Trim from 'trim';
-import { noSelect,filter,select,addAuto } from '../../actions/autoCompleteAction.js'
+import { noSelect,filter,select,addAuto,deleteAuto } from '../../actions/autoCompleteAction.js'
 import { connect } from  'react-redux';
 
 @connect((store)=>{
@@ -89,6 +89,12 @@ export default class AutoComplete extends React.Component{
     componentDidMount(){
         if(!this.Store){
             this.props.dispatch(addAuto({id:this.props.id}))
+        }
+    }
+
+    componentWillUnmount(){
+        if(this.Store){
+            this.props.dispatch(deleteAuto({id:this.props.id}))
         }
     }
 
