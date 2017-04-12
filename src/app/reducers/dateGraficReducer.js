@@ -10,6 +10,7 @@ let init = {
     matrixHora:null,
     diasText:null,
     paint:false,
+    Hour24:false,
     matrixGroup:{}
 };
 
@@ -256,6 +257,9 @@ function arrayReducer(state=[],action) {
     switch (action.type){
         case "ADD_DATEGRAFIC":{
             return [...state,reducer(init,action)]
+        }
+        case "REMOVE_DATEGRAFIC":{
+            return state.filter( store => store.id !== action.value.id);
         }
         case "ACTIVE_BTN_DATE_GRAPHIC":{
             return state.map(store =>{

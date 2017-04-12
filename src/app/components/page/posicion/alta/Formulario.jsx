@@ -182,7 +182,8 @@ export default class Formulario extends React.Component{
                                     {label:"Branch Hour",color:"red",id:2},
                                     {label:"After Hour",color:"blue",id:1},
                                     {label:"Other Hour",color:"green",id:4}
-                                ]
+                                ],
+                                hour24:true
                             }}
                         />
                     </div>
@@ -193,7 +194,8 @@ export default class Formulario extends React.Component{
                                 id:"horaSLA",
                                 radioConf:[
                                     {label:"SLA",color:"red",id:7}
-                                ]
+                                ],
+                                hour24:false
                             }}
                         />
                     </div>
@@ -204,7 +206,8 @@ export default class Formulario extends React.Component{
                                 id:"horaAcceso",
                                 radioConf:[
                                     {label:"Acceso",color:"green",id:8}
-                                ]
+                                ],
+                                hour24:false
                             }}
                         />
                     </div>
@@ -217,7 +220,8 @@ export default class Formulario extends React.Component{
                                 radioConf:[
                                     {label:"Peak Hour",color:"green",id:5},
                                     {label:"OffPeak Hour",color:"green",id:6}
-                                ]
+                                ],
+                                hour24:true
                             }}
                         />
                     </div>
@@ -229,7 +233,8 @@ export default class Formulario extends React.Component{
                                 id:"horaOperation",
                                 radioConf:[
                                     {label:"Operation",color:"green",id:3}
-                                ]
+                                ],
+                                hour24:false
                             }}
                         />
                     </div>

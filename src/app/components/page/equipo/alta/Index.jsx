@@ -1,16 +1,17 @@
 import React from 'react';
-import axios from 'axios';
+import request from '../../../../Request/Request';
 import { Row,Col,Button } from 'react-bootstrap';
 import Formulario from './Formulario.jsx';
 import TableEquipo from './TableEquipo.jsx';
 import {connect} from  'react-redux';
-import {LoadTablaEA,FinishEA} from '../../../../actions/equipoAction.js';
+import {LoadTablaEA,FinishEA,sendForm,loadStateSendForm} from '../../../../actions/equipoAction.js';
 import { searchSource } from '../../../../actions/sourceAction';
 
 @connect((store)=>{
     return {
         source: store.source,
-        tabla: store.equipo.tabla
+        tabla: store.equipo.tabla,
+        ProcessSend: store.equipo.ProcessSend
     }
 })
 export default class Index extends React.Component{
@@ -37,42 +38,64 @@ export default class Index extends React.Component{
         }
     }
 
-    finishLoading(){
-        if(!this.disabledBtnTerm){
-            let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
-            let form = EA.map((key)=>{
-                let formAux = JSON.parse(localStorage.getItem(key)).form;
-                return {
-                    "id_tipo_eq": formAux.tipoEquipo.value,
-                    "id_tipo_equipo":formAux.Equipos.value,
-                    "f_entrega":formAux.fEntrega,
-                    "id_estado":formAux.estado.value,
-                    "id_institucion": 0,
-                    "id_posicion":formAux.position.value,
-                    "f_retiro":formAux.fRetiro,
-                    "f_inst":formAux.fInstalacion,
-                    "f_fin_garantia":formAux.finGarantia,
-                    "f_inicio_garantia":formAux.fEntrega,
-                    "id_xfs":formAux.xfs.value,
-                    "id_so":formAux.so.value,
-                    "id_snmp":formAux.snmp.value,
-                    "id_carga":formAux.carga.value,
-                    "id_modulos":formAux.modulos.map( obj => obj.value),
-                    "id_modelo":formAux.modelo.value,
-                    "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
-                    "id_planta":formAux.planta.value,
-                    "id_user":0,
-                    "id_equipo_ncr":formAux.equipoNcr
-                }
-            });
-            axios.post("http://lnxsrv01:5000/equipo",form[0])
-                .then((resul)=>{
-                    console.log(resul);
+    sendFormReq(form,key){
+        return new Promise((resolve, reject)=>{
+            let aux = {
+                send:true,
+                idForm:key
+            };
+            request.post("http://lnxsrv01:5000/equipo",JSON.stringify(form))
+                .then((result)=>{
+                    resolve(aux);
                 })
                 .catch((err)=>{
-                   console.log(err);
+                    aux.send=false;
+                    aux["Error"]= err.response ? err.response.data : err.message;
+                    resolve(aux);
                 });
-            console.log(form);
+        });
+    }
+
+
+    finishLoading(){
+        if(!this.disabledBtnTerm){
+            this.props.dispatch(sendForm(true));
+            let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
+            let ArrayEnvio = [];
+            EA.map((key)=>{
+                let formAux = JSON.parse(localStorage.getItem(key)).form;
+                if(!formAux.sendForm){
+                    let form = {
+                        "id_tipo_eq": formAux.tipoEquipo.value,
+                        "id_tipo_equipo":formAux.Equipos.value,
+                        "f_entrega":formAux.fEntrega,
+                        "id_estado":formAux.estado.value,
+                        "id_institucion": 0,
+                        "id_posicion":formAux.position.value,
+                        "f_retiro":formAux.fRetiro,
+                        "f_inst":formAux.fInstalacion,
+                        "f_fin_garantia":formAux.finGarantia,
+                        "f_inicio_garantia":formAux.fEntrega,
+                        "id_xfs":formAux.xfs.value,
+                        "id_so":formAux.so.value,
+                        "id_snmp":formAux.snmp.value,
+                        "id_carga":formAux.carga.value,
+                        "modulos_separados_por_coma":formAux.modulos.map( obj => `${obj.value}`),
+                        "id_modelo":formAux.modelo.value,
+                        "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
+                        "id_planta":formAux.planta.value,
+                        "id_user":0,
+                        "id_equipo_ncr":formAux.equipoNcr
+                    };
+                    ArrayEnvio.push(this.sendFormReq(JSON.stringify(form),key))
+                }
+            });
+
+            Promise.all(ArrayEnvio)
+                .then((result)=>{
+                    this.props.dispatch(loadStateSendForm(result));
+                })
+
         }
     }
 
@@ -84,7 +107,7 @@ export default class Index extends React.Component{
             paddingBottom: "10px",
             borderBottom: "2px solid #e7eaec"
         };
-        this.disabledBtnTerm = this.props.tabla.length == 0;
+        this.disabledBtnTerm = !(!this.props.ProcessSend && this.props.tabla.length != 0);
         return(
             <Row style={style} bsClass="row wrapperWhite">
                 <Col xs={12} bsClass="litleHeader col">

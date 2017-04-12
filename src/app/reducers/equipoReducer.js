@@ -5,6 +5,7 @@ import moment from 'moment';
 
 let inicializar ={
     formulario:{
+        sendForm:false,
         idform:null,
         marca:null,
         nroSerie:null,
@@ -33,7 +34,8 @@ let inicializar ={
         },
         id_institucion:null
     },
-    tabla:[]
+    tabla:[],
+    ProcessSend:false
 };
 
  function reducer(state=inicializar,action){
@@ -41,15 +43,9 @@ let inicializar ={
         case "ALTA_SERIE_EQUIPO":{
             return {...state,formulario:{...state.formulario,nroSerie:action.value}}
         }
-
-        case "CARGAR_SOURCE_EQUIPO":{
-            return {...state,source:{...state.source,...action.value,complete:true}}
+        case "SEND_FORM":{
+            return {...state,ProcessSend:action.value}
         }
-
-        case "CARGAR_SOURCE_MODELO_EQUIPO":{
-            return {...state,source:{...state.source,modelo:action.value}}
-        }
-
         case "INGRESAR_PLANTA_EQUIPO":{
             return {...state,formulario:{...state.formulario,planta:action.value}}
         }
@@ -150,7 +146,9 @@ let inicializar ={
                         numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
                         nameSuc: form.site.label,
                         posicion: form.position.label,
-                        idform:form.idform
+                        idform:form.idform,
+                        sendForm:form.sendForm,
+                        err:null
                     });
                 }
                 localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:AutoComp}));
@@ -216,12 +214,34 @@ let inicializar ={
                     numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
                     nameSuc: form.site ? form.site.label : null,
                     posicion: form.position ? form.position.label : null,
-                    idform:form.idform
+                    idform:form.idform,
+                    sendForm:form.sendForm,
+                    err:null
                 });
             }
             return {...state,tabla:[...tabla]};
         }
 
+        case "LOAD_STATE_SEND_FORM":{
+            let tabla = [...state.tabla];
+            tabla = tabla.map(obj=>{
+                //cargar en tabla
+                let resultSend = action.value.find(res => res.idForm == obj.idform);
+                if(resultSend){
+                    obj.sendForm = resultSend.send;
+                    if(resultSend.send){
+                        //cargar en form json
+                        let jsonForm = JSON.parse(localStorage.getItem(obj.idform));
+                        jsonForm.form.sendForm = true;
+                        localStorage.setItem(obj.idform,JSON.stringify(jsonForm));
+                    }else{
+                        obj.err = resultSend.Error;
+                    }
+                }
+                return obj;
+            });
+            return {...state,tabla:[...tabla],ProcessSend:false}
+        }
 
         default:
             return state;

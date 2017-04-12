@@ -170,6 +170,12 @@ export function ingresarModulos(valor) {
     }
 }
 
+export function sendForm(valor) {
+    return {
+        type:"SEND_FORM",
+        value: valor
+    }
+}
 
 
 export function assignPosition(value) {
@@ -197,5 +203,12 @@ export function LimpiarEA() {
 export function LoadTablaEA() {
     return {
         type:"LOAD_TABLE"
+    }
+}
+
+export function loadStateSendForm(valor) {
+    return {
+        type:"LOAD_STATE_SEND_FORM",
+        value:valor
     }
 }

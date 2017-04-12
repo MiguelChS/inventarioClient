@@ -8,6 +8,13 @@ export function addDateGrafic(valor) {
     }
 }
 
+export function deleteDateGrafic(valor) {
+    return {
+        type:"REMOVE_DATEGRAFIC",
+        value: valor
+    }
+}
+
 export function activeBtn(valor) {
     return {
         type:"ACTIVE_BTN_DATE_GRAPHIC",

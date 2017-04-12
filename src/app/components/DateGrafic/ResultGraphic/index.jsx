@@ -1,7 +1,6 @@
 import React from 'react';
 import BodyResult from './BodyResult.jsx';
 export default (props)=>{
-    console.log(props);
     return(
         <div className="row">
             <div className="col-xs-12">

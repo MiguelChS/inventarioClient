@@ -17,7 +17,7 @@ export default class ButtonTable extends React.Component{
             text_icono=this.props.text;
         }
         return(
-            <button className="btn btn-white btn-xs" onClick={this.click.bind(this)}>
+            <button className="btn btn-white btn-xs separarButton" onClick={this.click.bind(this)}>
                 {text_icono}
             </button>
             )

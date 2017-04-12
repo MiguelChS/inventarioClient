@@ -25,6 +25,7 @@ export default class ModalForm extends React.Component{
                         id={store.data.id}
                         radioConf={store.data.radioConf}
                         idModal={store.id}
+                        hour24={store.data.hour24}
                         />
             }
 
