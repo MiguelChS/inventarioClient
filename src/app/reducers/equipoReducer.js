@@ -188,6 +188,25 @@ let inicializar ={
             return {...state,tabla:[...tabla]}
         }
 
+        case "DES_ASSIGN":{
+            let tabla = [...state.tabla];
+            let jsonForm = JSON.parse(localStorage.getItem(action.value));
+            jsonForm.form.position = {label:"SIN DATO",value: 0};
+            jsonForm.form.site = {label:"SIN DATO",value: 0};
+            jsonForm.AutoComplete = jsonForm.AutoComplete.filter(obj => {
+                if(obj.id != "idSite" && obj.id != "idPosicion") return obj;
+            });
+            localStorage.setItem(action.value,JSON.stringify(jsonForm));
+            tabla = tabla.map(obj=>{
+                if(jsonForm.form.idform == obj.idform){
+                    obj.nameSuc = "SIN DATO";
+                    obj.posicion = "SIN DATO";
+                }
+                return obj;
+            });
+            return {...state,tabla:[...tabla]};
+        }
+
 
 
         case "DELETE_FORM":{
@@ -224,21 +243,16 @@ let inicializar ={
 
         case "LOAD_STATE_SEND_FORM":{
             let tabla = [...state.tabla];
-            tabla = tabla.map(obj=>{
+            tabla = tabla.filter(obj=>{
                 //cargar en tabla
                 let resultSend = action.value.find(res => res.idForm == obj.idform);
-                if(resultSend){
-                    obj.sendForm = resultSend.send;
-                    if(resultSend.send){
-                        //cargar en form json
-                        let jsonForm = JSON.parse(localStorage.getItem(obj.idform));
-                        jsonForm.form.sendForm = true;
-                        localStorage.setItem(obj.idform,JSON.stringify(jsonForm));
-                    }else{
-                        obj.err = resultSend.Error;
-                    }
+                if(resultSend && !resultSend.send){
+                    obj.sendForm = false;
+                    obj.err = resultSend.Error;
+                    return obj;
+                }else{
+                    localStorage.removeItem(obj.idform);
                 }
-                return obj;
             });
             return {...state,tabla:[...tabla],ProcessSend:false}
         }

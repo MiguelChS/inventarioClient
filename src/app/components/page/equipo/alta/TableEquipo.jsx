@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import {connect} from  'react-redux';
-import { cargarFormulario,deleteForm } from '../../../../actions/equipoAction.js';
+import { cargarFormulario,deleteForm ,desAssign} from '../../../../actions/equipoAction.js';
 import { changeDefaultModule } from '../../../../actions/sourceAction';
 import ButtonTable from './ButtonTable.jsx';
 import { addModal } from '../../../../actions/modalAction';
@@ -26,7 +26,7 @@ export default class TablaEquipo extends React.Component{
     }
 
     desAsignar(data){
-
+        this.props.dispatch(desAssign(data))
     }
 
     deleteForm(data){

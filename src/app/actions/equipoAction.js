@@ -212,3 +212,10 @@ export function loadStateSendForm(valor) {
         value:valor
     }
 }
+
+export function desAssign(valor) {
+    return {
+        type:"DES_ASSIGN",
+        value:valor
+    }
+}

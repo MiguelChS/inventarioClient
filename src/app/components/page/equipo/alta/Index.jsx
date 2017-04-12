@@ -70,13 +70,13 @@ export default class Index extends React.Component{
                         "id_tipo_equipo":formAux.Equipos.value,
                         "f_entrega":formAux.fEntrega,
                         "id_estado":formAux.estado.value,
-                        "id_institucion": 0,
+                        "id_institucion": 1,
                         "id_posicion":formAux.position.value,
                         "f_retiro":formAux.fRetiro,
                         "f_inst":formAux.fInstalacion,
                         "f_fin_garantia":formAux.finGarantia,
                         "f_inicio_garantia":formAux.fEntrega,
-                        "id_xfs":formAux.xfs.value,
+                        "id_xfs":formAux.xfs ? formAux.xfs.value : null,
                         "id_so":formAux.so.value,
                         "id_snmp":formAux.snmp.value,
                         "id_carga":formAux.carga.value,
@@ -84,7 +84,7 @@ export default class Index extends React.Component{
                         "id_modelo":formAux.modelo.value,
                         "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
                         "id_planta":formAux.planta.value,
-                        "id_user":0,
+                        "id_user":1,
                         "id_equipo_ncr":formAux.equipoNcr
                     };
                     ArrayEnvio.push(this.sendFormReq(JSON.stringify(form),key))
@@ -95,7 +95,6 @@ export default class Index extends React.Component{
                 .then((result)=>{
                     this.props.dispatch(loadStateSendForm(result));
                 })
-
         }
     }
 
