@@ -84,7 +84,7 @@ export default class Index extends React.Component{
                         "id_modelo":formAux.modelo.value,
                         "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
                         "id_planta":formAux.planta.value,
-                        "id_user":1,
+                        "id_user":2,
                         "id_equipo_ncr":formAux.equipoNcr
                     };
                     ArrayEnvio.push(this.sendFormReq(JSON.stringify(form),key))
