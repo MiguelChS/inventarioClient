@@ -87,7 +87,7 @@ export default class Index extends React.Component{
                         "id_user":2,
                         "id_equipo_ncr":formAux.equipoNcr
                     };
-                    ArrayEnvio.push(this.sendFormReq(JSON.stringify(form),key))
+                    ArrayEnvio.push(this.sendFormReq(form,key))
                 }
             });
 

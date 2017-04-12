@@ -46759,7 +46759,7 @@
 	                            "id_user": 2,
 	                            "id_equipo_ncr": formAux.equipoNcr
 	                        };
-	                        ArrayEnvio.push(_this2.sendFormReq(JSON.stringify(form), key));
+	                        ArrayEnvio.push(_this2.sendFormReq(form, key));
 	                    }
 	                });
 	
