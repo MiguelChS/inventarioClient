@@ -17,11 +17,16 @@ export default class DateGrafic extends React.Component {
         this.props.dispatch(addDateGrafic({
             id:this.props.id,
             radioBtn:this.props.radioConf,
-            Hour24:this.props.hour24}))
+            Hour24:this.props.hour24,
+            firstDefault:this.props.firstDefault}))
     }
 
     cancel(){
         this.props.dispatch(hiddenModal(this.props.idModal))
+    }
+
+    endLoad(){
+        this.props.result(Object.keys(this.store.matrixGroup).length == 0 ? null: {...this.store.matrixGroup})
     }
 
     componentWillUnmount(){
@@ -33,12 +38,6 @@ export default class DateGrafic extends React.Component {
     render(){
         this.store = this.props.store.find(obj => obj.id == this.props.id);
         if(!this.store) return null;
-        this.disabled
-        if(this.store.Hour24){
-
-        }else{
-
-        }
         return(
             <div className="container-fluid DateGrafic">
                 <PanelControl store={this.store} dispatch={this.props.dispatch}/>
@@ -48,7 +47,7 @@ export default class DateGrafic extends React.Component {
                 <ResultGraphic store={this.store} dispatch={this.props.dispatch} />
                 <div className="row" style={{marginTop:"5px"}}>
                     <div className="text-center col-xs-12">
-                        <button type="button" className="btn btn-white separarButton" >
+                        <button type="button" className="btn btn-white separarButton" onClick={this.endLoad.bind(this)} >
                             Terminar Carga
                         </button>
                         <button type="button" className="btn btn-white separarButton" onClick={this.cancel.bind(this)}>

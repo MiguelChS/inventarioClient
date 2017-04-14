@@ -172,7 +172,35 @@ function getHours(matrix){
 function reducer(state,action) {
     switch (action.type){
         case "ADD_DATEGRAFIC":{
-            return {...state,matrixHora:generateMatrix(),diasText:generateDayText(0),...action.value}
+            let NewMatrix = generateMatrix();
+            let NewMatrixGroup = {};
+            if(action.value.firstDefault){
+                NewMatrixGroup = action.value.firstDefault;
+                let horas = action.value.firstDefault;
+                for(let idHour in horas){
+                    if(!horas.hasOwnProperty(idHour)) continue;
+                    //obtenemos el color del tipo de horario
+                    let color = action.value.radioBtn.find(obj => obj.id == idHour).color;
+                    horas[idHour].map((obj)=>{
+                        let colInt = (obj.minInt/30);
+                        let colFin = ((obj.minFin + 1)/30) - 1;
+                        obj.dias.map((diaRow)=>{
+                            for(let j=colInt;j<=colFin;j++){
+                                paintMatrix(NewMatrix,
+                                    {id:idHour,color:color},
+                                    diaRow,
+                                    j,
+                                    false);
+                            }
+                        });
+                    })
+                }
+            }
+            return {...state,matrixHora:[...NewMatrix],diasText:generateDayText(0),matrixGroup:{...NewMatrixGroup},...action.value}
+        }
+
+        case "LOAD_DATE_GRAPHIC":{
+            return{...state,matrixGroup:{...getHours(state.matrixHora)}}
         }
 
         case "ACTIVE_BTN_DATE_GRAPHIC":{

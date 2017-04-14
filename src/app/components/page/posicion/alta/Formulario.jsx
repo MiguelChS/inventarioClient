@@ -1,8 +1,10 @@
 import React from 'react';
 import { connect } from  'react-redux';
 import { AutoComplete , Select, Input,InputHorario } from '../../componentFormulario/index.js'
-import { addFormPos,insertClient,insertNCR,insertIP,insertSite,insertGaveta,insertTableStatus,insertScript,insertCommand,insertCommunityString,
-insertComunicacion,insertSLM,insertFLM,insertPRESTACION,insertUbicacion} from '../../../../actions/formPositionAction';
+import { addFormPos,insertClient,insertNCR,insertIP,insertSite,insertGaveta,
+    insertTableStatus,insertScript,insertCommand,insertCommunityString,
+insertComunicacion,insertSLM,insertFLM,insertPRESTACION,insertUbicacion,
+insertHourBranch} from '../../../../actions/formPositionAction';
 
 @connect((store)=>{
     return {
@@ -183,7 +185,11 @@ export default class Formulario extends React.Component{
                                     {label:"After Hour",color:"blue",id:1},
                                     {label:"Other Hour",color:"green",id:4}
                                 ],
-                                hour24:true
+                                hour24:true,
+                                callbackResult:(value)=>{
+                                    this.props.dispatch(insertHourBranch({id:this.store.id,value:value}));
+                                },
+                                firstDefault:this.store.hourBranch
                             }}
                         />
                     </div>
@@ -195,7 +201,8 @@ export default class Formulario extends React.Component{
                                 radioConf:[
                                     {label:"SLA",color:"red",id:7}
                                 ],
-                                hour24:false
+                                hour24:false,
+                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
                             }}
                         />
                     </div>
@@ -207,7 +214,10 @@ export default class Formulario extends React.Component{
                                 radioConf:[
                                     {label:"Acceso",color:"green",id:8}
                                 ],
-                                hour24:false
+                                hour24:false,
+                                callbackResult:(value)=>{
+                                    console.log(`${value} --- ${this.store.id}`)
+                                }
                             }}
                         />
                     </div>
@@ -221,7 +231,8 @@ export default class Formulario extends React.Component{
                                     {label:"Peak Hour",color:"green",id:5},
                                     {label:"OffPeak Hour",color:"green",id:6}
                                 ],
-                                hour24:true
+                                hour24:true,
+                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
                             }}
                         />
                     </div>
@@ -234,7 +245,8 @@ export default class Formulario extends React.Component{
                                 radioConf:[
                                     {label:"Operation",color:"green",id:3}
                                 ],
-                                hour24:false
+                                hour24:false,
+                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
                             }}
                         />
                     </div>

@@ -147,3 +147,49 @@ export function insertUbicacion(valor) {
         }
     }
 }
+
+export function insertHourBranch(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOUR_BRANCH_POS",
+            value:valor
+        }
+    }
+}
+export function insertHourOperation(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOUR_OPERATION_POS",
+            value:valor
+        }
+    }
+}
+export function insertHourSLA(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOUR_SLA_POS",
+            value:valor
+        }
+    }
+}
+export function insertHourAccess(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOUR_ACCESS_POS",
+            value:valor
+        }
+    }
+}
+export function insertHourPeak(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOUR_PEAK_POS",
+            value:valor
+        }
+    }
+}

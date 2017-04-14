@@ -88,7 +88,11 @@ export default class AutoComplete extends React.Component{
 
     componentDidMount(){
         if(!this.Store){
-            this.props.dispatch(addAuto({id:this.props.id}))
+            if(this.props.firstDefault){
+                this.props.dispatch(addAuto(this.props.firstDefault))
+            }else{
+                this.props.dispatch(addAuto({id:this.props.id}))
+            }
         }
     }
 

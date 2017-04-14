@@ -17,8 +17,12 @@ let init={
     flm:null,
     prestacion:null,
     ubicacion_en_site:null,
+    //horarios
+    hourBranch:null,
+    hourOperation:null,
     sla:null,
-    acceso:null,
+    access:null,
+    hourPeak:null,
     dato2:null,
     dato3:null
 };
@@ -69,6 +73,21 @@ function reducer(state,action) {
         }
         case "INSERT_UBICACION_POS":{
             return {...state,ubicacion_en_site:action.value.value}
+        }
+        case "INSERT_HOUR_BRANCH_POS":{
+            return {...state,hourBranch:action.value.value}
+        }
+        case "INSERT_HOUR_OPERATION_POS":{
+            return {...state,hourOperation:action.value.value}
+        }
+        case "INSERT_HOUR_SLA_POS":{
+            return {...state,sla:action.value.value}
+        }
+        case "INSERT_HOUR_ACCESS_POS":{
+            return {...state,access:action.value.value}
+        }
+        case "INSERT_HOUR_PEAK_POS":{
+            return {...state,hourPeak:action.value.value}
         }
         default:
             return state;

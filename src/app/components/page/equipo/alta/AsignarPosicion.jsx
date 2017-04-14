@@ -37,28 +37,9 @@ export default class AsignarPosicion extends React.Component{
         this.props.dispatch(addModal({body:2,data:null,size:"xl"}))
     }
 
-    componentDidMount(){
-        //comprobamos si tiene un json preCargado
-        let autoComp = JSON.parse(localStorage.getItem(this.props.data)).AutoComplete;
-        let autoSite = autoComp.find(obj => obj.id == "idSite");
-        let autoPosi = autoComp.find(obj => obj.id == "idPosicion");
-        if(autoSite && autoPosi){
-            this.props.dispatch([
-                loadAuto({id:"idSite",state:autoSite}),
-                loadAuto({id:"idPosicion",state:autoPosi}),
-            ])
-        }else{
-            if(autoSite){
-                this.props.dispatch(loadAuto({id:"idSite",state:autoSite}))
-            }
-            if(autoPosi){
-                this.props.dispatch(loadAuto({id:"idSite",state:autoPosi}))
-            }
-        }
-    }
-
     render(){
         let source = this.props.source;
+        let autoComp = JSON.parse(localStorage.getItem(this.props.data)).AutoComplete;
         this.AutoSite = this.props.AutoComplete.find( obj => obj.id == "idSite");
         this.AutoPosition = this.props.AutoComplete.find( obj => obj.id == "idPosicion");
         let sourcePosition = [];
@@ -86,6 +67,7 @@ export default class AsignarPosicion extends React.Component{
                                           if(value) return;
                                           this.props.dispatch(noSelect({id:this.AutoPosition.id,value:""}));
                                       }}
+                                      firstDefault={autoComp.find(obj => obj.id == "idSite")}
                         />
                     </Col>
                 </Row>
@@ -97,6 +79,7 @@ export default class AsignarPosicion extends React.Component{
                                       required={true}
                                       resultadoAutoComplete={()=>{
                                       }}
+                                      firstDefault={autoComp.find(obj => obj.id == "idPosicion")}
                         />
                     </Col>
                 </Row>

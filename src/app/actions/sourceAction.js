@@ -8,10 +8,10 @@ let desa = '{"marcas":[{"value":0,"label":"SIN DATO"},{"value":1,"label":"NCR"},
 
 
 export function searchSource() {
-    /*return {
+    return {
         type:"LOAD_SOURCE",
         value: JSON.parse(desa)
-    }*/
+    }/*
     return function(dispatch) {
         request.get('http://lnxsrv01:3012/api/sourceInventario')
             .then((result)=>{
@@ -23,7 +23,7 @@ export function searchSource() {
             .catch((err)=>{
                 console.log(err);
             });
-    }
+    }*/
 }
 
 export function changeSelectModule(valor,source) {
