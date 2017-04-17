@@ -168,3 +168,20 @@ body{
 .formCompotAl > div > div {
     min-height: 68px;
 }
+
+.boxFilterPrestacion{
+    height: 200px;
+    border: 1px solid #e7eaec;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 10px;
+}
+
+.boxFilterPrestacion .btnBoxFilter{
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.boxFilterPrestacion .hoverItem:hover{
+    background-color: #e7eaec;
+}

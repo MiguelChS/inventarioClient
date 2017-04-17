@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from  'react-redux';
 import { AutoComplete , Select, Input,InputHorario } from '../../componentFormulario/index.js'
+import BoxFilter from '../../../boxFilter/index.jsx';
 import { addFormPos,insertClient,insertNCR,insertIP,insertSite,insertGaveta,
     insertTableStatus,insertScript,insertCommand,insertCommunityString,
 insertComunicacion,insertSLM,insertFLM,insertPRESTACION,insertUbicacion,
-insertHourBranch} from '../../../../actions/formPositionAction';
+insertHourBranch,insertHourAccess,insertHourOperation,insertHourPeak,insertHourSLA} from '../../../../actions/formPositionAction';
 
 @connect((store)=>{
     return {
@@ -151,17 +152,6 @@ export default class Formulario extends React.Component{
                         />
                     </div>
                     <div className="col-md-4 col-sm-6 col-xs-12">
-                        <AutoComplete label="Prestacion"
-                                      id="idPrestacion"
-                                      col={{label:3,input:9}}
-                                      dataSource={this.props.source.prestacion}
-                                      required={true}
-                                      resultadoAutoComplete={(value)=>{
-                                          this.props.dispatch(insertPRESTACION({id:this.store.id,value:value}));
-                                      }}
-                        />
-                    </div>
-                    <div className="col-md-4 col-sm-6 col-xs-12">
                         <Select
                             label="Ubicacion"
                             id="idUbicacion"
@@ -202,7 +192,10 @@ export default class Formulario extends React.Component{
                                     {label:"SLA",color:"red",id:7}
                                 ],
                                 hour24:false,
-                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
+                                callbackResult:(value)=>{
+                                    this.props.dispatch(insertHourSLA({id:this.store.id,value:value}));
+                                },
+                                firstDefault:this.store.sla
                             }}
                         />
                     </div>
@@ -216,8 +209,9 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:false,
                                 callbackResult:(value)=>{
-                                    console.log(`${value} --- ${this.store.id}`)
-                                }
+                                    this.props.dispatch(insertHourAccess({id:this.store.id,value:value}));
+                                },
+                                firstDefault:this.store.access
                             }}
                         />
                     </div>
@@ -232,7 +226,10 @@ export default class Formulario extends React.Component{
                                     {label:"OffPeak Hour",color:"green",id:6}
                                 ],
                                 hour24:true,
-                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
+                                callbackResult:(value)=>{
+                                    this.props.dispatch(insertHourPeak({id:this.store.id,value:value}));
+                                },
+                                firstDefault:this.store.hourPeak
                             }}
                         />
                     </div>
@@ -246,14 +243,19 @@ export default class Formulario extends React.Component{
                                     {label:"Operation",color:"green",id:3}
                                 ],
                                 hour24:false,
-                                callbackResult:(value)=>{ console.log(`${value} --- ${this.store.id}`)}
+                                callbackResult:(value)=>{
+                                    this.props.dispatch(insertHourOperation({id:this.store.id,value:value}));
+                                },
+                                firstDefault:this.store.hourOperation
                             }}
                         />
                     </div>
                 </div>
-                <div className="row">
-                    <div className="hr-line-dashed"/>
-                </div>
+                <BoxFilter
+                    result={(value)=>{
+                        this.props.dispatch(insertPRESTACION({id:this.store.id,value:value}));
+                    }}
+                />
                 <div className="row">
                     <div className="text-center col-xs-12">
                         <button type="button" className="btn btn-white">
@@ -264,4 +266,14 @@ export default class Formulario extends React.Component{
             </form>
         )
     }
-}
+}/*<div className="col-md-4 col-sm-6 col-xs-12">
+ <AutoComplete label="Prestacion"
+ id="idPrestacion"
+ col={{label:3,input:9}}
+ dataSource={this.props.source.prestacion}
+ required={true}
+ resultadoAutoComplete={(value)=>{
+ this.props.dispatch(insertPRESTACION({id:this.store.id,value:value}));
+ }}
+ />
+ </div>*/

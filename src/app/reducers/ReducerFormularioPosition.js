@@ -15,7 +15,6 @@ let init={
     comunicacion:null,
     slm:null,
     flm:null,
-    prestacion:null,
     ubicacion_en_site:null,
     //horarios
     hourBranch:null,
@@ -23,8 +22,10 @@ let init={
     sla:null,
     access:null,
     hourPeak:null,
+    prestacion:null,
+    //datos extras
     dato2:null,
-    dato3:null
+    dato3:null,
 };
 
 function reducer(state,action) {
@@ -69,7 +70,13 @@ function reducer(state,action) {
             return {...state,flm:action.value.value}
         }
         case "INSERT_PRESTACION_POS":{
-            return {...state,prestacion:action.value.value}
+            if(state.prestacion){
+                
+            }else{
+
+            }
+            console.log(action.value.value);
+            return {...state,prestacion:null}
         }
         case "INSERT_UBICACION_POS":{
             return {...state,ubicacion_en_site:action.value.value}

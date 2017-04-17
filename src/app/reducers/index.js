@@ -10,6 +10,7 @@ import autoComp from './AutoCompleteReducer';
 import formPosition from './ReducerFormularioPosition';
 import dateGrafic from './dateGraficReducer';
 import source from './SourceReducer';
+import BoxFilter from  './BoxFilterReducer';
 
 export default combineReducers({
     equipo: equipo,
@@ -18,5 +19,6 @@ export default combineReducers({
     AutoComplete:autoComp,
     formPosition:formPosition,
     dateGrafic:dateGrafic,
-    source:source
+    source:source,
+    BoxFilter:BoxFilter
 })
