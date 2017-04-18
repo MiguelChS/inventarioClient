@@ -63,7 +63,8 @@ export default class BoxFilter extends React.Component{
                                                                     this.props.dispatch(loadHour({
                                                                         id:obj.data.value,
                                                                         hora:value
-                                                                    }))
+                                                                    }));
+                                                                    this.props.result(obj);
                                                                 },
                                                                 firstDefault:obj.hora
                                                             },

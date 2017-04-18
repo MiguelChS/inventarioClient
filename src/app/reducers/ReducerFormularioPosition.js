@@ -70,14 +70,23 @@ function reducer(state,action) {
             return {...state,flm:action.value.value}
         }
         case "INSERT_PRESTACION_POS":{
-            if(state.prestacion){
-                
+            let prestacionRep = {...state.prestacion};
+            let data = action.value.value;
+            let findPretacion = prestacionRep[data.data.value];
+            if(data.selected){
+                if(findPretacion){
+                    findPretacion = data.hora;
+                }else{
+                    prestacionRep[data.data.value] = data.hora;
+                }
             }else{
-
+                if(findPretacion){
+                    delete prestacionRep[data.data.value];
+                }
             }
-            console.log(action.value.value);
-            return {...state,prestacion:null}
+            return {...state,prestacion:Object.keys(prestacionRep).length == 0 ? null : {...prestacionRep}}
         }
+
         case "INSERT_UBICACION_POS":{
             return {...state,ubicacion_en_site:action.value.value}
         }

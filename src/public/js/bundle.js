@@ -44909,8 +44909,21 @@
 	            }
 	        case "INSERT_PRESTACION_POS":
 	            {
-	                console.log(action.value.value);
-	                return _extends({}, state, { prestacion: null });
+	                var prestacionRep = _extends({}, state.prestacion);
+	                var data = action.value.value;
+	                var findPretacion = prestacionRep[data.data.value];
+	                if (data.selected) {
+	                    if (findPretacion) {
+	                        findPretacion = data.hora;
+	                    } else {
+	                        prestacionRep[data.data.value] = data.hora;
+	                    }
+	                } else {
+	                    if (findPretacion) {
+	                        delete prestacionRep[data.data.value];
+	                    }
+	                }
+	                return _extends({}, state, { prestacion: Object.keys(prestacionRep).length == 0 ? null : _extends({}, prestacionRep) });
 	            }
 	        case "INSERT_UBICACION_POS":
 	            {
@@ -70525,6 +70538,7 @@
 	                                                                        id: obj.data.value,
 	                                                                        hora: value
 	                                                                    }));
+	                                                                    _this2.props.result(obj);
 	                                                                },
 	                                                                firstDefault: obj.hora
 	                                                            },
