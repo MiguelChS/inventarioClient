@@ -16,16 +16,23 @@ let init={
     slm:null,
     flm:null,
     ubicacion_en_site:null,
+    prestacion:null,
+    id_Equipo:null,
+    pretacion:null,
     //horarios
     hourBranch:null,
     hourOperation:null,
     sla:null,
     access:null,
     hourPeak:null,
-    prestacion:null,
+    hourPrestacion:[],
     //datos extras
     dato2:null,
     dato3:null,
+    //datos de comportamienrto de formulario
+    idPrestaciones:[],
+    mjsErr:"",
+    stateRequtes:false,
 };
 
 function reducer(state,action) {
@@ -69,24 +76,12 @@ function reducer(state,action) {
         case "INSERT_FLM_POS":{
             return {...state,flm:action.value.value}
         }
-        case "INSERT_PRESTACION_POS":{
-            let prestacionRep = {...state.prestacion};
-            let data = action.value.value;
-            let findPretacion = prestacionRep[data.data.value];
-            if(data.selected){
-                if(findPretacion){
-                    findPretacion = data.hora;
-                }else{
-                    prestacionRep[data.data.value] = data.hora;
-                }
-            }else{
-                if(findPretacion){
-                    delete prestacionRep[data.data.value];
-                }
-            }
-            return {...state,prestacion:Object.keys(prestacionRep).length == 0 ? null : {...prestacionRep}}
+        case "INSERT_HOURPRESTACION_POS":{
+            return {...state,hourPrestacion:action.value.value}
         }
-
+        case "INSERT_PRESTACION_POS":{
+            return {...state,pretacion:action.value.value}
+        }
         case "INSERT_UBICACION_POS":{
             return {...state,ubicacion_en_site:action.value.value}
         }
@@ -105,6 +100,18 @@ function reducer(state,action) {
         case "INSERT_HOUR_PEAK_POS":{
             return {...state,hourPeak:action.value.value}
         }
+        case "INSERT_EQUIPO_POS":{
+            return {...state,id_Equipo:action.value.value}
+        }
+        case "INSERT_REQUEST_PRESTACION_POS":{
+            return {...state,stateRequtes:action.value.value}
+        }
+        case "INSERT_ID_PRESTACION_POS":{
+            return {...state,idPrestaciones:action.value.value}
+        }
+        case "INSERT_mjsErr_POS":{
+            return {...state,mjsErr:action.value.value}
+        }
         default:
             return state;
     }
@@ -120,6 +127,9 @@ function arrayReducer(state=[],action) {
                if(obj.id != action.value.value.id) return obj;
                return reducer(obj,action.value);
             });
+        }
+        case 'REMOVE_FORM_POS':{
+            return state.filter( store => store.id !== action.value);
         }
         default:
             return state;

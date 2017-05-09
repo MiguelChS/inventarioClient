@@ -7,6 +7,7 @@ export default (props)=>{
     let icon = "glyphicon-plus";
     icon = store.plus ? icon : "glyphicon-minus";
     let btn = store.main ? `glyphicon ${icon} btnPlus` : "txtDiaMargin";
+    let cursorPaint = props.paint ? "paintCursor": "";
     return(
         <div className="row">
             <div className="col-xs-12 col-sm-1">
@@ -19,7 +20,7 @@ export default (props)=>{
                     <p className="textDia">{store.label}</p>
                 </div>
             </div>
-            <div className="col-xs-12 col-sm-11 heigth25">
+            <div className={`col-xs-12 col-sm-11 heigth25 ${cursorPaint}`}>
                 {props.horas.map((objHs,i) =>{
                     if((i+1)%2 == 0){
                         return(

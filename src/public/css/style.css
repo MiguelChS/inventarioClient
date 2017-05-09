@@ -185,3 +185,13 @@ body{
 .boxFilterPrestacion .hoverItem:hover{
     background-color: #e7eaec;
 }
+
+.noselect{
+    user-select: none;
+}
+.paintCursor{
+    cursor: url("../image/cursorPaint.cur") 15 15,auto;
+}
+.mjsErr{
+    color: #ed5565;
+}

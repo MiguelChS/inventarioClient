@@ -47,7 +47,7 @@ export default class DateGrafic extends React.Component {
                 <ResultGraphic store={this.store} dispatch={this.props.dispatch} />
                 <div className="row" style={{marginTop:"5px"}}>
                     <div className="text-center col-xs-12">
-                        <button type="button" className="btn btn-white separarButton" onClick={this.endLoad.bind(this)} >
+                        <button type="button" className="btn btn-white separarButton" disabled={this.btnEnd} onClick={this.endLoad.bind(this)} >
                             Terminar Carga
                         </button>
                         <button type="button" className="btn btn-white separarButton" onClick={this.cancel.bind(this)}>

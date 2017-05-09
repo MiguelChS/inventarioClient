@@ -1,6 +1,8 @@
 /**
  * Created by mc185249 on 3/27/2017.
  */
+import Request from '../Request/Request';
+
 export function addFormPos(valor) {
     return {
         type:"ADD_FORM_POS",
@@ -88,6 +90,16 @@ export function insertCommand(valor) {
     }
 }
 
+export function insertEquipo(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_EQUIPO_POS",
+            value:valor
+        }
+    }
+}
+
 export function insertCommunityString(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -138,6 +150,41 @@ export function insertPRESTACION(valor) {
     }
 }
 
+export function insertHourPrestacion(valor,store) {
+    let auxPres = store.hourPrestacion.find(obj => obj.idHora == valor.idHora);
+    let auxHoraPres = [...store.hourPrestacion];
+    if(auxPres){
+        if(valor.hora){
+            //update
+            auxHoraPres = auxHoraPres.map(obj=>{
+                if(obj.idHora == valor.idHora){
+                    obj.hora = valor.hora[valor.idHora];
+                }
+                return obj;
+            });
+        }else{
+            //remove
+            auxHoraPres = auxHoraPres.filter(fil=>fil.idHora != valor.idHora);
+        }
+    }else{
+        //insert
+        auxHoraPres.push({
+            idHora:valor.idHora,
+            hora:valor.hora[valor.idHora]
+        });
+    }
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_HOURPRESTACION_POS",
+            value:{
+                id:store.id,
+                value:auxHoraPres
+            }
+        }
+    }
+}
+
 export function insertUbicacion(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -157,6 +204,7 @@ export function insertHourBranch(valor) {
         }
     }
 }
+
 export function insertHourOperation(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -166,6 +214,7 @@ export function insertHourOperation(valor) {
         }
     }
 }
+
 export function insertHourSLA(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -175,6 +224,7 @@ export function insertHourSLA(valor) {
         }
     }
 }
+
 export function insertHourAccess(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -184,6 +234,7 @@ export function insertHourAccess(valor) {
         }
     }
 }
+
 export function insertHourPeak(valor) {
     return {
         type:"INSERT_FORM_POST",
@@ -191,5 +242,60 @@ export function insertHourPeak(valor) {
             type:"INSERT_HOUR_PEAK_POS",
             value:valor
         }
+    }
+}
+
+export function insertIdPrestaciones(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_ID_PRESTACION_POS",
+            value:valor
+        }
+    }
+}
+
+export function insertStateRequtes(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_REQUEST_PRESTACION_POS",
+            value:valor
+        }
+    }
+}
+export function removeFormPost(valor) {
+    return {
+        type:"REMOVE_FORM_POS",
+        value:valor
+    }
+}
+
+export function insertMjsErr(valor) {
+    return {
+        type:"INSERT_FORM_POST",
+        value:{
+            type:"INSERT_mjsErr_POS",
+            value:valor
+        }
+    }
+}
+
+export function searchPrestacionEquipo(formId,idEquipo) {
+    return function(dispatch) {
+        Request.get(`http://localhost:4000/api/prestacionEquipo/${idEquipo}`)
+            .then((result)=>{
+                dispatch([
+                    insertIdPrestaciones({id:formId,value:result.data}),
+                    insertStateRequtes({id:formId,value:false}),
+                    insertMjsErr({id:formId,value:""})
+                ]);
+            })
+            .catch((err)=>{
+                dispatch([
+                    insertMjsErr({id:formId,value:err.response ? err.response.data.err : "no hay conexion"}),
+                    insertStateRequtes({id:formId,value:false}),
+                ])
+            });
     }
 }

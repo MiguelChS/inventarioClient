@@ -145,6 +145,7 @@ export default class AutoComplete extends React.Component{
                        value={store.text}
                        className={classRequire}
                        onFocus={this.onFocus.bind(this)}
+                       disabled={this.props.disabled}
                 />
                 <div className="AutoCompleteResult" style={styleResul}
                      onMouseOver={()=>{ this.hoverOnResult = true;}}

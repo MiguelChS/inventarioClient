@@ -4,22 +4,20 @@
 import React from 'react';
 import { connect } from  'react-redux';
 import { addModal } from '../../actions/modalAction';
-import { loadResult,loadHour,checkedPretacion } from '../../actions/boxFilterAction';
+import { loadResult,loadHour} from '../../actions/boxFilterAction';
 
 @connect((store)=>{
     return{
-        store:store.BoxFilter,
-        source:store.source
+        store:store.BoxFilter
     }
 })
 export default class BoxFilter extends React.Component{
 
     componentDidMount(){
-        let result = this.props.source.prestacion.map((obj)=>{
+        let result = this.props.data.map((obj)=>{
             return {
                 data:{...obj},
-                hora:null,
-                selected: false
+                hora:obj.hasOwnProperty("data") ? obj.data : null
             }
         });
         this.props.dispatch(loadResult(result))
@@ -42,11 +40,6 @@ export default class BoxFilter extends React.Component{
                                     return <div key={index} className="row">
                                         <div className="col-xs-12 hoverItem">
                                             <label className="checkbox-inline">
-                                                <input type="checkbox" disabled={obj.hora == null} checked={obj.selected} value={obj.data.value}
-                                                       onChange={(event)=>{
-                                                           this.props.dispatch(checkedPretacion({id:event.target.value}));
-                                                           this.props.result(obj)
-                                                       }} />
                                                 {obj.data.label}
                                             </label>
                                             <button type="button" className="btn btn-xs btn-white btnBoxFilter"
@@ -58,15 +51,18 @@ export default class BoxFilter extends React.Component{
                                                                 radioConf:[
                                                                     {label:obj.data.label,color:"green",id:obj.data.value}
                                                                 ],
+                                                                firstDefault:obj.hora,
                                                                 hour24:false,
                                                                 callbackResult:(value)=>{
                                                                     this.props.dispatch(loadHour({
                                                                         id:obj.data.value,
                                                                         hora:value
                                                                     }));
-                                                                    this.props.result(obj);
-                                                                },
-                                                                firstDefault:obj.hora
+                                                                    this.props.result({
+                                                                        idHora:obj.data.value,
+                                                                        hora:value
+                                                                    });
+                                                                }
                                                             },
                                                             size:"xl"}))
                                                     }}

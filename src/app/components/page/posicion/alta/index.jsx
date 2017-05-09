@@ -17,7 +17,12 @@ export default class Index extends React.Component{
                     <h5>Alta Posicion</h5>
                 </Col>
                 <Col xs={12} bsClass="litleBody col">
-                    <Formulario id="FormPost"/>
+                    <Formulario
+                        id="FormPost"
+                        onEnLoad={(form)=>{
+                            console.log(form)
+                        }}
+                    />
                 </Col>
             </Row>
         )

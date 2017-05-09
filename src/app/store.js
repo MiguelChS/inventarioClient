@@ -6,6 +6,6 @@ import thunk from "redux-thunk"
 import promise from "redux-promise-middleware"
 import reduxMulti from 'redux-multi';
 
-const middleware = applyMiddleware(reduxMulti,promise(), thunk, logger());
+const middleware = applyMiddleware(reduxMulti,promise(), thunk,logger());
 
 export default createStore(reducer,middleware);

@@ -56,6 +56,12 @@ export default class Index extends React.Component{
         });
     }
 
+    nuevaPosicion(NewPosition){
+        let form = NewPosition.dataForm;
+        delete form.HoraPrestacion;
+        delete form.idEquipo;
+        return form;
+    }
 
     finishLoading(){
         if(!this.disabledBtnTerm){
@@ -63,7 +69,9 @@ export default class Index extends React.Component{
             let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
             let ArrayEnvio = [];
             EA.map((key)=>{
-                let formAux = JSON.parse(localStorage.getItem(key)).form;
+                //buscar los datos en el Local Storage
+                let auxLocalStorage = JSON.parse(localStorage.getItem(key));
+                let formAux = auxLocalStorage.form;
                 if(!formAux.sendForm){
                     let form = {
                         "id_tipo_eq": formAux.tipoEquipo.value,
@@ -71,7 +79,6 @@ export default class Index extends React.Component{
                         "f_entrega":formAux.fEntrega,
                         "id_estado":formAux.estado.value,
                         "id_institucion": 1,
-                        "id_posicion":formAux.position.value,
                         "f_retiro":formAux.fRetiro,
                         "f_inst":formAux.fInstalacion,
                         "f_fin_garantia":formAux.finGarantia,
@@ -85,7 +92,10 @@ export default class Index extends React.Component{
                         "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
                         "id_planta":formAux.planta.value,
                         "id_user":2,
-                        "id_equipo_ncr":formAux.equipoNcr
+                        "id_equipo_ncr":formAux.equipoNcr,
+                        "horaPrestacion":formAux.prestacion,
+                        "id_posicion":formAux.position.value == -1 ? null : formAux.position.value,
+                        "newPosicion":formAux.position.value == -1 ? this.nuevaPosicion(formAux.position) : null
                     };
                     ArrayEnvio.push(this.sendFormReq(form,key))
                 }

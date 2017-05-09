@@ -21,6 +21,7 @@ export default class AutoCompleteForm extends React.Component{
                                   required={this.props.required}
                                   id={this.props.id}
                                   firstDefault={this.props.firstDefault}
+                                  disabled={this.props.hasOwnProperty("disabled") ? this.props.disabled : false}
                     />
                 </Col>
             </FormGroup>

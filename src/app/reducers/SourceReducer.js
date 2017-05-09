@@ -25,7 +25,11 @@ let init = {
     flm:[],
     prestacion:[],
     ubicacionSite:[],
-    complete: false
+    EquiposAll:[],
+    TypeHora:[],
+    //datos extras de source
+    complete: false,
+    idDatosTemporales:[]
 };
 
 function reducer(state=init,action) {
@@ -75,6 +79,21 @@ function reducer(state=init,action) {
             return {...state,modulos:action.value}
         }
 
+        case "INSERT_POSITION_TEMPORAL":{
+            let data = action.value;
+            let position = {...state.position};
+            position[data.idSite].push({
+                label:data.label,
+                value:-1,
+                dataForm: data.Form
+            });
+            return {...state,
+                position:position,
+                idDatosTemporales:[
+                    ...state.idDatosTemporales,
+                    {idParent:data.idSite}
+                ]}
+        }
         default:
             return state;
     }

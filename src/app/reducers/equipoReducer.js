@@ -32,7 +32,8 @@ let inicializar ={
             label:"SIN DATO",
             value: 0
         },
-        id_institucion:null
+        id_institucion:null,
+        prestacion:[]
     },
     tabla:[],
     ProcessSend:false
@@ -121,13 +122,18 @@ let inicializar ={
             let tabla = [...state.tabla];
             if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta){
                 let AutoComp = action.value;
+                //verificamos si tiene el id
                 if(form.idform){
+                    //actulizamos la data de la tabla
                      tabla = tabla.map((obj)=>{
                          if(form.idform != obj.idform) return obj;
                          obj.numSerie = `${form.planta.prefijo}-${form.nroSerie}`;
                          return obj;
                      });
-                     let aux = JSON.parse(localStorage.getItem(form.idform)).AutoComplete;
+                    //buscamos los datos en el local Storage
+                    let searchLocalStorage = JSON.parse(localStorage.getItem(form.idform));
+                    //actulizamos el estado de los autoComplete
+                     let aux = searchLocalStorage.AutoComplete;
                      AutoComp = aux.map(obj => {
                          switch (obj.id){
                              case "idPlanta":{
@@ -141,7 +147,9 @@ let inicializar ={
                          }
                      })
                 }else{
+                    //cremos el iddel formulario
                     form.idform = `${Date.now()}_EA`;
+                    //insertamos el nuevo formulario en la tabla
                     tabla.push({
                         numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
                         nameSuc: form.site.label,
@@ -151,6 +159,7 @@ let inicializar ={
                         err:null
                     });
                 }
+                //insertamos la data en el local Storage
                 localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:AutoComp}));
                 return {...state,tabla:[...tabla],formulario:{...inicializar.formulario}}
             }else{
@@ -167,24 +176,39 @@ let inicializar ={
 
         case "ASSIGN_AUTO":{
             let tabla = [...state.tabla];
-            let form = JSON.parse(localStorage.getItem(action.value.formid)).form;
+            //buscamos la data del localStorage
+            let dataLocalStore = JSON.parse(localStorage.getItem(action.value.formid));
+            let form = dataLocalStore.form;
+            //obtenemos los state de los autoComplete
             let siteState = action.value.site;
             let positionState = action.value.position;
+            //insertamos en la fila de la tabla los nombre de la sucursal y la posicion
             tabla = tabla.map((obj)=>{
                 if(form.idform != obj.idform) return obj;
                 obj.nameSuc =  siteState.resultSelect ? siteState.resultSelect.label : null;
                 obj.posicion = positionState.resultSelect ? positionState.resultSelect.label : null;
                 return obj;
             });
-            let aux = JSON.parse(localStorage.getItem(form.idform)).AutoComplete;
+            //buscams los stados de los auto complete
+            let aux = dataLocalStore.AutoComplete;
+            //eliminamos  estados de autoComplete  de Site y posicion
             aux = aux.filter(obj => {
                 if(obj.id != "idSite" && obj.id != "idPosicion") return obj;
             });
+            //le asignamos los nuevos estado de site y posicion
             aux.push(siteState);
             aux.push(positionState);
+            //insertamos la posicion y site en el formulario principal y las prestaciones
             form.position = positionState.resultSelect;
             form.site = siteState.resultSelect;
-            localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:[...aux]}));
+            form.prestacion = action.value.horaPrestacion.map((obj)=>{
+               return {
+                   idHora:obj.idHora,
+                   hora:obj.hora[obj.idHora]
+               }
+            });
+            //actualizamos el local estorage con todo lo nuevo
+            localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:aux}));
             return {...state,tabla:[...tabla]}
         }
 

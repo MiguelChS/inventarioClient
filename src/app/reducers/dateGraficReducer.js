@@ -11,7 +11,9 @@ let init = {
     diasText:null,
     paint:false,
     Hour24:false,
-    matrixGroup:{}
+    matrixGroup:{},
+    //flag de req
+    maximo:false,
 };
 
 function generateMatrix() {
@@ -273,6 +275,15 @@ function reducer(state,action) {
         }
 
         case "GENERATE_HOUR_DATE_GRAPHIC":{
+            //verificar si tiene que estar completo
+            //verificar que no halla superado si supero el maximo
+            let maximo = false;
+            for (let i in state.matrixGroup){
+                if(state.matrixGroup[i].length > 10){
+                    maximo = true;
+                    break;
+                }
+            }
             return{...state,matrixGroup:{...getHours(state.matrixHora)}}
         }
 
