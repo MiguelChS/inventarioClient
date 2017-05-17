@@ -42,7 +42,7 @@ export default class BoxFilter extends React.Component{
                                             <label className="checkbox-inline">
                                                 {obj.data.label}
                                             </label>
-                                            <button type="button" className="btn btn-xs btn-white btnBoxFilter"
+                                            <button type="button" className={`btn btn-xs btn-white btnBoxFilter ${obj.hora ? "" : "require-inv"}`}
                                                     onClick={()=> {
                                                         this.props.dispatch(addModal({
                                                             body:3,

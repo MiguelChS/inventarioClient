@@ -27,9 +27,15 @@ let init = {
     ubicacionSite:[],
     EquiposAll:[],
     TypeHora:[],
+    siteClient:[],
+    geoClient:[],
+    pais:[],
+    geoNCR:[],
+    TipoDireccion:[],
+    TipoSite:[],
     //datos extras de source
     complete: false,
-    idDatosTemporales:[]
+    idTemporalesPosi:[]
 };
 
 function reducer(state=init,action) {
@@ -82,17 +88,28 @@ function reducer(state=init,action) {
         case "INSERT_POSITION_TEMPORAL":{
             let data = action.value;
             let position = {...state.position};
-            position[data.idSite].push({
+            position[data.idSiteClient].push({
                 label:data.label,
                 value:-1,
                 dataForm: data.Form
             });
             return {...state,
                 position:position,
-                idDatosTemporales:[
-                    ...state.idDatosTemporales,
-                    {idParent:data.idSite}
+                idTemporalesPosi:[
+                    ...state.idTemporalesPosi,
+                    {idParent:data.idSiteClient}
                 ]}
+        }
+        case "INSERT_SITE_TEMPORAL":{
+            let data = action.value;
+            let site = [...state.site];
+            site.push({
+                label:data.label,
+                value:data.label,
+                dataForm:data.Form,
+                temporal:true
+            });
+            return {...state,site:site}
         }
         default:
             return state;

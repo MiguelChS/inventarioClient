@@ -6,16 +6,13 @@ require("babel-polyfill");
 import React from 'react';
 import {render} from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router,browserHistory } from 'react-router';
+import Main from './components/index';
 import store from './store';
-import router from './router.jsx';
 
 const app = document.getElementById('app');
 
 render(
     <Provider store={store}>
-        <Router history={browserHistory}>
-            {router}
-        </Router>
+        <Main/>
     </Provider>,
     app);

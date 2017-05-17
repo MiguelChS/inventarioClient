@@ -195,3 +195,80 @@ body{
 .mjsErr{
     color: #ed5565;
 }
+body{
+    background-image: url(http://seantheme.com/color-admin-v2.2/admin/html/assets/img/login-bg/bg-5.jpg);
+    background-size: 100%;
+    background-repeat:no-repeat;
+}
+.login .brand{
+    font-size: 28px;
+    color: white;
+    font-weight: 100;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+.login .icon{
+    font-size: 70px;
+    opacity: .4;
+    color: #ccc;
+    position: absolute;
+    top: -20px;
+    right: 40px;
+}
+.login small {
+    font-size: 14px;
+    color: rgba(255,255,255,.5);
+    display: block;
+}
+.login-content{
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 4px;
+}
+
+.login-content input {
+    background: rgba(0,0,0,.4);
+    border: none;
+    color: #fff;
+    font-size: 12px;
+}
+.login .loginHeader{
+    margin-top: 105px;
+}
+
+.login-content input:focus{
+
+}
+.login button{
+    border-color: #008a8a !important;
+    background: #008a8a none;
+}
+
+.login button:active{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+}
+.login button:hover{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+}
+.login button:focus{
+    background: #008a8a !important;
+    border-color: #008a8a !important;
+    outline: 0 !important;
+}
+
+.login .logo{
+    border: 14px solid transparent;
+    border-color: #4DCACA #31A3A3 #1D8888;
+    width: 28px;
+    height: 28px;
+    position: relative;
+    font-size: 0;
+    margin-right: 10px;
+    top: -9px;
+}
+
+.login .btn-success[disabled]{
+    background-color: #008a8a;
+}

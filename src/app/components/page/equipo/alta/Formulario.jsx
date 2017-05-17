@@ -5,17 +5,16 @@ import { AutoComplete , InputSerie , Select, InputFecha, Input} from '../../comp
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo
-    ,validarFormulario,cargarEquipo,ingresarModulos,cargarEquipoNcr} from '../../../../actions/equipoAction.js';
+    ,cargarFormulario,cargarEquipo,cargarEquipoNcr,insertInstitucion} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
-import { loadAuto } from '../../../../actions/autoCompleteAction.js';
-import { changeSelectModule,changeDefaultModule,changeSelectModuleAll,changeShowModule } from  '../../../../actions/sourceAction.js';
+import { changeSelectModule,changeSelectModuleAll,changeShowModule } from  '../../../../actions/sourceAction.js';
 
 
 @connect((store)=>{
     return {
         Formulario: store.equipo.formulario,
         Source: store.source,
-        AutoComplete:store.AutoComplete
+        instituciones:store.app.instituciones
     }
 })
 
@@ -25,47 +24,22 @@ export default class Formulario extends React.Component{
         this.btnAdd = true;
     }
 
-    validar(){
-        let storePlanta = this.props.AutoComplete.find( obj => obj.id == "idPlanta");
-        let storeModelo = this.props.AutoComplete.find( obj => obj.id == "idModelo");
-        let form = this.props.Formulario;
-        if(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr){
-            this.props.dispatch(validarFormulario([{...storePlanta},{...storeModelo}]));
-            this.props.dispatch(changeDefaultModule());
-            this.props.dispatch(loadAuto({id:storePlanta.id,state:{}}));
-            this.props.dispatch(loadAuto({id:storeModelo.id,state:{}}));
+    endLoad(){
+        if(this.completeForm()){
+            this.props.dispatch(cargarFormulario())
         }else{
             alert("esta imcompleto el formulario");
         }
     }
 
-    insertMarca(value){
-        let storePlanta = this.props.AutoComplete.find( obj => obj.id == "idPlanta");
-        let storeModelo = this.props.AutoComplete.find( obj => obj.id == "idModelo");
-
-        this.props.dispatch(loadAuto({id:storePlanta.id,state:{}}));
-        this.props.dispatch(loadAuto({id:storeModelo.id,state:{}}));
-
-        this.props.dispatch(cargarMarca(value));
-        this.props.dispatch(cargarModelo(null));
-        this.props.dispatch(cargarPlanta(null));
-    }
-
-    disabledBtn(){
+    completeForm(){
         let form = this.props.Formulario;
-        this.btnAdd = !(form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr);
+        return (form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr);
     }
 
     render(){
-        this.disabledBtn();
         let form = this.props.Formulario;
         let defaultSelectMarca = form.marca ? form.marca["value"] : null;
-        let defaultSelectSNMP = form.snmp ? form.snmp["value"] : null;
-        let defaultSelectSO = form.so ? form.so["value"] : null;
-        let defaultSelectXFS = form.xfs ? form.xfs["value"] : null;
-        let defaultCarga = form.carga ? form.carga["value"] : null;
-        let defaultEstado = form.estado ? form.estado["value"] : null;
-        let defaultTipoEquipo = form.tipoEquipo ? form.tipoEquipo["value"] : null;
         let defaultEquipo = form.Equipos ? form.Equipos["value"] : null;
         return(
             <Form horizontal>
@@ -88,30 +62,31 @@ export default class Formulario extends React.Component{
                             label="Marca"
                             id="idMarca"
                             dataSource={this.props.Source.marcas}
-                            default={defaultSelectMarca}
+                            default={form.marca}
                             required={true}
                             returnSelect={(value)=>{
-                                this.insertMarca(value);
+                                this.props.dispatch(cargarMarca(value));
                             }}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
-                        <AutoComplete label="Planta"
-                                      id="idPlanta"
-                                      dataSource={this.props.Source.planta[defaultSelectMarca] ? this.props.Source.planta[defaultSelectMarca] : []}
-                                      required={true}
-                                      resultadoAutoComplete={(value)=>{
-                                          this.props.dispatch(cargarPlanta(value))
-                                      }}
+                        <AutoComplete
+                            label="Planta"
+                            store={form.planta}
+                            dataSource={this.props.Source.planta[defaultSelectMarca] ? this.props.Source.planta[defaultSelectMarca] : []}
+                            required={true}
+                            onChange={(value)=>{
+                                this.props.dispatch(cargarPlanta(value))
+                            }}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
                         <AutoComplete
                             label="Modelo"
-                            id="idModelo"
                             required={true}
+                            store={form.modelo}
                             dataSource={this.props.Source.modelo[defaultSelectMarca] ? this.props.Source.modelo[defaultSelectMarca] : []}
-                            resultadoAutoComplete={(value)=>{
+                            onChange={(value)=>{
                                 this.props.dispatch(cargarModelo(value))
                             }}
                         />
@@ -131,20 +106,17 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <Select label="Equipo" id="idEquipo"
                                 dataSource={this.props.Source.Equipos}
-                                default={defaultEquipo}
+                                default={form.Equipos}
                                 required={true}
                                 returnSelect={(value)=>{
-                                    this.props.dispatch(ingresarModulos(null));
-                                    this.props.dispatch(changeDefaultModule());
                                     this.props.dispatch(cargarEquipo(value));
-
                                 }}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
                         <Select label="Tipo" id="idEquipo"
-                                dataSource={this.props.Source.tipoEquipo[defaultEquipo] ? this.props.Source.tipoEquipo[defaultEquipo] : [] }
-                                default={defaultTipoEquipo}
+                                dataSource={form.Equipos ? this.props.Source.tipoEquipo[form.Equipos.value] : [] }
+                                default={form.tipoEquipo}
                                 required={true}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarTipoEquipo(value))
@@ -154,7 +126,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <Select label="SNMP" id="idSNMP"
                                 dataSource={this.props.Source.snmp}
-                                default={defaultSelectSNMP}
+                                default={form.snmp}
                                 required={true}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarSNMP(value))
@@ -164,7 +136,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <Select label="SO" id="idSO"
                                 dataSource={this.props.Source.so}
-                                default={defaultSelectSO}
+                                default={form.so}
                                 required={true}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarSO(value))
@@ -175,7 +147,7 @@ export default class Formulario extends React.Component{
                         <Select label="xfs"
                                 id="idxfs"
                                 dataSource={this.props.Source.xfs}
-                                default={defaultSelectXFS}
+                                default={form.xfs}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarXFS(value))
                                 }}
@@ -184,7 +156,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <Select label="Carga" id="idCarga"
                                 dataSource={this.props.Source.carga}
-                                default={defaultCarga}
+                                default={form.carga}
                                 required={true}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarCarga(value))
@@ -194,7 +166,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <Select label="Estado" id="idEstado"
                                 dataSource={this.props.Source.estado}
-                                default={defaultEstado}
+                                default={form.estado}
                                 required={true}
                                 returnSelect={(value)=>{
                                     this.props.dispatch(cargarEstado(value))
@@ -239,6 +211,18 @@ export default class Formulario extends React.Component{
                                     }}
                         />
                     </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <AutoComplete
+                            label="Institucion"
+                            required={true}
+                            col={{label:3,input:9}}
+                            store={form.id_institucion}
+                            dataSource={this.props.instituciones}
+                            onChange={(value)=>{
+                                this.props.dispatch(insertInstitucion(value))
+                            }}
+                        />
+                    </Col>
                 </Row>
                 <Row bsClass="row boxConten">
                     <Col xs={12}>
@@ -247,20 +231,20 @@ export default class Formulario extends React.Component{
                             dataSource={this.props.Source.modulos[defaultEquipo] ? this.props.Source.modulos[defaultEquipo] : []}
                             required={true}
                             select={(value)=>{
-                                this.props.dispatch(changeSelectModule(value,this.props.Source.modulos))
+                                this.props.dispatch(changeSelectModule(value,this.props.Source))
                             }}
                             selectAll={(value)=>{
-                                this.props.dispatch(changeSelectModuleAll(value,this.props.Source.modulos))
+                                this.props.dispatch(changeSelectModuleAll(value,this.props.Source))
                             }}
                             changeShow={(value)=>{
-                                this.props.dispatch(changeShowModule(value,this.props.Source.modulos))
+                                this.props.dispatch(changeShowModule(value))
                             }}
                         />
                     </Col>
                 </Row>
                 <Row>
                     <Col xs={12} bsClass="text-center col">
-                        <Button bsClass="btn btn-white" disabled={this.btnAdd} onClick={this.validar.bind(this)} >Agregar</Button>
+                        <Button bsClass="btn btn-white" disabled={!this.completeForm()} onClick={this.endLoad.bind(this)} >Agregar</Button>
                     </Col>
                 </Row>
             </Form>

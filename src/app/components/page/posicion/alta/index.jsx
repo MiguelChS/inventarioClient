@@ -19,8 +19,8 @@ export default class Index extends React.Component{
                 <Col xs={12} bsClass="litleBody col">
                     <Formulario
                         id="FormPost"
-                        onEnLoad={(form)=>{
-                            console.log(form)
+                        onEnLoad={(form)=>{console.log(form)
+
                         }}
                     />
                 </Col>

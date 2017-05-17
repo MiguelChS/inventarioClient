@@ -1,9 +1,10 @@
 /**
  * Created by mc185249 on 1/17/2017.
  */
-import request from '../Request/Request';
-import {loadAuto} from './autoCompleteAction';
-import {loadModule} from  './sourceAction';
+import Request from '../Request/Request';
+import {changeDefaultModule, loadModule} from  './sourceAction';
+import { changeRequestApp } from './appAction';
+
 
 export function altaNroSerie(valor) {
     return {
@@ -14,7 +15,7 @@ export function altaNroSerie(valor) {
 
 export function FinishEA(data) {
     return function (dispatch) {
-        request.post('',data)
+        Request.post('',data)
             .then((result)=>{
                 console.log(result);
             })
@@ -32,10 +33,14 @@ export function cargarPlanta(valor) {
 }
 
 export function cargarMarca(valor) {
-    return {
-        type:"INGRESAR_MARCA_EQUIPO",
-        value: valor
-    }
+    return [
+        {
+            type:"INGRESAR_MARCA_EQUIPO",
+            value: valor
+        },
+        cargarPlanta(null),
+        cargarModelo(null)
+    ]
 }
 
 export function cargarModelo(valor) {
@@ -122,23 +127,22 @@ export function cargarEquipoNcr(valor) {
     }
 }
 
-export function validarFormulario(valor) {
-    return {
-        type:"VALIDAR_FORMULARIO_EQUIPO",
+export function cargarFormulario(valor) {
+    return [{
+        type:"CARGAR_FORMULARIO_EQUIPO",
         value:valor
-    }
+    },
+        changeDefaultModule()
+    ]
 }
 
-export function cargarFormulario(value,store) {
+export function preCargarFormulario(value,store) {
     let form = JSON.parse(localStorage.getItem(value));
-    let statePlanta = form.AutoComplete.find(obj => obj.id == "idPlanta");
-    let stateModelo = form.AutoComplete.find(obj => obj.id == "idModelo");
-    let auxForm = form.form;
     //modificamos el estado del source modulos
     let objModulo = {...store.modulos};
-    for(let i=0;i < auxForm.modulos.length;i++){
-        let obj_mod = auxForm.modulos[i];
-        objModulo[auxForm.Equipos.value] = objModulo[auxForm.Equipos.value].map((obj)=> {
+    for(let i=0;i < form.modulos.length;i++){
+        let obj_mod = form.modulos[i];
+        objModulo[form.Equipos.value] = objModulo[form.Equipos.value].map((obj)=> {
             if(obj_mod.value == obj.value){
                 obj.selected = 1;
             }
@@ -148,19 +152,21 @@ export function cargarFormulario(value,store) {
     return [
         loadModule(objModulo),
         {
-        type:"CARGAR_FORMULARIO",
-        value:form.form
+        type:"PRE_CARGAR_FORMULARIO_EQUIPO",
+        value:form
         },
-        loadAuto({id:statePlanta.id,state:statePlanta}),
-        loadAuto({id:stateModelo.id,state:stateModelo})
     ]
 }
 
 export function cargarEquipo(value) {
-    return {
-        type:"INGRESAR_EQUIPO",
-        value:value
-    }
+    return [
+        {
+            type:"INGRESAR_EQUIPO",
+            value:value
+        },
+        ingresarModulos(null),
+        changeDefaultModule()
+    ]
 }
 
 export function ingresarModulos(valor) {
@@ -177,7 +183,6 @@ export function sendForm(valor) {
     }
 }
 
-
 export function assignPosition(value) {
     return {
         type:"ASSIGN_AUTO",
@@ -185,7 +190,12 @@ export function assignPosition(value) {
     }
 }
 
-
+export function insertInstitucion(value) {
+    return {
+        type:"INGRESAR_INSTITUCION_EQUIPO",
+        value:value
+    }
+}
 
 export function deleteForm(value) {
     return {
@@ -218,4 +228,116 @@ export function desAssign(valor) {
         type:"DES_ASSIGN",
         value:valor
     }
+}
+
+export function envioEquipo() {
+    let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
+    let ArrayEnvio = [];
+    EA.map((key)=>{
+        //buscar los datos en el Local Storage
+        let auxLocalStorage = JSON.parse(localStorage.getItem(key));
+        let formAux = auxLocalStorage.form;
+        if(!formAux.sendForm){
+            let form = {
+                "id_tipo_eq": formAux.tipoEquipo.value,
+                "id_tipo_equipo":formAux.Equipos.value,
+                "f_entrega":formAux.fEntrega,
+                "id_estado":formAux.estado.value,
+                "id_institucion": 1,
+                "f_retiro":formAux.fRetiro,
+                "f_inst":formAux.fInstalacion,
+                "f_fin_garantia":formAux.finGarantia,
+                "f_inicio_garantia":formAux.fEntrega,
+                "id_xfs":formAux.xfs ? formAux.xfs.value : null,
+                "id_so":formAux.so.value,
+                "id_snmp":formAux.snmp.value,
+                "id_carga":formAux.carga.value,
+                "modulos_separados_por_coma":formAux.modulos.map( obj => `${obj.value}`),
+                "id_modelo":formAux.modelo.value,
+                "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
+                "id_planta":formAux.planta.value,
+                "id_user":2,
+                "id_equipo_ncr":formAux.equipoNcr,
+                "horaPrestacion":formAux.prestacion,
+                "id_posicion":formAux.position.value == -1 ? null : formAux.position.value,
+                "newPosicion":formAux.position.value == -1 ? formAux.position.dataForm: null
+            };
+            ArrayEnvio.push(sendFormulario(form,key))
+        }
+    });
+
+    Promise.all(ArrayEnvio)
+        .then((result)=>{
+            this.props.dispatch(loadStateSendForm(result));
+        })
+}
+
+function sendFormulario(form,key){
+    return new Promise((resolve, reject)=>{
+        //verificamos si es un aposicion nueva o existente
+        let aux = {
+            send:true,
+            idForm:key
+        };
+        if(form.newPosicion){
+            form.newPosicion.HoraPrestacion = form.horaPrestacion;
+            sendPosicion(form.newPosicion)
+                .then((result)=>{
+                    delete form.newPosicion;
+                    form.id_posicion = result.idPosicion;
+                    sendEquipo(form)
+                        .then(()=>{
+                            resolve(aux);
+                        })
+                        .catch((err)=>{
+                            aux.send=false;
+                            aux["Error"]= err.response ? err.response.data : err.message;
+                            resolve(aux);
+                        })
+                })
+                .catch((err)=>{
+                    aux.send=false;
+                    aux["Error"]= err.response ? err.response.data : err.message;
+                    resolve(aux);
+                });
+        }else{
+            delete form.newPosicion;
+            sendEquipo(form)
+                .then((result)=>{
+                    resolve(aux);
+                })
+                .catch((err)=>{
+                    aux.send=false;
+                    aux["Error"]= err.response ? err.response.data : err.message;
+                    resolve(aux);
+                });
+
+        }
+    });
+}
+
+function sendPosicion(form) {
+    new Promise((resolve, reject)=>{
+        request.post("http://lnxsrv01:5000/equipo",JSON.stringify(form))
+            .then((result)=>{
+                resolve(result.data)
+            })
+            .catch((err)=>{
+                deletePosicion()
+                    .then(()=>{
+                        reject(err);
+                    })
+                    .catch((err)=>{
+                        reject(err)
+                    });
+            });
+    })
+}
+
+function deletePosicion(idPosicion) {
+    request.delete("http://lnxsrv01:5000/equipo",JSON.stringify(idPosicion))
+}
+
+function sendEquipo(form) {
+    return request.post("http://lnxsrv01:5000/equipo",JSON.stringify(form))
 }

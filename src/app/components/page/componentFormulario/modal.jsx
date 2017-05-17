@@ -3,6 +3,7 @@ import {Modal} from 'react-bootstrap';
 import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
 import ModalFormPosicion from '../posicion/alta/ModalAltaPosicion';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
+import ModalFormularioSite from '../site/FormularioSite';
 
 export default class ModalForm extends React.Component{
 
@@ -32,6 +33,13 @@ export default class ModalForm extends React.Component{
                         result={store.data.callbackResult}
                         firstDefault={store.data.firstDefault}
                         />
+            }
+
+            case 4:{
+                return <ModalFormularioSite
+                    idModal={store.id}
+                    data={store.data}
+                />
             }
 
             default:

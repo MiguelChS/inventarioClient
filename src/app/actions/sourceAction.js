@@ -3,24 +3,35 @@
  */
 import request from '../Request/Request';
 import {ingresarModulos} from './equipoAction';
+import { changeRequestApp } from './appAction';
+import {depurar} from '../lib/index';
+
+export function loadSource(valor) {
+    return {
+        type:"LOAD_SOURCE",
+        value:valor
+    }
+}
 
 export function searchSource() {
     return function(dispatch) {
         request.get('http://localhost:4000/api/sourceInventario')
             .then((result)=>{
-                dispatch({
-                    type:"LOAD_SOURCE",
-                    value: result.data
-                })
+                dispatch([
+                    loadSource(result.data),
+                    changeRequestApp(false)
+                ])
             })
             .catch((err)=>{
-                console.log(err);
+                dispatch([
+                    changeRequestApp(false)
+                ])
             });
     }
 }
 
 export function changeSelectModule(valor,source) {
-    let objModulo = {...source};
+    let objModulo = {...source.modulos};
     let auxModulo = [];
     objModulo[valor.idTipo] = objModulo[valor.idTipo].map((obj)=> {
         if (obj.value == valor.value && valor.show) {
@@ -29,13 +40,20 @@ export function changeSelectModule(valor,source) {
         if(obj.selected == 1) auxModulo.push({...obj});
         return obj;
     });
+    //depuramos las prestaciones repetidad
+    let prestacionDepurada = depurar(auxModulo,"idVentana");
+    //buscamos las prestacion con sus ventanas horarias corespondientes
+    let prestacionHorarioVenta = prestacionDepurada.map((obj)=>{
+        return source.TypeHora.find(vent => vent.value == obj["idVentana"])
+    });
+    //verificamos si se agregaron modulos
     auxModulo = auxModulo.length ? auxModulo : null;
     return [
         {
             type:"CHANGE_SELECTED_MODULES",
             value: objModulo
         },
-        ingresarModulos(auxModulo)
+        ingresarModulos({modulo:auxModulo,typePrestacion:prestacionHorarioVenta})
     ]
 }
 
@@ -46,7 +64,7 @@ export function changeDefaultModule() {
 }
 
 export function changeSelectModuleAll(valor,source) {
-    let objModulo = {...source};
+    let objModulo = {...source.modulos};
     let auxModulo = [];
     objModulo[valor.idTipo] = objModulo[valor.idTipo].map((obj)=> {
         if(obj.show){
@@ -55,13 +73,19 @@ export function changeSelectModuleAll(valor,source) {
         if(obj.selected == 1) auxModulo.push({...obj});
         return obj;
     });
+    //depuramos las prestaciones repetidad
+    let prestacionDepurada = depurar(auxModulo,"idVentana");
+    //buscamos las prestacion con sus ventanas horarias corespondientes
+    let prestacionHorarioVenta = prestacionDepurada.map((obj)=>{
+        return source.TypeHora.find(vent => vent.value == obj["idVentana"])
+    });
     auxModulo = auxModulo.length ? auxModulo : null;
     return [
         {
             type:"CHANGE_MODULE_SELECTED_ALL",
             value: objModulo
         },
-        ingresarModulos(auxModulo)
+        ingresarModulos({modulo:auxModulo,typePrestacion:prestacionHorarioVenta})
     ]
 }
 
@@ -85,3 +109,10 @@ export function insertTemporalPosicion(valor) {
         value:valor
     }
 }
+export function insertTemporalSite(valor) {
+    return {
+        type:"INSERT_SITE_TEMPORAL",
+        value:valor
+    }
+}
+

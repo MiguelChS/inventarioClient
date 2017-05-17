@@ -6,7 +6,7 @@ let init={
     cliente:null,
     ncr:null,
     ip:null,
-    site:null,
+    siteClient:null,
     config_gavetas:null,
     tabla_status:null,
     script:null,
@@ -18,7 +18,6 @@ let init={
     ubicacion_en_site:null,
     prestacion:null,
     id_Equipo:null,
-    pretacion:null,
     //horarios
     hourBranch:null,
     hourOperation:null,
@@ -30,110 +29,111 @@ let init={
     dato2:null,
     dato3:null,
     //datos de comportamienrto de formulario
+    sourceSite:[],
+    sourceClient:[],
+    sourceEquipo:[],
+    institucion:null,
     idPrestaciones:[],
     mjsErr:"",
     stateRequtes:false,
+    site:null
 };
 
-function reducer(state,action) {
+function reducer(state = init,action) {
     switch (action.type){
-        case "ADD_FORM_POS":{
-            return {...state,...action.value}
-        }
         case "INSERT_CLIENT_POS":{
-            return {...state,cliente:action.value.text}
+            return {...state,cliente:action.value}
+        }
+        case "INSERT_SOURCE_SITE_POS":{
+            return {...state,sourceSite:action.value}
+        }
+        case "INSERT_SOURCE_SITE_CLIENT_POS":{
+            return {...state,sourceClient:action.value}
+        }
+        case "INSERT_SOURCE_EQUIPO_POS":{
+            return {...state,sourceEquipo:action.value}
         }
         case "INSERT_NCR_POS":{
-            return {...state,ncr:action.value.text}
+            return {...state,ncr:action.value}
         }
         case "INSERT_IP_POS":{
-            return {...state,ip:action.value.text}
+            return {...state,ip:action.value}
         }
         case "INSERT_SITE_POS":{
-            return {...state,site:action.value.value}
+            return {...state,site:action.value}
+        }
+        case "INSERT_SITE_CLIENT_POS":{
+            return {...state,siteClient:action.value}
         }
         case "INSERT_GAVETA_POS":{
-            return {...state,config_gavetas:action.value.value}
+            return {...state,config_gavetas:action.value}
         }
         case "INSERT_TABLE_STATUS_POS":{
-            return {...state,tabla_status:action.value.value}
+            return {...state,tabla_status:action.value}
         }
         case "INSERT_SCRIPT_POS":{
-            return {...state,script:action.value.value}
+            return {...state,script:action.value}
         }
         case "INSERT_COMMAND_POS":{
-            return {...state,command:action.value.value}
+            return {...state,command:action.value}
         }
         case "INSERT_COMMUNITY_STRING_POS":{
-            return {...state,community_string:action.value.value}
+            return {...state,community_string:action.value}
         }
         case "INSERT_COMUNICACION_POS":{
-            return {...state,comunicacion:action.value.value}
+            return {...state,comunicacion:action.value}
         }
         case "INSERT_SLM_POS":{
-            return {...state,slm:action.value.value}
+            return {...state,slm:action.value}
         }
         case "INSERT_FLM_POS":{
-            return {...state,flm:action.value.value}
+            return {...state,flm:action.value}
         }
         case "INSERT_HOURPRESTACION_POS":{
-            return {...state,hourPrestacion:action.value.value}
+            return {...state,hourPrestacion:action.value}
+        }
+        case "CLEAR_HOURPRESTACION_POS":{
+            return {...state,hourPrestacion:[]}
         }
         case "INSERT_PRESTACION_POS":{
-            return {...state,pretacion:action.value.value}
+            return {...state,prestacion:action.value}
         }
         case "INSERT_UBICACION_POS":{
-            return {...state,ubicacion_en_site:action.value.value}
+            return {...state,ubicacion_en_site:action.value}
         }
         case "INSERT_HOUR_BRANCH_POS":{
-            return {...state,hourBranch:action.value.value}
+            return {...state,hourBranch:action.value}
         }
         case "INSERT_HOUR_OPERATION_POS":{
-            return {...state,hourOperation:action.value.value}
+            return {...state,hourOperation:action.value}
         }
         case "INSERT_HOUR_SLA_POS":{
-            return {...state,sla:action.value.value}
+            return {...state,sla:action.value}
         }
         case "INSERT_HOUR_ACCESS_POS":{
-            return {...state,access:action.value.value}
+            return {...state,access:action.value}
         }
         case "INSERT_HOUR_PEAK_POS":{
-            return {...state,hourPeak:action.value.value}
+            return {...state,hourPeak:action.value}
         }
         case "INSERT_EQUIPO_POS":{
-            return {...state,id_Equipo:action.value.value}
+            return {...state,id_Equipo:action.value}
         }
         case "INSERT_REQUEST_PRESTACION_POS":{
-            return {...state,stateRequtes:action.value.value}
+            return {...state,stateRequtes:action.value}
         }
         case "INSERT_ID_PRESTACION_POS":{
-            return {...state,idPrestaciones:action.value.value}
+            return {...state,idPrestaciones:action.value}
+        }
+        case "INSERT_INSTITUCION_POS":{
+            return {...state,institucion:action.value}
         }
         case "INSERT_mjsErr_POS":{
-            return {...state,mjsErr:action.value.value}
+            return {...state,mjsErr:action.value}
         }
         default:
             return state;
     }
 }
 
-function arrayReducer(state=[],action) {
-    switch (action.type){
-        case "ADD_FORM_POS":{
-            return [...state,reducer(init,action)]
-        }
-        case "INSERT_FORM_POST":{
-            return state.map(obj =>{
-               if(obj.id != action.value.value.id) return obj;
-               return reducer(obj,action.value);
-            });
-        }
-        case 'REMOVE_FORM_POS':{
-            return state.filter( store => store.id !== action.value);
-        }
-        default:
-            return state;
-    }
-}
-
-export default arrayReducer;
+export default reducer;

@@ -13,12 +13,16 @@ export default class inputHorarios extends React.Component{
     }
 
     render(){
+        let classRequire = '';
+        if(this.props.required && !this.props.data.firstDefault){
+            classRequire = "require-inv";
+        }
         return(
             <div className="form-group">
                 <label className={`col-xs-12 control-label col-sm-${this.props.col ? this.props.col.label: 2}`}>{this.props.label}</label>
                 <div className={`col-xs-12 col-sm-${this.props.col ? this.props.col.input: 10}`}>
                     <button type="button"
-                            className="btn btn-white separarButton"
+                            className={`btn btn-white separarButton ${classRequire}`}
                             onClick={this.openGrafic.bind(this)}>
                         <i className="fa fa-calendar" />
                     </button>
