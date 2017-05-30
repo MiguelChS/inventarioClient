@@ -32,6 +32,11 @@ export default class TablaEquipo extends React.Component{
         this.props.dispatch(deleteForm(data));
     }
 
+    detalle(data){
+        let form = JSON.parse(localStorage.getItem(data));
+        console.log(form);
+    }
+
     showErrEnvio(mjs){
         console.log(mjs);
     }
@@ -50,28 +55,24 @@ export default class TablaEquipo extends React.Component{
             <Table bsClass="table TableMiddle table-striped table-bordered table-condensed table-hover">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Serie</th>
                         <th>Sucursal</th>
                         <th>Posicion</th>
                         <th>Asignado</th>
-                        <th>Enviado</th>
+                        <th style={{textAlign:"center"}}>Error</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {this.props.tabla.map((obj,indice)=>{
-                        let classOK = obj.posicion != 'SIN DATO' ? "glyphicon glyphicon-ok text-center" : "glyphicon glyphicon-remove text-center" ;
-                        let envioOk = obj.sendForm ? "glyphicon glyphicon-ok text-center" : "glyphicon glyphicon-remove text-center";
+                        let classOK = obj.nameSuc != 'SIN DATO' ? "glyphicon glyphicon-ok text-center" : "glyphicon glyphicon-remove text-center" ;
                         return(
                             <tr key={indice}>
-                                <td>{indice + 1}</td>
                                 <td>{obj.numSerie}</td>
                                 <td>{obj.nameSuc ? obj.nameSuc : ""}</td>
                                 <td>{obj.posicion ? obj.posicion : ""}</td>
                                 <td><span className={classOK}/></td>
-                                <td>
-                                    <span className={envioOk} style={{verticalAlign:"middle",marginRight:"10px"}}/>
+                                <td style={{textAlign:"center"}}>
                                     {this.returnBtnErr(obj.err)}
                                 </td>
                                 <td>
@@ -88,7 +89,7 @@ export default class TablaEquipo extends React.Component{
                                     <ButtonTable
                                         data={obj.idform}
                                         icono="fa-list-alt"
-                                        click={(data)=>{console.log(data)}}
+                                        click={this.detalle.bind(this)}
                                     />
                                     <ButtonTable
                                         data={obj.idform}

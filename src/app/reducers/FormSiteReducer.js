@@ -2,17 +2,19 @@
  * Created by mc185249 on 5/9/2017.
  */
 let init={
-    nombreSite:"",//input
-    direccion:"",//input
-    telefonoSite:"",//input
-    siteCode:"",//input
-    geo:null,//autoComplete
-    geoNcr:null,//autoComplete
-    kmNcr:null,//input
-    latitud:"",//input
-    longitud:"",//input
-    offset:"",//input
-    idTipoDireccion:null,//select
+    nombreSite:"",//editable para publico y propio
+    direccion:"",//editable solo para propio
+    geo:null,//editable solo para propio
+    geoClient:null,// editable para ambos
+    idClient:null,//editable para ambos
+    idTipoSite:null,//editable para ambos
+    latitud:"",//editable para propios
+    longitud:"",//editable para propios
+    offset:"",//editable para propios,
+    telefono1:"",
+    telefono2:"",
+    telefono3:"",
+
     //comportamiento propio del formulario
     pais:null, //autoComplete
     estado:null,//autoComplete
@@ -20,7 +22,12 @@ let init={
     sourceEstado:[],
     sourceCiudad:[],
     sourceCodigoPostal:[],
+    sourceSitePublic:[],
+    mjsSuccess:"",
     msjErr:"",
+    Lugar:null,
+    SitePublic:null
+
 };
 
 function reducer (state=init,action){
@@ -28,23 +35,35 @@ function reducer (state=init,action){
         case "INSERT_NAME_SITE_SITE":{
             return {...state,nombreSite:action.value}
         }
+        case "INSERT_LUGAR_SITE":{
+            return {...state,Lugar:action.value}
+        }
+        case "INSERT_SITE_PUBLIC_SITE":{
+            return {...state,SitePublic:action.value}
+        }
         case "INSERT_DIRECCION_SITE":{
             return {...state,direccion:action.value}
         }
-        case "INSERT_PHONE_SITE_SITE":{
-            return {...state,telefonoSite:action.value}
+        case "INSERT_CLIENT_SITE":{
+            return {...state,idClient:action.value}
         }
-        case "INSERT_SITE_CODE_SITE":{
-            return {...state,siteCode:action.value}
+        case "INSERT_TYPE__SITE":{
+            return {...state,idTipoSite:action.value}
         }
         case "INSERT_GEO_SITE":{
             return {...state,geo:action.value}
         }
-        case "INSERT_GEO_NCR_SITE":{
-            return {...state,geoNcr:action.value}
+        case "INSERT_GEO_CLIENT_SITE":{
+            return {...state,geoClient:action.value}
         }
-        case "INSERT_KM_NCR_SITE":{
-            return {...state,kmNcr:action.value}
+        case "INSERT_PHONE1_SITE":{
+            return {...state,telefono1:action.value}
+        }
+        case "INSERT_PHONE2_SITE":{
+            return {...state,telefono2:action.value}
+        }
+        case "INSERT_PHONE3_SITE":{
+            return {...state,telefono3:action.value}
         }
         case "INSERT_LATITUD_SITE":{
             return {...state,latitud:action.value}
@@ -68,6 +87,7 @@ function reducer (state=init,action){
                 sourceCiudad:[],
                 sourceCodigoPostal:[]}
         }
+
         case "INSERT_ESTADO_SITE":{
             return {...state,estado:action.value,ciudad:null,geo:null,sourceCiudad:[],sourceCodigoPostal:[]}
         }
@@ -77,6 +97,9 @@ function reducer (state=init,action){
         case "INSERT_MJS_ERR_SITE":{
             return {...state,msjErr:action.value}
         }
+        case "INSERT_MJS_SUCCESS_SITE":{
+            return {...state,mjsSuccess:action.value}
+        }
         case "INSERT_SOURCE_ESTADO_SITE":{
             return {...state,sourceEstado:action.value}
         }
@@ -85,6 +108,9 @@ function reducer (state=init,action){
         }
         case "INSERT_SOURCE_CODIGO_POSTAL_SITE":{
             return {...state,sourceCodigoPostal:action.value}
+        }
+        case "INSERT_SOURCE_SITE_PUBLIC_POSTAL_SITE":{
+            return {...state,sourceSitePublic:action.value}
         }
         case "INSERT_PRE_LOAD_SITE":{
             return {...state,...action.value}

@@ -190,6 +190,16 @@ export function assignPosition(value) {
     }
 }
 
+export function insertCliente(value) {
+    return [
+        {
+            type:"INGRESAR_CLIENTE_EQUIPO",
+            value:value
+        },
+        insertInstitucion(null)
+    ]
+}
+
 export function insertInstitucion(value) {
     return {
         type:"INGRESAR_INSTITUCION_EQUIPO",
@@ -230,114 +240,152 @@ export function desAssign(valor) {
     }
 }
 
+function formatHorarios(horario) {
+    let array = [];
+    for (let attr in horario){
+        array.push({
+            idHora:attr,
+            hora:horario[attr]
+        })
+    }
+    return array;
+}
+
+function mapFormularioPosicion(form,site) {
+    if(!form) return null;
+    return {
+        "clientid":form.nombrePoscion,
+        "dato2":form.dato2,
+        "dato3":form.dato3,
+        "idSite":site,
+        "ncrid":form.ncr,
+        "idconfiggavetas":form.config_gavetas.value,
+        "id_status":form.tabla_status.value,
+        "idscript":form.script.value,
+        "idcommand":form.command.value,
+        "idcommunitystring":form.community_string.value,
+        "ip":form.ip,
+        "iduser":1,
+        "idcomunicacion":form.comunicacion.value,
+        "idslm":form.slm.value,
+        "idflm":form.flm.value,
+        "idubicacionensite":form.ubicacion_en_site.value,
+        "idprestacion":form.prestacion.value,
+        "hourBranch":formatHorarios(form.hourBranch),
+        "hourOperation":formatHorarios(form.hourBranch),
+        "sla":formatHorarios(form.hourBranch),
+        "access":formatHorarios(form.hourBranch),
+        "hourPeak":formatHorarios(form.hourBranch),
+        "HoraPrestacion":[]
+    };
+}
+
 export function envioEquipo() {
-    let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
-    let ArrayEnvio = [];
-    EA.map((key)=>{
-        //buscar los datos en el Local Storage
-        let auxLocalStorage = JSON.parse(localStorage.getItem(key));
-        let formAux = auxLocalStorage.form;
-        if(!formAux.sendForm){
-            let form = {
-                "id_tipo_eq": formAux.tipoEquipo.value,
-                "id_tipo_equipo":formAux.Equipos.value,
-                "f_entrega":formAux.fEntrega,
-                "id_estado":formAux.estado.value,
-                "id_institucion": 1,
-                "f_retiro":formAux.fRetiro,
-                "f_inst":formAux.fInstalacion,
-                "f_fin_garantia":formAux.finGarantia,
-                "f_inicio_garantia":formAux.fEntrega,
-                "id_xfs":formAux.xfs ? formAux.xfs.value : null,
-                "id_so":formAux.so.value,
-                "id_snmp":formAux.snmp.value,
-                "id_carga":formAux.carga.value,
-                "modulos_separados_por_coma":formAux.modulos.map( obj => `${obj.value}`),
-                "id_modelo":formAux.modelo.value,
-                "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
-                "id_planta":formAux.planta.value,
-                "id_user":2,
-                "id_equipo_ncr":formAux.equipoNcr,
-                "horaPrestacion":formAux.prestacion,
-                "id_posicion":formAux.position.value == -1 ? null : formAux.position.value,
-                "newPosicion":formAux.position.value == -1 ? formAux.position.dataForm: null
-            };
-            ArrayEnvio.push(sendFormulario(form,key))
+    return [
+        changeRequestApp(true),
+        sendFormArray()
+    ]
+}
+
+function sendFormArray() {
+    return function(dispatch) {
+        let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
+        let ArrayEnvio = [];
+        EA.map((key)=>{
+            //buscar los datos en el Local Storage
+            let formAux = JSON.parse(localStorage.getItem(key));
+            if(!formAux.sendForm){
+                let form = {
+                    "id_tipo_eq": formAux.tipoEquipo.value,
+                    "id_tipo_equipo":formAux.Equipos.value,
+                    "f_entrega":formAux.fEntrega,
+                    "id_estado":formAux.estado.value,
+                    "id_institucion": formAux.id_institucion.value,
+                    "id_user":1,
+                    "f_retiro":formAux.fRetiro,
+                    "f_inst":formAux.fInstalacion,
+                    "f_fin_garantia":formAux.finGarantia,
+                    "f_inicio_garantia":formAux.fEntrega,
+                    "id_xfs":formAux.xfs ? formAux.xfs.value : null,
+                    "id_SO":formAux.so.value,
+                    "id_snmp":formAux.snmp.value,
+                    "id_carga":formAux.carga.value,
+                    "modulos_separados_por_coma":formAux.modulos.map( obj => `${obj.value}`),
+                    "id_modelo":formAux.modelo.value,
+                    "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
+                    "id_planta":formAux.planta.value,
+                    "id_equipo_ncr":formAux.equipoNcr,
+                    "horaPrestacion":formAux.prestacion.map((pre)=>{ return{idHora:`${pre.value}`,hora:pre.hora} }),
+                    "id_posicion":formAux.newPosicion ? null : formAux.newPosicion,
+                    "newPosicion":mapFormularioPosicion(formAux.newPosicion,formAux.site.value)
+                };
+                ArrayEnvio.push(sendFormulario(form,key))
+            }
+        });
+
+        Promise.all(ArrayEnvio)
+            .then((result)=>{
+                dispatch([
+                    changeRequestApp(false),
+                    loadStateSendForm(result)
+                ]);
+            })
+     }
+}
+
+function verificarCargaPrestacion(form) {
+    let flagComplete = true;
+    if(form.id_posicion == 0){
+        form.horaPrestacion = [];
+        return flagComplete;
+    }
+    form.horaPrestacion.map( obj => {
+        if(!obj.hora){
+            flagComplete = false;
         }
     });
 
-    Promise.all(ArrayEnvio)
-        .then((result)=>{
-            this.props.dispatch(loadStateSendForm(result));
-        })
+    return flagComplete;
+}
+
+function verificarAssignacion(form) {
+    return !(form.newPosicion && form.newPosicion.idSite == 0);
 }
 
 function sendFormulario(form,key){
     return new Promise((resolve, reject)=>{
-        //verificamos si es un aposicion nueva o existente
-        let aux = {
-            send:true,
-            idForm:key
-        };
-        if(form.newPosicion){
-            form.newPosicion.HoraPrestacion = form.horaPrestacion;
-            sendPosicion(form.newPosicion)
-                .then((result)=>{
-                    delete form.newPosicion;
-                    form.id_posicion = result.idPosicion;
-                    sendEquipo(form)
-                        .then(()=>{
-                            resolve(aux);
-                        })
-                        .catch((err)=>{
-                            aux.send=false;
-                            aux["Error"]= err.response ? err.response.data : err.message;
-                            resolve(aux);
-                        })
-                })
-                .catch((err)=>{
-                    aux.send=false;
-                    aux["Error"]= err.response ? err.response.data : err.message;
-                    resolve(aux);
-                });
-        }else{
-            delete form.newPosicion;
-            sendEquipo(form)
-                .then((result)=>{
-                    resolve(aux);
-                })
-                .catch((err)=>{
-                    aux.send=false;
-                    aux["Error"]= err.response ? err.response.data : err.message;
-                    resolve(aux);
-                });
-
+        if(!verificarCargaPrestacion(form)){
+            resolve({
+                key,
+                err:"Verifique las horas de prestacion"
+            });
+            return;
         }
-    });
-}
-
-function sendPosicion(form) {
-    new Promise((resolve, reject)=>{
-        request.post("http://lnxsrv01:5000/equipo",JSON.stringify(form))
-            .then((result)=>{
-                resolve(result.data)
+        if(!verificarAssignacion(form)){
+            resolve({
+                key,
+                err:"Falta asignar un site a la posicion"
+            });
+            return;
+        }
+        Request.customize({
+            method: 'POST',
+            url: 'http://localhost:4000/api/Equipo',
+            data: form,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            json: true
+        })
+            .then(()=>{
+                    resolve(null)
             })
             .catch((err)=>{
-                deletePosicion()
-                    .then(()=>{
-                        reject(err);
-                    })
-                    .catch((err)=>{
-                        reject(err)
-                    });
-            });
-    })
-}
-
-function deletePosicion(idPosicion) {
-    request.delete("http://lnxsrv01:5000/equipo",JSON.stringify(idPosicion))
-}
-
-function sendEquipo(form) {
-    return request.post("http://lnxsrv01:5000/equipo",JSON.stringify(form))
+                resolve({
+                    key,
+                    err:err.response ? err.response.data.err : "Uhh Hubo un problema"
+                });
+            })
+    });
 }

@@ -13,7 +13,6 @@ let ModalForm = (props)=>{
             <h4 className="titleModal">Asignar Posicion</h4>
             <div className="hr-line-dashed"/>
             <Formulario
-                id={props.data.id}
                 onEnLoad={(form)=>{
                     props.dispatch(hiddenModal(props.idModal));
                     props.data.onEndLoadFormulario(form);
@@ -21,7 +20,8 @@ let ModalForm = (props)=>{
                 onCancel={()=>{
                     props.dispatch(hiddenModal(props.idModal));
                 }}
-                prestacion={[]}
+                desdeEquipo={true}
+                Default={props.data.default}
             />
         </div>
     )

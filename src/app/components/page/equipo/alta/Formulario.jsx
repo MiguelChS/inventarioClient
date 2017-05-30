@@ -5,7 +5,7 @@ import { AutoComplete , InputSerie , Select, InputFecha, Input} from '../../comp
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo
-    ,cargarFormulario,cargarEquipo,cargarEquipoNcr,insertInstitucion} from '../../../../actions/equipoAction.js';
+    ,cargarFormulario,cargarEquipo,cargarEquipoNcr,insertInstitucion,insertCliente} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
 import { changeSelectModule,changeSelectModuleAll,changeShowModule } from  '../../../../actions/sourceAction.js';
 
@@ -14,7 +14,8 @@ import { changeSelectModule,changeSelectModuleAll,changeShowModule } from  '../.
     return {
         Formulario: store.equipo.formulario,
         Source: store.source,
-        instituciones:store.app.instituciones
+        cliente:store.app.cliente,
+        request:store.app.Request
     }
 })
 
@@ -34,13 +35,14 @@ export default class Formulario extends React.Component{
 
     completeForm(){
         let form = this.props.Formulario;
-        return (form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr);
+        return (form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr && form.id_institucion);
     }
 
     render(){
         let form = this.props.Formulario;
         let defaultSelectMarca = form.marca ? form.marca["value"] : null;
         let defaultEquipo = form.Equipos ? form.Equipos["value"] : null;
+        let Institucion = form.cliente && form.cliente.value ? form.cliente.institucion : [];
         return(
             <Form horizontal>
                 <Row>
@@ -176,7 +178,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <InputFecha label="Entrega" id="idEntrega"
                                     format="DD-MM-YYYY"
-                                    default={{date1:this.props.Formulario.fEntrega}}
+                                    default={{date1:form.fEntrega}}
                                     returnDateInput={(value)=>{
                                         this.props.dispatch(cargarFechaEntrega(value))
                                     }}
@@ -185,7 +187,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <InputFecha label="Instalacion" id="idInstalacion"
                                     format="DD-MM-YYYY"
-                                    default={{date1:this.props.Formulario.fInstalacion}}
+                                    default={{date1:form.fInstalacion}}
                                     col={{label:3,input:9}}
                                     returnDateInput={(value)=>{
                                         this.props.dispatch(cargarFechaInstalacion(value))
@@ -195,7 +197,7 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <InputFecha label="Fin Garantia" id="idGarantia"
                                     format="DD-MM-YYYY"
-                                    default={{date1:this.props.Formulario.finGarantia}}
+                                    default={{date1:form.finGarantia}}
                                     col={{label:4,input:8}}
                                     returnDateInput={(value)=>{
                                         this.props.dispatch(cargarFechaGarantia(value))
@@ -205,10 +207,22 @@ export default class Formulario extends React.Component{
                     <Col xs={12} sm={6} md={4}>
                         <InputFecha label="Retiro" id="idRetiro"
                                     format="DD-MM-YYYY"
-                                    default={{date1:this.props.Formulario.fRetiro}}
+                                    default={{date1:form.fRetiro}}
                                     returnDateInput={(value)=>{
                                         this.props.dispatch(cargarFRetiro(value))
                                     }}
+                        />
+                    </Col>
+                    <Col xs={12} sm={6} md={4}>
+                        <AutoComplete
+                            label="Cliente"
+                            required={true}
+                            col={{label:3,input:9}}
+                            store={form.cliente}
+                            dataSource={this.props.cliente}
+                            onChange={(value)=>{
+                                this.props.dispatch(insertCliente(value))
+                            }}
                         />
                     </Col>
                     <Col xs={12} sm={6} md={4}>
@@ -217,7 +231,7 @@ export default class Formulario extends React.Component{
                             required={true}
                             col={{label:3,input:9}}
                             store={form.id_institucion}
-                            dataSource={this.props.instituciones}
+                            dataSource={Institucion}
                             onChange={(value)=>{
                                 this.props.dispatch(insertInstitucion(value))
                             }}
@@ -231,10 +245,10 @@ export default class Formulario extends React.Component{
                             dataSource={this.props.Source.modulos[defaultEquipo] ? this.props.Source.modulos[defaultEquipo] : []}
                             required={true}
                             select={(value)=>{
-                                this.props.dispatch(changeSelectModule(value,this.props.Source))
+                                this.props.dispatch(changeSelectModule(value,this.props.Source,form.prestacion))
                             }}
                             selectAll={(value)=>{
-                                this.props.dispatch(changeSelectModuleAll(value,this.props.Source))
+                                this.props.dispatch(changeSelectModuleAll(value,this.props.Source,form.prestacion))
                             }}
                             changeShow={(value)=>{
                                 this.props.dispatch(changeShowModule(value))

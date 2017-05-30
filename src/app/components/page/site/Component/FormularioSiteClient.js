@@ -3,10 +3,10 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import * as action from '../../../actions/FormSiteClientAction';
-import { AutoComplete , Select, Input } from '../componentFormulario/index.js'
-import { addModal } from '../../../actions/modalAction'
-import { insertPreCarga } from '../../../actions/FormSiteAction';
+import * as action from '../../../../actions/FormSiteClientAction';
+import { AutoComplete , Select, Input } from '../../componentFormulario/index.js'
+import { addModal } from '../../../../actions/modalAction'
+import { insertPreCarga } from '../../../../actions/FormSiteAction';
 
 class FormularioSiteClient extends React.Component{
 
@@ -18,14 +18,14 @@ class FormularioSiteClient extends React.Component{
             "telefono1":form.telefono1,
             "telefono2":form.telefono2,
             "telefono3":form.telefono3,
-            "id_inv_site":form.idSite.hasOwnProperty("dataForm") ? null : form.idSite.value,
-            "newSite": !form.idSite.hasOwnProperty("dataForm") ? null : form.idSite.dataForm
+            "id_inv_site":form.idSite ? form.idSite.value : null,
+            "newSite": form.newSite
         }
     }
 
     validar(form) {
         return (form.nombreSiteClient && form.tipoSiteClient && form.geoClient
-        && form.telefono1 && form.telefono2 && form.telefono3 && form.idSite)
+        && form.telefono1 && form.telefono2 && form.telefono3 && (form.idSite || form.newSite))
     }
 
     openFormularioSite(){
@@ -62,6 +62,11 @@ class FormularioSiteClient extends React.Component{
             <div>
                 <form className="form-horizontal">
                     <div className="row">
+                        <div className="col-xs-12 text-center">
+                            <p className="mjsErr">{props.store.mjsErr}</p>
+                        </div>
+                    </div>
+                    <div className="row">
                         <div className="col-xs-12 col-md-6">
                             <Input
                                 value={props.store.nombreSiteClient ? props.store.nombreSiteClient: ""}
@@ -79,7 +84,7 @@ class FormularioSiteClient extends React.Component{
                                 id="idTipoSite"
                                 col={{label:2,input:10}}
                                 dataSource={props.source.TipoSite}
-                                default={props.store.tipoSiteClient ? props.store.tipoSiteClient["value"]:null}
+                                default={props.store.tipoSiteClient}
                                 required={true}
                                 returnSelect={(value)=>{
                                     props.dispatch(action.insertTipoSite(value));
@@ -140,7 +145,7 @@ class FormularioSiteClient extends React.Component{
                             <AutoComplete
                                 label="Cliente"
                                 store={props.store.institucion}
-                                dataSource={props.institucion}
+                                dataSource={props.institucion.filter(obj => obj.origen == 1)}
                                 required={true}
                                 onChange={(value)=>{
                                     props.dispatch(action.insertInstitucion(value));
@@ -201,7 +206,7 @@ class FormularioSiteClient extends React.Component{
                             disabled={props.request}
                             onClick={()=>{
                                 if(!this.validar(props.store)) return;
-                                props.onEndLoadForm(this.formatFormulario(props.store));
+                                props.onEndLoadForm(props.store);
                             }}>
                         Agregar Site cliente
                     </button>

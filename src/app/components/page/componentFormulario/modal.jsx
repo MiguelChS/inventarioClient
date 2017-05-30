@@ -3,7 +3,7 @@ import {Modal} from 'react-bootstrap';
 import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
 import ModalFormPosicion from '../posicion/alta/ModalAltaPosicion';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
-import ModalFormularioSite from '../site/FormularioSite';
+import ModalFormularioSite from '../site/Component/FormularioSite';
 
 export default class ModalForm extends React.Component{
 

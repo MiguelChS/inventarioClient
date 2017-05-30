@@ -15,6 +15,7 @@ import App from './appReducer';
 import SiteClient from './FormSiteClientReducer';
 import Login from './LoginReducer';
 import AssignPosicion from './AsignacionPosicionReducer';
+import ModiSite from './ModificacionSite';
 
 export default combineReducers({
     equipo: equipo,
@@ -28,5 +29,6 @@ export default combineReducers({
     BoxFilter:BoxFilter,
     app:App,
     login:Login,
-    assignPosicion:AssignPosicion
+    assignPosicion:AssignPosicion,
+    siteModi:ModiSite
 })

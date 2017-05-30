@@ -272,3 +272,10 @@ body{
 .login .btn-success[disabled]{
     background-color: #008a8a;
 }
+
+.mjsSuccess {
+    color: #008a8a;
+}
+.no-margins{
+    margin: 0 !important;
+}

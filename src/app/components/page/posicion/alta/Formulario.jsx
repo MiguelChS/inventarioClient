@@ -3,13 +3,12 @@ import { connect } from  'react-redux';
 import { AutoComplete , Select, Input,InputHorario } from '../../componentFormulario/index.js'
 import BoxFilter from '../../../boxFilter/index.jsx';
 import  * as action from '../../../../actions/formPositionAction';
-import {noSelect} from '../../../../actions/autoCompleteAction';
 
 @connect((store)=>{
     return {
         fomPos:store.formPosition,
         source:store.source,
-        institucion:store.app.instituciones,
+        cliente:store.app.cliente,
         request:store.app.Request
     }
 })
@@ -32,10 +31,10 @@ export default class Formulario extends React.Component{
     endLoad(){
         if(!this.validar()) return;
         let formAux = this.store;
-        let form = {
+        /*let form = {
             "client_id":formAux.cliente,
             "ncr_id": formAux.ncr,
-            "id_site_client":formAux.siteClient.value,
+            "id_site_client":formAux.siteClient ? formAux.siteClient.value : null,
             "id_config_gavetas":formAux.config_gavetas.value,
             "id_tabla_status":formAux.tabla_status.value,
             "id_script": formAux.script.value,
@@ -52,53 +51,67 @@ export default class Formulario extends React.Component{
             "sla":this.formatHour(formAux.sla),
             "access":this.formatHour(formAux.access),
             "hourPeak":this.formatHour(formAux.hourPeak),
-            "HoraPrestacion":formAux.hourPrestacion,
+            "HoraPrestacion":formAux.hourPrestacion.map(obj =>{return {idHora:obj.value,hora:obj.hora[obj.value]}}),
             "idEquipo":formAux.id_Equipo ? formAux.id_Equipo.value : null,
             "dato2":null,
             "dato3":null,
-        };
-        this.props.onEnLoad(form);
+        };*/
+        this.props.onEnLoad(formAux);
     }
 
     validar(){
         let form = this.store;
-        if(this.props.hasOwnProperty("sinPrestacion")){
-            return (form.cliente && form.ncr && form.siteClient && form.config_gavetas && form.tabla_status && form.script &&
+        if(this.props.hasOwnProperty("desdeEquipo")){
+            return (form.nombrePoscion && form.ncr && form.config_gavetas && form.tabla_status && form.script &&
             form.command && form.community_string && form.ip && form.comunicacion && form.slm && form.flm && form.ubicacion_en_site &&
             form.hourBranch && form.hourOperation && form.sla && form.access && form.hourPeak);
         }else{
-            return (form.cliente && form.ncr && form.siteClient && form.config_gavetas && form.tabla_status && form.script &&
-            form.command && form.community_string && form.ip && form.comunicacion && form.slm && form.flm && form.ubicacion_en_site && form.id_Equipo &&
-            form.hourBranch && form.hourOperation && form.sla && form.access && form.hourPeak &&
-            (form.hourPrestacion.length == form.idPrestaciones.length) && !form.mjsErr);
+            //verificamos si todas la hora prestacion estar cargadas
+            let flagComplete = true;
+            form.hourPrestacion.map( obj => {
+                if(!obj.hasOwnProperty("hora")){
+                    flagComplete = false;
+                }
+            });
+            return (form.nombrePoscion && form.ncr && form.site && form.config_gavetas && form.tabla_status && form.script &&
+            form.command && form.community_string && form.ip && form.comunicacion && form.slm && form.flm && form.ubicacion_en_site  &&
+            form.hourBranch && form.hourOperation && form.sla && form.access && form.hourPeak  && flagComplete
+            );
+            //&& form.id_Equipo && !form.mjsErr
+        }
+    }
+
+    componentWillUnmount(){
+        this.props.dispatch(action.clearForm());
+    }
+
+    componentDidMount(){
+        if(this.props.hasOwnProperty("Default")){
+            this.props.dispatch(action.preLoadFormulario(this.props.Default))
         }
     }
 
     render(){
         this.store = this.props.fomPos;
-        //vericamos si viene las prestacion por las propiedades
-        let prestacion;
-        if(!this.props.hasOwnProperty("sinPrestacion")){
-            prestacion = this.store.idPrestaciones.map((id)=>{
-                return this.props.source.TypeHora.find(x => x.value == id.idVentanaHoraria);
-            });
-        }
         return (
-            <form className="form-horizontal">
+            <form className="form-horizontal" onSubmit={(event)=>{
+                event.preventDefault();
+            }}>
                 <div className="row">
                     <div className="col-xs-12 text-center">
                         <p className="mjsErr">{this.store.mjsErr}</p>
                     </div>
                 </div>
+
                 <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <Input
-                            value={this.store.cliente ? this.store.cliente: ""}
-                            label="Cliente"
-                            placeHolder="name Cliente"
+                            value={this.store.nombrePoscion}
+                            label="Nombre posicion"
+                            placeHolder="Nombre posicion"
                             required={true}
                             returnValue={(value)=>{
-                                this.props.dispatch(action.insertClient(value));
+                                this.props.dispatch(action.insertNombrePosicion(value));
                             }}
                         />
                     </div>
@@ -129,14 +142,14 @@ export default class Formulario extends React.Component{
                     </div>
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
-                            label="Institucion"
-                            dataSource={this.props.institucion}
+                            label="Cliente"
+                            dataSource={this.props.cliente}
                             required={true}
-                            store={this.store.institucion}
+                            store={this.store.cliente}
                             onChange={(value)=>{
-                                this.props.dispatch(action.insertInstitucion(value));
+                                this.props.dispatch(action.insertCliente(value));
                             }}
-                            disabled={this.props.request}
+                            disabled={(this.props.request || this.props.hasOwnProperty("desdeEquipo"))}
                         />
                     </div>
                 </div>
@@ -147,28 +160,13 @@ export default class Formulario extends React.Component{
                             label="Site"
                             dataSource={this.store.sourceSite}
                             required={true}
-                            disabled={this.props.request}
+                            disabled={this.props.request || this.props.hasOwnProperty("desdeEquipo")}
                             store={this.store.site}
                             onChange={(value)=>{
                                 this.props.dispatch(action.insertSite(value));
                             }}
                         />
                     </div>
-                    <div className="col-xs-12 col-md-6">
-                        <AutoComplete
-                            label="Site Client"
-                            store={this.store.siteClient}
-                            dataSource={this.store.sourceClient}
-                            required={true}
-                            disabled={this.props.request}
-                            onChange={(value)=>{
-                                this.props.dispatch(action.insertSiteClient(value));
-                            }}
-                        />
-                    </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Status"
@@ -180,6 +178,9 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Script"
@@ -191,9 +192,6 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Command"
@@ -206,6 +204,9 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Community"
@@ -218,9 +219,6 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="comunicacion"
@@ -233,6 +231,9 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="SLM"
@@ -244,9 +245,6 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="FLM"
@@ -258,22 +256,22 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <Select
                             label="Ubicacion"
                             id="idUbicacion"
                             col={{label:2,input:10}}
                             dataSource={this.props.source.ubicacionSite}
-                            default={this.store.ubicacion_en_site ? this.store.ubicacion_en_site["value"]:null}
+                            default={this.store.ubicacion_en_site}
                             required={true}
                             returnSelect={(value)=>{
                                 this.props.dispatch(action.insertUbicacion(value));
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Prestacion"
@@ -286,6 +284,9 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <AutoComplete
                             label="Gaveta"
@@ -297,9 +298,6 @@ export default class Formulario extends React.Component{
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <InputHorario
                             label="SLA"
@@ -311,12 +309,15 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:false,
                                 callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourSLA({id:this.store.id,value:value}));
+                                    this.props.dispatch(action.insertHourSLA(value));
                                 },
                                 firstDefault:this.store.sla
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <InputHorario
                             label="Acceso"
@@ -328,15 +329,12 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:false,
                                 callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourAccess({id:this.store.id,value:value}));
+                                    this.props.dispatch(action.insertHourAccess(value));
                                 },
                                 firstDefault:this.store.access
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <InputHorario
                             label="Hour Peak"
@@ -350,12 +348,15 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:true,
                                 callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourPeak({id:this.store.id,value:value}));
+                                    this.props.dispatch(action.insertHourPeak(value));
                                 },
                                 firstDefault:this.store.hourPeak
                             }}
                         />
                     </div>
+                </div>
+
+                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <InputHorario
                             label="Hour Operation"
@@ -368,15 +369,12 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:false,
                                 callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourOperation({id:this.store.id,value:value}));
+                                    this.props.dispatch(action.insertHourOperation(value));
                                 },
                                 firstDefault:this.store.hourOperation
                             }}
                         />
                     </div>
-                </div>
-
-                <div className="row">
                     <div className="col-xs-12 col-md-6">
                         <InputHorario
                             label="Branch Hours"
@@ -391,39 +389,21 @@ export default class Formulario extends React.Component{
                                 ],
                                 hour24:true,
                                 callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourBranch({id:this.store.id,value:value}));
+                                    this.props.dispatch(action.insertHourBranch(value));
                                 },
                                 firstDefault:this.store.hourBranch
                             }}
                         />
                     </div>
-                    <div className="col-xs-12 col-md-6">
-                        {(()=>{
-                            if(this.props.hasOwnProperty("sinPrestacion")) return null;
-                            return (
-                                <AutoComplete
-                                    label="Equipo"
-                                    col={{label:2,input:10}}
-                                    dataSource={this.store.sourceEquipo}
-                                    store={this.store.id_Equipo}
-                                    required={true}
-                                    onChange={(value)=>{
-                                        this.props.dispatch(action.insertEquipo(value));
-                                    }}
-                                    disabled={this.props.request}
-                                />
-                            )
-                        })()}
-                    </div>
                 </div>
 
                 <div className="row">
                     {(()=>{
-                        if(prestacion.length > 0){
+                        if(this.store.hourPrestacion.length > 0){
                             return <BoxFilter
-                                data={prestacion}
+                                data={this.store.hourPrestacion}
                                 result={(value)=>{
-                                    this.props.dispatch(action.insertHourPrestacion(value,this.store))
+                                    this.props.dispatch(action.insertHourPrestacion(value))
                                 }}
                             />
                         }else{
@@ -438,14 +418,17 @@ export default class Formulario extends React.Component{
                         <button type="button"
                                 className="btn btn-white separarButton"
                                 onClick={this.endLoad.bind(this)}
-                                disabled={this.store.stateRequtes}
+                                disabled={this.props.request}
                         >
                             Agregar Posicion
                         </button>
                         {(()=>{
                             if(!this.props.hasOwnProperty("onCancel")) return null;
                             return(
-                                <button className="btn btn-white separarButton"
+                                <button
+                                    type="button"
+                                    disabled={this.props.request}
+                                    className="btn btn-white separarButton"
                                         onClick={()=>{
                                             this.props.onCancel();
                                         }}>
@@ -459,3 +442,22 @@ export default class Formulario extends React.Component{
         )
     }
 }
+
+/*<div className="col-xs-12 col-md-6">
+ {(()=>{
+ if(this.props.hasOwnProperty("desdeEquipo")) return null;
+ return (
+ <AutoComplete
+ label="Equipo"
+ col={{label:2,input:10}}
+ dataSource={this.store.sourceEquipo}
+ store={this.store.id_Equipo}
+ required={true}
+ onChange={(value)=>{
+ this.props.dispatch(action.insertEquipo(value,this.props.source.TypeHora));
+ }}
+ disabled={this.props.request}
+ />
+ )
+ })()}
+ </div>*/

@@ -14,10 +14,11 @@ import { loadResult,loadHour} from '../../actions/boxFilterAction';
 export default class BoxFilter extends React.Component{
 
     componentDidMount(){
+        console.log(this.props.data);
         let result = this.props.data.map((obj)=>{
             return {
                 data:{...obj},
-                hora:obj.hasOwnProperty("data") ? obj.data : null
+                hora:obj.hasOwnProperty("hora") ? obj.hora : null
             }
         });
         this.props.dispatch(loadResult(result))
@@ -36,35 +37,29 @@ export default class BoxFilter extends React.Component{
                     <div className="row">
                         <div className="col-xs-12">
                             <div className="boxFilterPrestacion">
-                                {store.result.map((obj,index)=>{
+                                {this.props.data.map((obj,index)=>{
                                     return <div key={index} className="row">
                                         <div className="col-xs-12 hoverItem">
                                             <label className="checkbox-inline">
-                                                {obj.data.label}
+                                                {obj.label}
                                             </label>
-                                            <button type="button" className={`btn btn-xs btn-white btnBoxFilter ${obj.hora ? "" : "require-inv"}`}
+                                            <button type="button" className={`btn btn-xs btn-white btnBoxFilter ${obj.hasOwnProperty("hora") ? "" : "require-inv"}`}
                                                     onClick={()=> {
-                                                        this.props.dispatch(addModal({
-                                                            body:3,
-                                                            data:{
-                                                                id:obj.data.value,
-                                                                radioConf:[
-                                                                    {label:obj.data.label,color:"green",id:obj.data.value}
-                                                                ],
-                                                                firstDefault:obj.hora,
-                                                                hour24:false,
-                                                                callbackResult:(value)=>{
-                                                                    this.props.dispatch(loadHour({
-                                                                        id:obj.data.value,
-                                                                        hora:value
-                                                                    }));
-                                                                    this.props.result({
-                                                                        idHora:obj.data.value,
-                                                                        hora:value
-                                                                    });
-                                                                }
-                                                            },
-                                                            size:"xl"}))
+                                                        this.props.dispatch(
+                                                            addModal({
+                                                                body:3,
+                                                                data:{
+                                                                    id:obj.value,
+                                                                    radioConf:[
+                                                                        {label:obj.label,color:"green",id:obj.value}
+                                                                    ],
+                                                                    firstDefault:obj.hasOwnProperty("hora") ? obj.hora : null,
+                                                                    hour24:false,
+                                                                    callbackResult:(value)=>{
+                                                                        this.props.result(value);
+                                                                    }
+                                                                },
+                                                                size:"xl"}))
                                                     }}
                                             >
                                                 <i className="fa fa-calendar" />

@@ -23,17 +23,18 @@ let inicializar ={
         estado:null,
         fEntrega:moment().format("YYYY-MM-DD"),
         planta:null,
-        position:{
+        cliente:null,
+        site:{
             label:"SIN DATO",
             value: 0
         },
-        site:{
+        position:{
             label:"SIN DATO",
             value: 0
         },
         id_institucion:null,
         prestacion:[],
-        tiposPrestaciones:[]
+        newPosicion:null
     },
     tabla:[]
 };
@@ -80,8 +81,23 @@ let inicializar ={
             return {...state,formulario:{...state.formulario,fRetiro:action.value}}
         }
 
+        case "INGRESAR_CLIENTE_EQUIPO":{
+            return {...state,formulario:{...state.formulario,cliente:action.value}}
+        }
+
         case "INGRESAR_INSTITUCION_EQUIPO":{
-            return {...state,formulario:{...state.formulario,id_institucion:action.value}}
+            return {...state,formulario:{...state.formulario,
+                    id_institucion:action.value,
+                    site:{
+                        label:"SIN DATO",
+                        value: 0
+                    },
+                    position:{
+                        label:"SIN DATO",
+                        value: 0
+                    }
+                }
+            }
         }
 
         case "INGRESAR_GARANTIA_EQUIPO":{
@@ -114,24 +130,25 @@ let inicializar ={
 
         case "INGRESAR_MODULOS":{
             let modulo = null;
-            let tipoPrestacion = [];
+            let prestacion = [];
             if(action.value){
                 modulo = action.value.modulo;
-                tipoPrestacion = action.value.typePrestacion;
+                prestacion = action.value.prestaciones;
             }
-            return {...state,formulario:{...state.formulario,modulos:modulo,tiposPrestaciones:tipoPrestacion}}
+            return {...state,formulario:{...state.formulario,modulos:modulo,prestacion:prestacion}}
         }
 
         case "CARGAR_FORMULARIO_EQUIPO":{
             let form = state.formulario;
             let tabla = [...state.tabla];
-            let AutoComp = action.value;
             //verificamos si tiene el id
             if(form.idform){
                 //actulizamos la data de la tabla
                 tabla = tabla.map((obj)=>{
                     if(form.idform != obj.idform) return obj;
                     obj.numSerie = `${form.planta.prefijo}-${form.nroSerie}`;
+                    obj.nameSuc = form.site.label;
+                    obj.posicion = form.newPosicion ? form.newPosicion.nombrePoscion : form.position.label;
                     return obj;
                 });
             }else{
@@ -158,55 +175,45 @@ let inicializar ={
 
         case "ASSIGN_AUTO":{
             let tabla = [...state.tabla];
+            let data = action.value;
+            //verificamos si posicion es null
+            let labelPosicon = "";
+            if(data.newPosicion){
+                labelPosicon = data.newPosicion.nombrePoscion
+            }else{
+                labelPosicon = data.position.label;
+            }
             //buscamos la data del localStorage
-            let dataLocalStore = JSON.parse(localStorage.getItem(action.value.formid));
-            let form = dataLocalStore.form;
-            //obtenemos los state de los autoComplete
-            let siteState = action.value.site;
-            let siteClientState = action.value.SiteClient;
-            let positionState = action.value.position;
+            let form = JSON.parse(localStorage.getItem(data.formid));
             //insertamos en la fila de la tabla los nombre de la sucursal y la posicion
             tabla = tabla.map((obj)=>{
                 if(form.idform != obj.idform) return obj;
-                obj.nameSuc =  siteClientState.resultSelect ? siteClientState.resultSelect.label : null;
-                obj.posicion = positionState.resultSelect ? positionState.resultSelect.label : null;
+                obj.nameSuc =  data.site.label;
+                obj.posicion = labelPosicon;
                 return obj;
             });
-            //buscams los stados de los auto complete
-            let aux = dataLocalStore.AutoComplete;
-            //eliminamos  estados de autoComplete  de Site y posicion
-            aux = aux.filter(obj => {
-                if(obj.id != "idSite" && obj.id != "idPosicion" && obj.id != "idSiteClient") return obj;
-            });
-            //le asignamos los nuevos estado de site y posicion
-            aux.push(siteState);
-            aux.push(siteClientState);
-            aux.push(positionState);
             //insertamos la posicion y site en el formulario principal y las prestaciones
-            form.position = positionState.resultSelect;
-            form.site = siteState.resultSelect;
-            form.prestacion = action.value.horaPrestacion.map((obj)=>{
-               return {
-                   idHora:obj.idHora,
-                   hora:obj.hora[obj.idHora]
-               }
+            form.site = data.site;
+            form.position = data.position ? data.position : {label:"SIN DATO",value: 0};
+            form.newPosicion = data.newPosicion;
+            form.prestacion = data.prestacion.map((obj)=>{
+                obj["hora"] = obj["hora"][obj.value];
+                return obj;
             });
             //actualizamos el local estorage con todo lo nuevo
-            localStorage.setItem(form.idform,JSON.stringify({form:form,AutoComplete:aux}));
+            localStorage.setItem(form.idform,JSON.stringify(form));
             return {...state,tabla:[...tabla]}
         }
 
         case "DES_ASSIGN":{
             let tabla = [...state.tabla];
-            let jsonForm = JSON.parse(localStorage.getItem(action.value));
-            jsonForm.form.position = {label:"SIN DATO",value: 0};
-            jsonForm.form.site = {label:"SIN DATO",value: 0};
-            jsonForm.AutoComplete = jsonForm.AutoComplete.filter(obj => {
-                if(obj.id != "idSite" && obj.id != "idPosicion") return obj;
-            });
-            localStorage.setItem(action.value,JSON.stringify(jsonForm));
+            let form = JSON.parse(localStorage.getItem(action.value));
+            form.site = {label:"SIN DATO",value: 0};
+            form.position = {label:"SIN DATO",value: 0};
+            form.newPosicion = null;
+            localStorage.setItem(action.value,JSON.stringify(form));
             tabla = tabla.map(obj=>{
-                if(jsonForm.form.idform == obj.idform){
+                if(form.idform == obj.idform){
                     obj.nameSuc = "SIN DATO";
                     obj.posicion = "SIN DATO";
                 }
@@ -237,8 +244,8 @@ let inicializar ={
                 let form = JSON.parse(localStorage.getItem(EA[i]));
                 tabla.push({
                     numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
-                    nameSuc: form.site ? form.site.label : null,
-                    posicion: form.position ? form.position.label : null,
+                    nameSuc:  form.site.label,
+                    posicion: form.newPosicion ? form.newPosicion.nombrePoscion :form.position.label,
                     idform:form.idform,
                     sendForm:form.sendForm,
                     err:null
@@ -251,10 +258,10 @@ let inicializar ={
             let tabla = [...state.tabla];
             tabla = tabla.filter(obj=>{
                 //cargar en tabla
-                let resultSend = action.value.find(res => res.idForm == obj.idform);
-                if(resultSend && !resultSend.send){
+                let resultSend = action.value.find(res => (res && res.key == obj.idform));
+                if(resultSend){
                     obj.sendForm = false;
-                    obj.err = resultSend.Error;
+                    obj.err = resultSend.err;
                     return obj;
                 }else{
                     localStorage.removeItem(obj.idform);

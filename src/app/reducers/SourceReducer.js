@@ -31,7 +31,7 @@ let init = {
     geoClient:[],
     pais:[],
     geoNCR:[],
-    TipoDireccion:[],
+    TipoLugar:[],
     TipoSite:[],
     //datos extras de source
     complete: false,

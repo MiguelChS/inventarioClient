@@ -6,7 +6,7 @@ let init = {
     children:null,
     parent:null,
     nombreUsuario:null,
-    instituciones:[]
+    cliente:[]
 };
 
 function reducer(state=init,action) {
@@ -23,13 +23,13 @@ function reducer(state=init,action) {
         case "INSERT_DATA_USER_APP":{
             let data = action.value;
             localStorage.setItem("token",data.token);
-            return {...state,nombreUsuario:data.nombre,instituciones:data.institucion}
+            return {...state,nombreUsuario:data.nombre,cliente:data.cliente}
         }
         case "INSERT_NAME_USER_APP":{
             return {...state,nombreUsuario:action.value}
         }
-        case "INSERT_INSTITUCION_APP":{
-            return {...state,instituciones:action.value}
+        case "INSERT_CLIENTE_APP":{
+            return {...state,cliente:action.value}
         }
         default:
             return state;

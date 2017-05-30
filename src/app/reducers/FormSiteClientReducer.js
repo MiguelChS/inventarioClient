@@ -13,6 +13,7 @@ let init={
     sourceSite:[],
     institucion:null,
     newSite:null,
+    mjsErr:""
 };
 
 function reducer(state = init,action) {
@@ -46,6 +47,9 @@ function reducer(state = init,action) {
         }
         case "INSERT_NEW_SITE_SITE_CLIENT":{
             return {...state,newSite:action.value}
+        }
+        case "INSERT_MjsErr_SITE_CLIENT":{
+            return {...state,mjsErr:action.value}
         }
         case "CLEAR_FORM_SITE_CLIENT":{
             return {...state,...init}

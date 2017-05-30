@@ -23,8 +23,8 @@ let NavComponent = (props)=>{
                         <MenuItem onClick={()=>{ props.dispatch(page.pageAltaEquipo()) }}>Equipo</MenuItem>
                     </NavDropdown>
                     <NavDropdown title="Modificacion" id="basic-nav-dropdown">
-                        <MenuItem>Equipo</MenuItem>
-                        <MenuItem>Site</MenuItem>
+                        <MenuItem onClick={()=>{ props.dispatch(page.pageModificarEquipo()) }}>Equipo</MenuItem>
+                        <MenuItem onClick={()=>{ props.dispatch(page.pageModificacionSite()) }}>Site</MenuItem>
                         <MenuItem>Posicion</MenuItem>
                     </NavDropdown>
                 </Nav>

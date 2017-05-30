@@ -106,3 +106,71 @@ export function getSite(data) {
             });
     }
 }
+
+export function sendFormulario(data) {
+    return[
+        changeRequestApp(true),
+        enviandoFormulario(formatFormulario(data))
+    ]
+}
+function formatFormulario(form) {
+    let nuevoSite = form.newSite;
+    return {
+        "nombre_site":form.nombreSiteClient,
+        "id_tipo_site":form.tipoSiteClient.value,
+        "id_geo_cliente":form.geoClient.value,
+        "telefono1":form.telefono1,
+        "telefono2":form.telefono1,
+        "telefono3":form.telefono1,
+        "id_inv_site":form.idSite ? form.idSite.value : null,
+        "id_user":0,
+        "new_site":!nuevoSite ? null : {
+            "id_cliente":form.institucion.value,
+            "nombre_site_id":nuevoSite.nombreSite,
+            "direccion":nuevoSite.direccion,
+            "telefono":nuevoSite.telefonoSite,
+            "site_code":nuevoSite.siteCode,
+            "id_geo":nuevoSite.geo.value,
+            "id_geo_ncr":nuevoSite.geoNcr.value,
+            "km_ncr":parseInt(nuevoSite.kmNcr,10),
+            "latitud":nuevoSite.latitud,
+            "longitud":nuevoSite.longitud,
+            "offset":nuevoSite.offset,
+            "id_tipo_direccion":nuevoSite.idTipoDireccion.value
+        }
+    }
+}
+
+function insertMjsErr(valor) {
+    return {
+        type:"INSERT_MjsErr_SITE_CLIENT",
+        value:valor
+    }
+}
+
+function enviandoFormulario(form) {
+    return function(dispatch) {
+        Request.customize({
+            method: 'POST',
+            url: 'http://localhost:4000/api/Site',
+            data: form,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            json: true
+        })
+            .then(()=>{
+                dispatch([
+                    clearForm(),
+                    changeRequestApp(false)
+                ]);
+            })
+            .catch((err)=>{
+                dispatch([
+                    changeRequestApp(false),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            });
+    }
+}

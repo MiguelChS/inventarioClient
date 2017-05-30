@@ -4,9 +4,9 @@
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
 
-export function insertClient(valor) {
+export function insertNombrePosicion(valor) {
     return {
-        type:"INSERT_CLIENT_POS",
+        type:"INSERT_NOMBRE_POSICION_POS",
         value:valor
     }
 }
@@ -26,26 +26,10 @@ export function insertIP(valor) {
 }
 
 export function insertSite(valor) {
-    let action = {
+    return {
         type:"INSERT_SITE_POS",
         value:valor
     };
-
-    if(!valor || !valor.value){
-        return[
-            action,
-            insertSiteClient(null),
-            insertSourceSiteClient([])
-        ]
-    }
-
-    return [
-        action,
-        insertSiteClient(null),
-        changeRequestApp(true),
-        insertSourceSiteClient([]),
-        getSiteClient(valor)
-    ];
 }
 
 export function insertSiteClient(valor) {
@@ -65,9 +49,9 @@ export function insertSiteClient(valor) {
     return [
         action,
         insertEquipo(null),
-        changeRequestApp(true),
+        //changeRequestApp(true),
         insertSourceEquipo([]),
-        getEquipos(valor)
+        //getEquipos(valor)
     ];
 }
 
@@ -99,7 +83,7 @@ export function insertCommand(valor) {
     }
 }
 
-export function insertEquipo(valor) {
+export function insertEquipo(valor,source) {
     let action = {
         type:"INSERT_EQUIPO_POS",
         value:valor
@@ -108,18 +92,15 @@ export function insertEquipo(valor) {
     if(!valor || !valor.value){
         return [
             action,
-            insertIdPrestaciones([]),
-            removeHourPrestacion(),
-            insertHourPrestacion()
+            primeraCargaHoraPrestacion([])
         ];
     }
 
     return [
         action,
-        insertIdPrestaciones([]),
+        insertHourPrestacion([]),
         changeRequestApp(true),
-        removeHourPrestacion(),
-        searchPrestacionEquipo(valor)
+        searchPrestacionEquipo(valor,source)
     ];
 }
 
@@ -158,41 +139,10 @@ export function insertPRESTACION(valor) {
     }
 }
 
-export function removeHourPrestacion() {
+export function insertHourPrestacion(valor) {
     return {
-        type:"CLEAR_HOURPRESTACION_POS"
-    }
-}
-
-export function insertHourPrestacion(valor,store) {
-    let auxHoraPres = [];
-    if(valor){
-        let auxPres = store.hourPrestacion.find(obj => obj.idHora == valor.idHora);
-        auxHoraPres = [...store.hourPrestacion];
-        if(auxPres){
-            if(valor.hora){
-                //update
-                auxHoraPres = auxHoraPres.map(obj=>{
-                    if(obj.idHora == valor.idHora){
-                        obj.hora = valor.hora[valor.idHora];
-                    }
-                    return obj;
-                });
-            }else{
-                //remove
-                auxHoraPres = auxHoraPres.filter(fil=>fil.idHora != valor.idHora);
-            }
-        }else{
-            //insert
-            auxHoraPres.push({
-                idHora:valor.idHora,
-                hora:valor.hora[valor.idHora]
-            });
-        }
-    }
-    return {
-        type:"INSERT_HOURPRESTACION_POS",
-        value:auxHoraPres
+        type:"INSERT_HOUR_PRESTACION_POS",
+        value:valor
     }
 }
 
@@ -238,10 +188,15 @@ export function insertHourPeak(valor) {
     }
 }
 
-export function insertIdPrestaciones(valor) {
+export function primeraCargaHoraPrestacion(valor,source) {
+    //buscamos las fuente de datos q machee con los IdVentanas
+    let primeraCargaPrestacion = valor.map((obj)=>{
+        return {...source.find(ventH => ventH.value == obj.idVentanaHoraria)}
+    });
+
     return {
-        type:"INSERT_ID_PRESTACION_POS",
-        value:valor
+        type:"INSERT_PRIMERA_CARGA_HOUR_PRESTACION_POS",
+        value:primeraCargaPrestacion
     }
 }
 
@@ -273,12 +228,19 @@ export function insertSourceEquipo(valor) {
     }
 }
 
-export function searchPrestacionEquipo(data) {
+export function preLoadFormulario(valor) {
+    return {
+        type:"PRE_LOAD_FORM_POS",
+        value:valor
+    }
+}
+
+export function searchPrestacionEquipo(data,source) {
     return function(dispatch) {
         Request.get(`http://localhost:4000/api/prestacionEquipo/${data.value}`)
             .then((result)=>{
                 dispatch([
-                    insertIdPrestaciones(result.data),
+                    primeraCargaHoraPrestacion(result.data,source),
                     changeRequestApp(false),
                     insertMjsErr("")
                 ]);
@@ -292,9 +254,9 @@ export function searchPrestacionEquipo(data) {
     }
 }
 
-export function insertInstitucion(valor) {
+export function insertCliente(valor) {
     let action = {
-        type:"INSERT_INSTITUCION_POS",
+        type:"INSERT_CLIENTE_POS",
         value:valor
     };
     if(!valor || !valor.value){
@@ -316,7 +278,7 @@ export function insertInstitucion(valor) {
 
 export function getSite(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/site/${data.value}/${data.origen}`)
+        Request.get(`http://localhost:4000/api/site/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSite(result.data),
@@ -360,6 +322,85 @@ export function getEquipos(data) {
             .catch((err)=>{
                 dispatch([
                     changeRequestApp(false)
+                ])
+            });
+    }
+}
+
+export function clearForm() {
+    return{
+        type:"CLEAN_FORM_POS"
+    }
+}
+
+export function sendFormulario(data) {
+    return[
+        changeRequestApp(true),
+        enviandoFormulario(formatFomulario(data))
+    ]
+}
+
+function formatHorarios(horario) {
+    let array = [];
+    for (let attr in horario){
+        array.push({
+            idHora:attr,
+            hora:horario[attr]
+        })
+    }
+    return array;
+}
+
+function formatFomulario(form) {
+    return {
+        "clientid":form.nombrePoscion,
+        "dato2":form.dato2,
+        "dato3":form.dato3,
+        "idSite":form.site.value,
+        "ncrid":form.ncr,
+        "idconfiggavetas":form.config_gavetas.value,
+        "id_status":form.tabla_status.value,
+        "idscript":form.script.value,
+        "idcommand":form.command.value,
+        "idcommunitystring":form.community_string.value,
+        "ip":form.ip,
+        "iduser":1,
+        "idcomunicacion":form.comunicacion.value,
+        "idslm":form.slm.value,
+        "idflm":form.flm.value,
+        "idubicacionensite":form.ubicacion_en_site.value,
+        "idprestacion":form.prestacion.value,
+        "hourBranch":formatHorarios(form.hourBranch),
+        "hourOperation":formatHorarios(form.hourBranch),
+        "sla":formatHorarios(form.hourBranch),
+        "access":formatHorarios(form.hourBranch),
+        "hourPeak":formatHorarios(form.hourBranch),
+        "HoraPrestacion":[]
+    }
+}
+
+function enviandoFormulario(form) {
+    return function(dispatch) {
+        Request.customize({
+            method: 'POST',
+            url: 'http://localhost:4000/api/Posicion',
+            data: form,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            json: true
+        })
+            .then(()=>{
+                dispatch([
+                    clearForm(),
+                    changeRequestApp(false)
+                ]);
+            })
+            .catch((err)=>{
+                dispatch([
+                    changeRequestApp(false),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
                 ])
             });
     }

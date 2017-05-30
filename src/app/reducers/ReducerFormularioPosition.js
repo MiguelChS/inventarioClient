@@ -3,10 +3,10 @@
  */
 let init={
     id:null,
-    cliente:null,
+    nombrePoscion:null,
     ncr:null,
     ip:null,
-    siteClient:null,
+    site:null,
     config_gavetas:null,
     tabla_status:null,
     script:null,
@@ -32,17 +32,15 @@ let init={
     sourceSite:[],
     sourceClient:[],
     sourceEquipo:[],
-    institucion:null,
-    idPrestaciones:[],
+    cliente:null,
     mjsErr:"",
-    stateRequtes:false,
-    site:null
+    stateRequtes:false
 };
 
 function reducer(state = init,action) {
     switch (action.type){
-        case "INSERT_CLIENT_POS":{
-            return {...state,cliente:action.value}
+        case "INSERT_NOMBRE_POSICION_POS":{
+            return {...state,nombrePoscion:action.value}
         }
         case "INSERT_SOURCE_SITE_POS":{
             return {...state,sourceSite:action.value}
@@ -89,9 +87,19 @@ function reducer(state = init,action) {
         case "INSERT_FLM_POS":{
             return {...state,flm:action.value}
         }
-        case "INSERT_HOURPRESTACION_POS":{
-            return {...state,hourPrestacion:action.value}
+        case "INSERT_HOUR_PRESTACION_POS":{
+            let data = action.value;
+            let idVentana = Object.keys(data)[0];
+            return {...state,
+                hourPrestacion:state.hourPrestacion.map( pre =>{
+                    if(pre.value == idVentana){
+                        pre["hora"] = data;
+                    }
+                    return pre;
+                })
+            }
         }
+
         case "CLEAR_HOURPRESTACION_POS":{
             return {...state,hourPrestacion:[]}
         }
@@ -119,17 +127,20 @@ function reducer(state = init,action) {
         case "INSERT_EQUIPO_POS":{
             return {...state,id_Equipo:action.value}
         }
-        case "INSERT_REQUEST_PRESTACION_POS":{
-            return {...state,stateRequtes:action.value}
+        case "INSERT_PRIMERA_CARGA_HOUR_PRESTACION_POS":{
+            return {...state,hourPrestacion:action.value}
         }
-        case "INSERT_ID_PRESTACION_POS":{
-            return {...state,idPrestaciones:action.value}
-        }
-        case "INSERT_INSTITUCION_POS":{
-            return {...state,institucion:action.value}
+        case "INSERT_CLIENTE_POS":{
+            return {...state,cliente:action.value}
         }
         case "INSERT_mjsErr_POS":{
             return {...state,mjsErr:action.value}
+        }
+        case "CLEAN_FORM_POS":{
+            return {...state,...init}
+        }
+        case "PRE_LOAD_FORM_POS":{
+            return {...state,...action.value}
         }
         default:
             return state;

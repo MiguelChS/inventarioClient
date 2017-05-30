@@ -1,17 +1,15 @@
 import React from 'react';
-import request from '../../../../Request/Request';
 import { Row,Col,Button } from 'react-bootstrap';
 import Formulario from './Formulario.jsx';
 import TableEquipo from './TableEquipo.jsx';
 import {connect} from  'react-redux';
-import {LoadTablaEA,FinishEA,sendForm,loadStateSendForm, envioEquipo} from '../../../../actions/equipoAction.js';
-import { searchSource  } from '../../../../actions/sourceAction';
+import {LoadTablaEA, envioEquipo} from '../../../../actions/equipoAction.js';
 
 @connect((store)=>{
     return {
         source: store.source,
         tabla: store.equipo.tabla,
-        ProcessSend: store.equipo.ProcessSend
+        request: store.app.Request
     }
 })
 export default class Index extends React.Component{
@@ -21,20 +19,6 @@ export default class Index extends React.Component{
             this.props.dispatch(LoadTablaEA());
         }
     }
-
-    componentWillUnmount(){
-        let EA = Object.keys(localStorage).filter( item => /_EA$/.test(item));
-        if(EA.length > 0){
-            /*this.props.dispatch({
-                type:"ADD_MODAL",
-                title:"",
-                body: 2,
-                buttonConf:"Aceptar",
-                data:{mjs:"¿Desea guardar el trabajo realizado?"}
-            })*/
-        }
-    }
-
 
     finishLoading(){
         if(!this.disabledBtnTerm){
@@ -50,7 +34,7 @@ export default class Index extends React.Component{
             paddingBottom: "10px",
             borderBottom: "2px solid #e7eaec"
         };
-        this.disabledBtnTerm = !(!this.props.ProcessSend && this.props.tabla.length != 0);
+        this.disabledBtnTerm = (this.props.request || this.props.tabla.length == 0);
         return(
             <Row style={style} bsClass="row wrapperWhite">
                 <Col xs={12} bsClass="litleHeader col">

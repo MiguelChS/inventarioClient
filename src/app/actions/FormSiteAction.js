@@ -3,7 +3,8 @@
  */
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
-import {noSelect} from './autoCompleteAction';
+
+
 
 export function insertNameSite(valor) {
     return {
@@ -11,39 +12,56 @@ export function insertNameSite(valor) {
         value: valor
     }
 }
+export function insertClient(valor) {
+    return {
+        type:"INSERT_CLIENT_SITE",
+        value: valor
+    }
+}
+export function insertTipoSite(valor) {
+    return {
+        type:"INSERT_TYPE__SITE",
+        value: valor
+    }
+}
+
+export function insertGeoClient(valor) {
+    return {
+        type:"INSERT_GEO_CLIENT_SITE",
+        value: valor
+    }
+}
+export function insertTelefono1(valor) {
+    return {
+        type:"INSERT_PHONE1_SITE",
+        value: valor
+    }
+}
+
+export function insertTelefono2(valor) {
+    return {
+        type:"INSERT_PHONE2_SITE",
+        value: valor
+    }
+}
+
+export function insertTelefono3(valor) {
+    return {
+        type:"INSERT_PHONE3_SITE",
+        value: valor
+    }
+}
+
+
 export function insertDireccion(valor) {
     return {
         type:"INSERT_DIRECCION_SITE",
         value: valor
     }
 }
-export function insertPhoneSite(valor) {
-    return {
-        type:"INSERT_PHONE_SITE_SITE",
-        value: valor
-    }
-}
-export function insertSiteCode(valor) {
-    return {
-        type:"INSERT_SITE_CODE_SITE",
-        value: valor
-    }
-}
 export function insertGeo(valor) {
     return {
         type:"INSERT_GEO_SITE",
-        value: valor
-    }
-}
-export function insertGeoNcr(valor) {
-    return {
-        type:"INSERT_GEO_NCR_SITE",
-        value: valor
-    }
-}
-export function insertKmNcr(valor) {
-    return {
-        type:"INSERT_KM_NCR_SITE",
         value: valor
     }
 }
@@ -139,6 +157,15 @@ export function insertMjsErr(valor) {
         value: valor
     }
 }
+
+export function insertMjsSuccess(valor) {
+    return {
+        type:"INSERT_MJS_SUCCESS_SITE",
+        value: valor
+    }
+}
+
+
 export function insertSourceEstado(valor) {
     return {
         type:"INSERT_SOURCE_ESTADO_SITE",
@@ -211,9 +238,109 @@ export function searchCodigoPostal(pais,estado,ciudad) {
             });
     }
 }
+export function insertLugar(valor){
+    let action ={
+        type:"INSERT_LUGAR_SITE",
+        value:valor
+    };
+    if(!valor || valor.value == 1) return [
+        action,
+        insertSitePublic(null),
+        insertMjsSuccess(""),
+        insertSourceSitePublic([])
+    ];
+
+    return[
+        action,
+        insertMjsSuccess(""),
+        insertSitePublic(null),
+        insertSourceSitePublic([]),
+        changeRequestApp(true),
+        getSitePublic(action.value)
+    ]
+}
+export function insertSitePublic(valor){
+    return {
+        type:"INSERT_SITE_PUBLIC_SITE",
+        value:valor
+    }
+}
+export function insertSourceSitePublic(valor){
+    return {
+        type:"INSERT_SOURCE_SITE_PUBLIC_POSTAL_SITE",
+        value:valor
+    }
+}
+export function getSitePublic(data) {
+    return function(dispatch) {
+        Request.get(`http://localhost:4000/api/getSitePublic/${data.value}`)
+            .then((result)=>{
+                dispatch([
+                    insertSourceSitePublic(result.data),
+                    changeRequestApp(false)
+                ]);
+            })
+            .catch((err)=>{
+                dispatch([
+                    changeRequestApp(false)
+                ])
+            });
+    }
+}
 
 export function clearForm() {
     return{
         type:"CLEAR_FORM_SITE"
+    }
+}
+
+export function enviarFormulario(form) {
+    return[
+        changeRequestApp(true),
+        requestFormulario({
+            nombreSite:form.nombreSite,
+            nombrePublic:form.SitePublic ? form.SitePublic.value : null,
+            idTipoLugar:form.Lugar.value,
+            direction:form.SitePublic ? form.SitePublic.Direccion : form.direccion,
+            telefono1:form.telefono1,
+            telefono2:form.telefono2,
+            telefono3:form.telefono3,
+            idGeo:form.SitePublic ? form.SitePublic.Id_geo : form.geo.value,
+            idGeoClient:form.geoClient.value,
+            idClient:form.idClient.value,
+            idTipoSite:form.idTipoSite.value,
+            latitud:form.SitePublic ? form.SitePublic.latitud : form.latitud,
+            longitud:form.SitePublic ? form.SitePublic.longitud : form.longitud,
+            offSet:form.SitePublic ? form.SitePublic.offset : form.offset
+        })
+    ]
+}
+
+function requestFormulario(form) {
+    return (dispatch)=>{
+        Request.customize({
+            method: 'POST',
+            url: 'http://localhost:4000/api/Site',
+            data: form,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            json: true
+        })
+            .then(()=>{
+                dispatch([
+                    clearForm(),
+                    changeRequestApp(false),
+                    insertMjsSuccess("Se cargar correctamente")
+                ])
+            })
+            .catch((err)=>{
+                dispatch([
+                    changeRequestApp(false),
+                    insertMjsSuccess(""),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            })
     }
 }

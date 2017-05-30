@@ -35,9 +35,9 @@ export function insertNameUser(valor) {
         value: valor
     }
 }
-export function insertInstitucion(valor) {
+export function insertClientes(valor) {
     return {
-        type:"INSERT_INSTITUCION_APP",
+        type:"INSERT_CLIENTE_APP",
         value: valor
     }
 }
@@ -51,7 +51,7 @@ export function VerificarToken() {
                 if(result.data){
                     dispatch([
                         insertNameUser(result.data.nombre),
-                        insertInstitucion(result.data.institucion),
+                        insertClientes(result.data.cliente),
                         PageLayaout()
                     ])
                 }else{

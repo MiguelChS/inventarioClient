@@ -6,9 +6,9 @@ import { changeParentApp , changeChildrenApp} from './appAction';
 import PageLogin from '../components/page/Login/index'
 import PageLayout from '../components/page/Layout';
 import Inicio from '../components/page/inicio/index';
-import EquipoAlta from '../components/page/equipo/alta/Index.jsx'
+import * as Equipo from '../components/page/equipo/index'
 import Posicion from '../components/page/posicion/alta/index.jsx';
-import Site from '../components/page/site/index';
+import * as Site from '../components/page/site/index';
 
 export function pageLogin(){
     return changeParentApp(<PageLogin/>)
@@ -23,12 +23,18 @@ export function PageInicio(){
 }
 
 export function pageAltaEquipo(){
-    return changeChildrenApp(<EquipoAlta/>)
+    return changeChildrenApp(<Equipo.AltaEquipo/>)
 }
 
 export function pageAltaPosicion(){
     return changeChildrenApp(<Posicion/>)
 }
 export function pageAltaSite(){
-    return changeChildrenApp(<Site/>)
+    return changeChildrenApp(<Site.Alta/>)
+}
+export function pageModificacionSite(){
+    return changeChildrenApp(<Site.Modificacion/>)
+}
+export function pageModificarEquipo() {
+    return changeChildrenApp(<Equipo.ModificacionEquipo/>)
 }

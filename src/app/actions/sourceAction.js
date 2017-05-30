@@ -30,7 +30,35 @@ export function searchSource() {
     }
 }
 
-export function changeSelectModule(valor,source) {
+function depurarPrestaciones(oldPrestacion,newPrestacion,source) {
+    let resultadoPrestacion = [];
+    if(oldPrestacion.length){
+        //caso que tenga cargado algo
+        //verificamos si los id que tiene las prestacion existen en la prestacionDepurada
+        oldPrestacion = oldPrestacion.filter(pre => {
+            //bucamos si esxite en la expreacion depurada
+            return newPrestacion.find(preD => preD.idVentana == pre.value);
+        });
+        //eliminamos los idVentanda de prestacionDepurada que existan el prestacion
+        newPrestacion = newPrestacion.filter(preD =>{
+            return !(oldPrestacion.find(pre => pre.value == preD.idVentana))
+        });
+        //iteramos y macheamos con la fuente de datos tipoHora
+        resultadoPrestacion = newPrestacion.map((obj)=>{
+            return source.find(vent => vent.value == obj["idVentana"])
+        });
+        //concatenamos prestacion con nuevasPretaciones
+        resultadoPrestacion = [...oldPrestacion,...resultadoPrestacion];
+    }else{
+        //caso que no tenga nada cargado
+        resultadoPrestacion = newPrestacion.map((obj)=>{
+            return source.find(vent => vent.value == obj["idVentana"])
+        });
+    }
+    return resultadoPrestacion;
+}
+
+export function changeSelectModule(valor,source,prestacion) {
     let objModulo = {...source.modulos};
     let auxModulo = [];
     objModulo[valor.idTipo] = objModulo[valor.idTipo].map((obj)=> {
@@ -42,10 +70,7 @@ export function changeSelectModule(valor,source) {
     });
     //depuramos las prestaciones repetidad
     let prestacionDepurada = depurar(auxModulo,"idVentana");
-    //buscamos las prestacion con sus ventanas horarias corespondientes
-    let prestacionHorarioVenta = prestacionDepurada.map((obj)=>{
-        return source.TypeHora.find(vent => vent.value == obj["idVentana"])
-    });
+    let nuevasPrestaciones = depurarPrestaciones(prestacion,prestacionDepurada,source.TypeHora);
     //verificamos si se agregaron modulos
     auxModulo = auxModulo.length ? auxModulo : null;
     return [
@@ -53,7 +78,7 @@ export function changeSelectModule(valor,source) {
             type:"CHANGE_SELECTED_MODULES",
             value: objModulo
         },
-        ingresarModulos({modulo:auxModulo,typePrestacion:prestacionHorarioVenta})
+        ingresarModulos({modulo:auxModulo,prestaciones:nuevasPrestaciones})
     ]
 }
 
@@ -63,7 +88,7 @@ export function changeDefaultModule() {
     }
 }
 
-export function changeSelectModuleAll(valor,source) {
+export function changeSelectModuleAll(valor,source,prestacion) {
     let objModulo = {...source.modulos};
     let auxModulo = [];
     objModulo[valor.idTipo] = objModulo[valor.idTipo].map((obj)=> {
@@ -75,17 +100,14 @@ export function changeSelectModuleAll(valor,source) {
     });
     //depuramos las prestaciones repetidad
     let prestacionDepurada = depurar(auxModulo,"idVentana");
-    //buscamos las prestacion con sus ventanas horarias corespondientes
-    let prestacionHorarioVenta = prestacionDepurada.map((obj)=>{
-        return source.TypeHora.find(vent => vent.value == obj["idVentana"])
-    });
+    let nuevasPrestaciones = depurarPrestaciones(prestacion,prestacionDepurada,source.TypeHora);
     auxModulo = auxModulo.length ? auxModulo : null;
     return [
         {
             type:"CHANGE_MODULE_SELECTED_ALL",
             value: objModulo
         },
-        ingresarModulos({modulo:auxModulo,typePrestacion:prestacionHorarioVenta})
+        ingresarModulos({modulo:auxModulo,prestaciones:nuevasPrestaciones})
     ]
 }
 
@@ -109,6 +131,7 @@ export function insertTemporalPosicion(valor) {
         value:valor
     }
 }
+
 export function insertTemporalSite(valor) {
     return {
         type:"INSERT_SITE_TEMPORAL",

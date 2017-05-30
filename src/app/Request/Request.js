@@ -9,5 +9,8 @@ export  default {
     },
     post:(url,param) =>{
         return axios.post(url,param);
+    },
+    customize:(option)=>{
+        return axios(option);
     }
 }
