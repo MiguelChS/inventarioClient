@@ -2,6 +2,7 @@
  * Created by mc185249 on 5/9/2017.
  */
 import Request from '../Request/Request';
+import config from '../config';
 
 import {pageLogin,PageLayaout} from './ActionRouter';
 
@@ -46,7 +47,7 @@ export function VerificarToken() {
     return function(dispatch) {
         let token  = localStorage.getItem("token");
         if(!token) return dispatch(pageLogin());
-        Request.get(`http://localhost:4000/api/VerificarToken/${token}`)
+        Request.get(`${config.path}/VerificarToken/${token}`)
             .then((result)=>{
                 if(result.data){
                     dispatch([

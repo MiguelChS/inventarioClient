@@ -3,6 +3,7 @@
  */
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
+import config from '../config';
 
 export function insertNombrePosicion(valor) {
     return {
@@ -237,7 +238,7 @@ export function preLoadFormulario(valor) {
 
 export function searchPrestacionEquipo(data,source) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/prestacionEquipo/${data.value}`)
+        Request.get(`${config.path}/prestacionEquipo/${data.value}`)
             .then((result)=>{
                 dispatch([
                     primeraCargaHoraPrestacion(result.data,source),
@@ -278,7 +279,7 @@ export function insertCliente(valor) {
 
 export function getSite(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/site/${data.value}`)
+        Request.get(`${config.path}/site/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSite(result.data),
@@ -295,7 +296,7 @@ export function getSite(data) {
 
 export function getSiteClient(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/siteClient/${data.value}`)
+        Request.get(`${config.path}/siteClient/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSiteClient(result.data),
@@ -312,7 +313,7 @@ export function getSiteClient(data) {
 
 export function getEquipos(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/equipo/${data.value}`)
+        Request.get(`${config.path}/equipo/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceEquipo(result.data),
@@ -383,7 +384,7 @@ function enviandoFormulario(form) {
     return function(dispatch) {
         Request.customize({
             method: 'POST',
-            url: 'http://localhost:4000/api/Posicion',
+            url: `${config.path}/Posicion`,
             data: form,
             headers: {
                 'Content-Type': "application/json",

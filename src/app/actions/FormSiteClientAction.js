@@ -1,6 +1,7 @@
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
-import { noSelect } from './autoCompleteAction'
+import config from '../config';
+
 
 
 export function insertNameSiteClient(valor) {
@@ -92,7 +93,7 @@ export function insertInstitucion(valor) {
 
 export function getSite(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/site/${data.value}/${data.origen}`)
+        Request.get(`${config.path}/site/${data.value}/${data.origen}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSite(result.data),
@@ -152,7 +153,7 @@ function enviandoFormulario(form) {
     return function(dispatch) {
         Request.customize({
             method: 'POST',
-            url: 'http://localhost:4000/api/Site',
+            url: `${config.path}/Site`,
             data: form,
             headers: {
                 'Content-Type': "application/json",

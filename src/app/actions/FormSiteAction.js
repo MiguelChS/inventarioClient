@@ -3,7 +3,7 @@
  */
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
-
+import config from '../config';
 
 
 export function insertNameSite(valor) {
@@ -186,7 +186,7 @@ export function insertSourceCodigoPostal(valor) {
 }
 export function searchEstado(pais) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/geoEstado/${pais}`)
+        Request.get(`${config.path}/geoEstado/${pais}`)
             .then((result)=>{
                 dispatch([
                     insertSourceEstado(result.data.estado),
@@ -204,7 +204,7 @@ export function searchEstado(pais) {
 }
 export function searchCiudad(pais,estado) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/geoCiudad/${pais}/${estado}`)
+        Request.get(`${config.path}/geoCiudad/${pais}/${estado}`)
             .then((result)=>{
                 dispatch([
                     insertSourceCiudad(result.data.ciudad),
@@ -222,7 +222,7 @@ export function searchCiudad(pais,estado) {
 }
 export function searchCodigoPostal(pais,estado,ciudad) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/geoCodigoPostal/${pais}/${estado}/${ciudad}`)
+        Request.get(`${config.path}/geoCodigoPostal/${pais}/${estado}/${ciudad}`)
             .then((result)=>{
                 dispatch([
                     insertSourceCodigoPostal(result.data.codigoPostal),
@@ -273,7 +273,7 @@ export function insertSourceSitePublic(valor){
 }
 export function getSitePublic(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/getSitePublic/${data.value}`)
+        Request.get(`${config.path}/getSitePublic/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSitePublic(result.data),
@@ -320,7 +320,7 @@ function requestFormulario(form) {
     return (dispatch)=>{
         Request.customize({
             method: 'POST',
-            url: 'http://localhost:4000/api/Site',
+            url: `${config.path}/Site`,
             data: form,
             headers: {
                 'Content-Type': "application/json",

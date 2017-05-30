@@ -5,6 +5,7 @@ import request from '../Request/Request';
 import {ingresarModulos} from './equipoAction';
 import { changeRequestApp } from './appAction';
 import {depurar} from '../lib/index';
+import config from '../config';
 
 export function loadSource(valor) {
     return {
@@ -15,7 +16,7 @@ export function loadSource(valor) {
 
 export function searchSource() {
     return function(dispatch) {
-        request.get('http://localhost:4000/api/sourceInventario')
+        request.get(`${config.path}/sourceInventario`)
             .then((result)=>{
                 dispatch([
                     loadSource(result.data),

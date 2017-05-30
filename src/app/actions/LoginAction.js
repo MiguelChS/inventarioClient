@@ -4,6 +4,7 @@
 import Request from '../Request/Request';
 import { changeRequestApp,insertDataUser } from './appAction';
 import { PageLayaout } from './ActionRouter';
+import config from '../config';
 
 export function insertUsuario(valor) {
     return {
@@ -32,7 +33,7 @@ export function insertMjsErr(valor) {
 
 export function sendFormulario(data) {
     return function(dispatch) {
-        Request.post('http://localhost:4000/api/login',{
+        Request.post(`${config.path}/login`,{
             user:data.usuario,
             pass:data.pass
             })

@@ -4,6 +4,7 @@
 import Request from '../Request/Request';
 import {changeDefaultModule, loadModule} from  './sourceAction';
 import { changeRequestApp } from './appAction';
+import config from '../config';
 
 
 export function altaNroSerie(valor) {
@@ -370,7 +371,7 @@ function sendFormulario(form,key){
         }
         Request.customize({
             method: 'POST',
-            url: 'http://localhost:4000/api/Equipo',
+            url: `${config.path}/Equipo`,
             data: form,
             headers: {
                 'Content-Type': "application/json",

@@ -16,6 +16,6 @@ app.listen(port, (err)=>{
     if (err) {
         console.error(err)
     } else {
-        console.info("==> Listening on port %s. Open up http://localhost:%s/inventario in your browser.", port, port);
+        console.info("==> Listening on port in your browser.", port, port);
 }
 });

@@ -1,5 +1,6 @@
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
+import config from '../config';
 
 export function insertSite(valor) {
     let action = {
@@ -90,7 +91,7 @@ export function preCargaFormulario(form) {
 
 export function getSite(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/site/${data.value}`)
+        Request.get(`${config.path}/site/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSite(result.data),
@@ -107,7 +108,7 @@ export function getSite(data) {
 
 export function getPosicion(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/posicion/${data.value}`)
+        Request.get(`${config.path}/posicion/${data.value}`)
             .then((result)=>{
                 dispatch([
                     insertSourcePosicion(result.data),

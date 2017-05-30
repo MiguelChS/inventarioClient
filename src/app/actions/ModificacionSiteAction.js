@@ -3,6 +3,7 @@
  */
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
+import config from '../config';
 
 export function insertClient(valor) {
     let action = {
@@ -39,7 +40,7 @@ export function insertSourceSite(valor) {
 }
 export function getSite(data) {
     return function(dispatch) {
-        Request.get(`http://localhost:4000/api/site/${data.value}/${data.origen}`)
+        Request.get(`${config.path}/site/${data.value}/${data.origen}`)
             .then((result)=>{
                 dispatch([
                     insertSourceSite(result.data),
