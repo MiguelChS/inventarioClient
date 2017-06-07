@@ -4,6 +4,7 @@
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
 import config from '../config';
+import moment from 'moment';
 
 
 export function insertNameSite(valor) {
@@ -295,25 +296,27 @@ export function clearForm() {
 }
 
 export function enviarFormulario(form) {
+    let auxClient = `00000${form.idClient.value}`;
     return[
         changeRequestApp(true),
         requestFormulario({
             nombreSite:form.nombreSite,
-            nombrePublic:form.SitePublic ? form.SitePublic.value : null,
+            nombrePublico:form.SitePublic ? form.SitePublic.value : null,
             idTipoLugar:form.Lugar.value,
             direction:form.SitePublic ? form.SitePublic.Direccion : form.direccion,
             telefono1:form.telefono1,
             telefono2:form.telefono2,
             telefono3:form.telefono3,
             idGeo:form.SitePublic ? form.SitePublic.Id_geo : form.geo.value,
-            idGeoClient:form.geoClient.value,
-            idClient:form.idClient.value,
+            idGeoCliente:form.geoClient.value,
+            idCliente:form.idClient.value,
             idTipoSite:form.idTipoSite.value,
             latitud:form.SitePublic ? form.SitePublic.latitud : form.latitud,
             longitud:form.SitePublic ? form.SitePublic.longitud : form.longitud,
-            offSet:form.SitePublic ? form.SitePublic.offset : form.offset
+            offSet:form.SitePublic ? parseInt(form.SitePublic.offset,10) : parseInt(form.offset,10),
+            siteCountryCode:`TE${moment().format('YYYYMMDDHHmmss')}${auxClient.substr(auxClient.length - 5,auxClient.length)}`
         })
-    ]
+    ];
 }
 
 function requestFormulario(form) {

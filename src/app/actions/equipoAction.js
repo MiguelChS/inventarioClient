@@ -121,34 +121,29 @@ export function cargarTipoEquipo(valor) {
     }
 }
 
-export function cargarEquipoNcr(valor) {
-    return {
-        type:"INGRESO_EQUIPO_NCR_EQUIPO",
-        value: valor
-    }
-}
 
-export function cargarFormulario(valor) {
+export function cargarFormulario() {
     return [{
         type:"CARGAR_FORMULARIO_EQUIPO",
-        value:valor
     },
         changeDefaultModule()
     ]
 }
 
-export function preCargarFormulario(value,store) {
-    let form = JSON.parse(localStorage.getItem(value));
+
+export function preCargarFormulario(form,store) {
     //modificamos el estado del source modulos
     let objModulo = {...store.modulos};
-    for(let i=0;i < form.modulos.length;i++){
-        let obj_mod = form.modulos[i];
-        objModulo[form.Equipos.value] = objModulo[form.Equipos.value].map((obj)=> {
-            if(obj_mod.value == obj.value){
-                obj.selected = 1;
-            }
-            return obj;
-        });
+    if(form.modulos){
+        for(let i=0;i < form.modulos.length;i++){
+            let obj_mod = form.modulos[i];
+            objModulo[form.Equipos.value] = objModulo[form.Equipos.value].map((obj)=> {
+                if(obj_mod.value == obj.value){
+                    obj.selected = 1;
+                }
+                return obj;
+            });
+        }
     }
     return [
         loadModule(objModulo),
@@ -166,6 +161,7 @@ export function cargarEquipo(value) {
             value:value
         },
         ingresarModulos(null),
+        cargarTipoEquipo(null),
         changeDefaultModule()
     ]
 }
@@ -232,6 +228,16 @@ export function loadStateSendForm(valor) {
         type:"LOAD_STATE_SEND_FORM",
         value:valor
     }
+}
+
+
+export function clearFormulario() {
+    return [
+        {
+            type:"CLEAR_FORM_EQUIPO"
+        },
+        changeDefaultModule()
+    ]
 }
 
 export function desAssign(valor) {
@@ -315,7 +321,6 @@ function sendFormArray() {
                     "id_modelo":formAux.modelo.value,
                     "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
                     "id_planta":formAux.planta.value,
-                    "id_equipo_ncr":formAux.equipoNcr,
                     "horaPrestacion":formAux.prestacion.map((pre)=>{ return{idHora:`${pre.value}`,hora:pre.hora} }),
                     "id_posicion":formAux.newPosicion ? null : formAux.newPosicion,
                     "newPosicion":mapFormularioPosicion(formAux.newPosicion,formAux.site.value)

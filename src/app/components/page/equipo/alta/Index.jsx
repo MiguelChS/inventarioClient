@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row,Col,Button } from 'react-bootstrap';
-import Formulario from './Formulario.jsx';
+import Formulario from '../Component/Formulario.jsx';
 import TableEquipo from './TableEquipo.jsx';
 import {connect} from  'react-redux';
-import {LoadTablaEA, envioEquipo} from '../../../../actions/equipoAction.js';
+import {LoadTablaEA, envioEquipo,cargarFormulario } from '../../../../actions/equipoAction.js';
 
 @connect((store)=>{
     return {
@@ -41,7 +41,11 @@ export default class Index extends React.Component{
                     <h5> Alta de Equipo </h5>
                 </Col>
                 <Col xs={12} bsClass="litleBody col">
-                    <Formulario/>
+                    <Formulario
+                        onLoadFormulario={(form)=>{
+                            this.props.dispatch(cargarFormulario())
+                        }}
+                    />
                     <div className="hr-line-dashed"/>
                     <TableEquipo />
                     <div className="hr-line-dashed"/>

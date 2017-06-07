@@ -11,7 +11,6 @@ let inicializar ={
         modelo:null,
         modulos:null,
         carga:null,
-        equipoNcr:null,
         finGarantia:moment().format("YYYY-MM-DD"),
         snmp:null,
         so:null,
@@ -124,10 +123,6 @@ let inicializar ={
             return {...state,formulario:{...state.formulario,Equipos:action.value}}
         }
 
-        case "INGRESO_EQUIPO_NCR_EQUIPO":{
-            return {...state,formulario:{...state.formulario,equipoNcr:action.value}}
-        }
-
         case "INGRESAR_MODULOS":{
             let modulo = null;
             let prestacion = [];
@@ -170,7 +165,7 @@ let inicializar ={
         }
 
         case "PRE_CARGAR_FORMULARIO_EQUIPO": {
-            return {...state,formulario:{...action.value}};
+            return {...state,formulario:{...state.formulario,...action.value}};
         }
 
         case "ASSIGN_AUTO":{
@@ -268,6 +263,10 @@ let inicializar ={
                 }
             });
             return {...state,tabla:[...tabla]}
+        }
+
+        case "CLEAR_FORM_EQUIPO":{
+            return {...state,...inicializar}
         }
 
         default:

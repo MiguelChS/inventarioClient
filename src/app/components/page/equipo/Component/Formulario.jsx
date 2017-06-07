@@ -5,7 +5,7 @@ import { AutoComplete , InputSerie , Select, InputFecha, Input} from '../../comp
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo
-    ,cargarFormulario,cargarEquipo,cargarEquipoNcr,insertInstitucion,insertCliente} from '../../../../actions/equipoAction.js';
+    ,cargarFormulario,cargarEquipo,insertInstitucion,insertCliente,clearFormulario} from '../../../../actions/equipoAction.js';
 import DualListBox from '../../../dualListBox/dualListBox.jsx';
 import { changeSelectModule,changeSelectModuleAll,changeShowModule } from  '../../../../actions/sourceAction.js';
 
@@ -27,7 +27,7 @@ export default class Formulario extends React.Component{
 
     endLoad(){
         if(this.completeForm()){
-            this.props.dispatch(cargarFormulario())
+            this.props.onLoadFormulario(this.props.Formulario);
         }else{
             alert("esta imcompleto el formulario");
         }
@@ -35,7 +35,11 @@ export default class Formulario extends React.Component{
 
     completeForm(){
         let form = this.props.Formulario;
-        return (form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.equipoNcr && form.id_institucion);
+        return (form.marca && form.nroSerie && form.modelo && form.modulos && form.carga && form.snmp && form.so && form.tipoEquipo && form.Equipos && form.estado && form.planta && form.id_institucion);
+    }
+
+    componentWillUnmount(){
+        this.props.dispatch(clearFormulario())
     }
 
     render(){
@@ -46,19 +50,6 @@ export default class Formulario extends React.Component{
         return(
             <Form horizontal>
                 <Row>
-                    <Col xs={12} sm={6} md={4}>
-                       <Input
-                           label="Equipo Ncr"
-                           id="idEqNcr"
-                           value={this.props.Formulario.equipoNcr}
-                           placeholder="NCR ID"
-                           required={true}
-                           returnValue={(value)=>{
-                               this.props.dispatch(cargarEquipoNcr(value))
-                           }}
-                           col={{label:3,input:9}}
-                       />
-                    </Col>
                     <Col xs={12} sm={6} md={4}>
                         <Select
                             label="Marca"
@@ -258,7 +249,16 @@ export default class Formulario extends React.Component{
                 </Row>
                 <Row>
                     <Col xs={12} bsClass="text-center col">
-                        <Button bsClass="btn btn-white" disabled={!this.completeForm()} onClick={this.endLoad.bind(this)} >Agregar</Button>
+                        <Button bsClass="btn btn-white separarButton" disabled={!this.completeForm()} onClick={this.endLoad.bind(this)} >Agregar</Button>
+                        {(()=>{
+                            if(this.props.hasOwnProperty("onCloseModal")){
+                                return <Button
+                                    bsClass="btn btn-white separarButton"
+                                    onClick={()=>{ this.props.onCloseModal()}} >
+                                    Cerrar
+                                </Button>
+                            }
+                        })()}
                     </Col>
                 </Row>
             </Form>

@@ -4,6 +4,7 @@ import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
 import ModalFormPosicion from '../posicion/alta/ModalAltaPosicion';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
 import ModalFormularioSite from '../site/Component/FormularioSite';
+import ModalFormularioEquipo from '../equipo/modificacion/ModalEdit';
 
 export default class ModalForm extends React.Component{
 
@@ -40,6 +41,13 @@ export default class ModalForm extends React.Component{
                     idModal={store.id}
                     data={store.data}
                 />
+            }
+
+            case 5:{
+               return <ModalFormularioEquipo
+                   idModal={store.id}
+                   data={store.data}
+               />
             }
 
             default:
