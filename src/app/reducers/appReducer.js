@@ -6,7 +6,9 @@ let init = {
     children:null,
     parent:null,
     nombreUsuario:null,
-    cliente:[]
+    cliente:[],
+    roles:[],
+    camposRequeridos:null
 };
 
 function reducer(state=init,action) {
@@ -22,14 +24,15 @@ function reducer(state=init,action) {
         }
         case "INSERT_DATA_USER_APP":{
             let data = action.value;
-            localStorage.setItem("token",data.token);
-            return {...state,nombreUsuario:data.nombre,cliente:data.cliente}
-        }
-        case "INSERT_NAME_USER_APP":{
-            return {...state,nombreUsuario:action.value}
-        }
-        case "INSERT_CLIENTE_APP":{
-            return {...state,cliente:action.value}
+            if(data.hasOwnProperty("token")){
+                localStorage.setItem("token",data.token);
+            }
+            return {...state,
+                nombreUsuario:data.nombreCompleto,
+                cliente:data.clientes,
+                roles:data.roles,
+                camposRequeridos: data.camposRequeridos
+            }
         }
         default:
             return state;

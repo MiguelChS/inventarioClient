@@ -9,6 +9,13 @@ import { Provider } from 'react-redux';
 import Main from './components/index';
 import store from './store';
 
+/*sacar item repetidos global*/
+Array.prototype.unique = function(a) {
+    return function() { return this.filter(a) }
+}(function(a, b, c) {
+    return c.indexOf(a, b + 1) < 0
+});
+
 const app = document.getElementById('app');
 
 render(

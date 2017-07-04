@@ -34,7 +34,7 @@ let init={
     sourceEquipo:[],
     cliente:null,
     mjsErr:"",
-    stateRequtes:false
+    mjsSuccess:""
 };
 
 function reducer(state = init,action) {
@@ -135,6 +135,9 @@ function reducer(state = init,action) {
         }
         case "INSERT_mjsErr_POS":{
             return {...state,mjsErr:action.value}
+        }
+        case "INSERT_mjsSuccess_POS":{
+            return {...state,mjsSuccess:action.value}
         }
         case "CLEAN_FORM_POS":{
             return {...state,...init}

@@ -3,9 +3,10 @@ import { connect } from  'react-redux';
 import { Row,Col,Form } from 'react-bootstrap';
 import { AutoComplete } from '../../componentFormulario/index.js'
 import { hiddenModal,addModal } from '../../../../actions/modalAction.js'
-import { assignPosition } from '../../../../actions/equipoAction.js';
+import { assignPosition,assignPosicionEdit } from '../../../../actions/equipoAction.js';
 import * as action from '../../../../actions/AsignarPosicionAction';
 import BoxFilter from '../../../boxFilter/index.jsx';
+import { sendFormulario } from '../../../../actions/formPositionAction';
 
 @connect((store)=>{
     return{
@@ -17,17 +18,32 @@ export default class AsignarPosicion extends React.Component{
 
     assign(){
         let props = this.props.store;
-        this.props.dispatch([
-            assignPosition({
-                site:props.Site,
-                SiteClient:props.SiteClient,
-                position:props.posicion,
-                formid:this.props.data,
-                prestacion:props.prestacion,
-                newPosicion:props.newPosicion
-            }),
-            hiddenModal(this.props.idModal)
-        ])
+        if(this.props.data.hasOwnProperty("form")){
+            this.props.dispatch([
+                assignPosicionEdit({
+                    site:props.Site,
+                    SiteClient:props.SiteClient,
+                    position:props.posicion,
+                    formid:this.props.data,
+                    prestacion:props.prestacion,
+                    newPosicion:props.newPosicion
+                }),
+                hiddenModal(this.props.idModal)
+            ]);
+        }else{
+            //esto es para el alta de equipo
+            this.props.dispatch([
+                assignPosition({
+                    site:props.Site,
+                    SiteClient:props.SiteClient,
+                    position:props.posicion,
+                    formid:this.props.data,
+                    prestacion:props.prestacion,
+                    newPosicion:props.newPosicion
+                }),
+                hiddenModal(this.props.idModal)
+            ])
+        }
     }
 
     cancelar(){
@@ -40,11 +56,6 @@ export default class AsignarPosicion extends React.Component{
     newPosition(){
         this.props.dispatch(addModal({
             body:2,
-            data:{
-                onEndLoadFormulario:(form)=>{
-                    this.props.dispatch(action.insertNuevaPosicion(form))
-                }
-            },
             size:"xl"
         }))
     }
@@ -64,8 +75,12 @@ export default class AsignarPosicion extends React.Component{
     }
 
     componentDidMount(){
-        //Buscar los sites
-        let form = JSON.parse(localStorage.getItem(this.props.data));
+        let form;
+        if(this.props.data.hasOwnProperty("form")){
+            form = this.props.data.form;
+        }else{
+            form = JSON.parse(localStorage.getItem(this.props.data));
+        }
         this.props.dispatch([
             action.preCargaFormulario(form)
         ])
@@ -150,7 +165,7 @@ export default class AsignarPosicion extends React.Component{
                                     disabled={(this.props.request || props.newPosicion)}
                                     onClick={this.newPosition.bind(this)} className="btn btn-white">
                                 Nueva Posicion
-                            </button>
+                        </button>
                         </div>
                         <div className="btn-group separarButton">
                             <button type="button" disabled={this.props.request} onClick={this.assign.bind(this)} className="btn btn-white">

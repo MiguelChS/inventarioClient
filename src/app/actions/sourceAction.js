@@ -5,6 +5,7 @@ import request from '../Request/Request';
 import {ingresarModulos} from './equipoAction';
 import { changeRequestApp } from './appAction';
 import {depurar} from '../lib/index';
+import { PageInicio } from '../actions/ActionRouter';
 import config from '../config';
 
 export function loadSource(valor) {
@@ -15,12 +16,20 @@ export function loadSource(valor) {
 }
 
 export function searchSource() {
-    return function(dispatch) {
+    return[
+        changeRequestApp(true),
+        requestSource()
+    ]
+}
+
+function requestSource() {
+    return(dispatch)=>{
         request.get(`${config.path}/sourceInventario`)
             .then((result)=>{
                 dispatch([
                     loadSource(result.data),
-                    changeRequestApp(false)
+                    changeRequestApp(false),
+                    PageInicio()
                 ])
             })
             .catch((err)=>{

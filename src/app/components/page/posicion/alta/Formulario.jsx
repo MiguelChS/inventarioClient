@@ -15,47 +15,9 @@ import  * as action from '../../../../actions/formPositionAction';
 
 export default class Formulario extends React.Component{
 
-    formatHour(hora){
-        let newHora = [];
-        for(let attr in hora){
-            if(hora.hasOwnProperty(attr)){
-                newHora.push({
-                    idHora:attr,
-                    hora:hora[attr]
-                })
-            }
-        }
-        return newHora;
-    }
-
     endLoad(){
         if(!this.validar()) return;
         let formAux = this.store;
-        /*let form = {
-            "client_id":formAux.cliente,
-            "ncr_id": formAux.ncr,
-            "id_site_client":formAux.siteClient ? formAux.siteClient.value : null,
-            "id_config_gavetas":formAux.config_gavetas.value,
-            "id_tabla_status":formAux.tabla_status.value,
-            "id_script": formAux.script.value,
-            "id_command":formAux.command.value,
-            "id_community_string":formAux.community_string.value,
-            "ip":formAux.ip,
-            "id_comunicacion":formAux.comunicacion.value,
-            "id_slm":formAux.slm.value,
-            "id_flm":formAux.flm.value,
-            "id_prestacion":1,
-            "id_ubicacion_en_site":formAux.ubicacion_en_site.value,
-            "hourBranch":this.formatHour(formAux.hourBranch),
-            "hourOperation":this.formatHour(formAux.hourOperation),
-            "sla":this.formatHour(formAux.sla),
-            "access":this.formatHour(formAux.access),
-            "hourPeak":this.formatHour(formAux.hourPeak),
-            "HoraPrestacion":formAux.hourPrestacion.map(obj =>{return {idHora:obj.value,hora:obj.hora[obj.value]}}),
-            "idEquipo":formAux.id_Equipo ? formAux.id_Equipo.value : null,
-            "dato2":null,
-            "dato3":null,
-        };*/
         this.props.onEnLoad(formAux);
     }
 
@@ -100,6 +62,7 @@ export default class Formulario extends React.Component{
                 <div className="row">
                     <div className="col-xs-12 text-center">
                         <p className="mjsErr">{this.store.mjsErr}</p>
+                        <p className="mjsSuccess">{this.store.mjsSuccess}</p>
                     </div>
                 </div>
 
@@ -149,7 +112,7 @@ export default class Formulario extends React.Component{
                             onChange={(value)=>{
                                 this.props.dispatch(action.insertCliente(value));
                             }}
-                            disabled={(this.props.request || this.props.hasOwnProperty("desdeEquipo"))}
+                            disabled={(this.props.request)}
                         />
                     </div>
                 </div>
@@ -160,7 +123,7 @@ export default class Formulario extends React.Component{
                             label="Site"
                             dataSource={this.store.sourceSite}
                             required={true}
-                            disabled={this.props.request || this.props.hasOwnProperty("desdeEquipo")}
+                            disabled={this.props.request}
                             store={this.store.site}
                             onChange={(value)=>{
                                 this.props.dispatch(action.insertSite(value));

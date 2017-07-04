@@ -24,47 +24,38 @@ export function changeParentApp(valor) {
         value: valor
     }
 }
+
 export function insertDataUser(valor) {
     return {
         type:"INSERT_DATA_USER_APP",
         value: valor
     }
 }
-export function insertNameUser(valor) {
-    return {
-        type:"INSERT_NAME_USER_APP",
-        value: valor
-    }
+export function getDataUser() {
+    return[
+        changeRequestApp(true),
+        requestDataUser()
+    ]
 }
-export function insertClientes(valor) {
-    return {
-        type:"INSERT_CLIENTE_APP",
-        value: valor
-    }
-}
-
-export function VerificarToken() {
+function requestDataUser() {
     return function(dispatch) {
-        let token  = localStorage.getItem("token");
-        if(!token) return dispatch(pageLogin());
-        Request.get(`${config.path}/VerificarToken/${token}`)
+        Request.get(`${config.path}/login`)
             .then((result)=>{
-                if(result.data){
-                    dispatch([
-                        insertNameUser(result.data.nombre),
-                        insertClientes(result.data.cliente),
-                        PageLayaout()
-                    ])
-                }else{
-                    dispatch(pageLogin())
-                }
+                dispatch([
+                    insertDataUser(result.data),
+                    changeRequestApp(false),
+                    PageLayaout(),
+                ]);
             })
             .catch(()=>{
-                dispatch(pageLogin())
+                localStorage.removeItem("token");
+                dispatch([
+                    pageLogin(),
+                    changeRequestApp(false)
+                ])
             })
     }
 }
-
 export function closeSession() {
     localStorage.removeItem("token");
     return pageLogin();

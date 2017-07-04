@@ -5,6 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Formulario from './Formulario.jsx';
 import { hiddenModal } from '../../../../actions/modalAction.js'
+import { sendFormulario } from '../../../../actions/formPositionAction';
 
 
 let ModalForm = (props)=>{
@@ -14,8 +15,7 @@ let ModalForm = (props)=>{
             <div className="hr-line-dashed"/>
             <Formulario
                 onEnLoad={(form)=>{
-                    props.dispatch(hiddenModal(props.idModal));
-                    props.data.onEndLoadFormulario(form);
+                    props.dispatch(sendFormulario(form));
                 }}
                 onCancel={()=>{
                     props.dispatch(hiddenModal(props.idModal));

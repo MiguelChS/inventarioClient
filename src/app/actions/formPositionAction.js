@@ -4,6 +4,7 @@
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
 import config from '../config';
+import { formatPosicion } from '../lib'
 
 export function insertNombrePosicion(valor) {
     return {
@@ -208,6 +209,13 @@ export function insertMjsErr(valor) {
     }
 }
 
+export function insertMjsSuccess(valor) {
+    return {
+        type:"INSERT_mjsSuccess_POS",
+        value:valor
+    }
+}
+
 export function insertSourceSite(valor) {
     return {
         type:"INSERT_SOURCE_SITE_POS",
@@ -337,47 +345,8 @@ export function clearForm() {
 export function sendFormulario(data) {
     return[
         changeRequestApp(true),
-        enviandoFormulario(formatFomulario(data))
+        enviandoFormulario(formatPosicion(data))
     ]
-}
-
-function formatHorarios(horario) {
-    let array = [];
-    for (let attr in horario){
-        array.push({
-            idHora:attr,
-            hora:horario[attr]
-        })
-    }
-    return array;
-}
-
-function formatFomulario(form) {
-    return {
-        "clientid":form.nombrePoscion,
-        "dato2":form.dato2,
-        "dato3":form.dato3,
-        "idSite":form.site.value,
-        "ncrid":form.ncr,
-        "idconfiggavetas":form.config_gavetas.value,
-        "id_status":form.tabla_status.value,
-        "idscript":form.script.value,
-        "idcommand":form.command.value,
-        "idcommunitystring":form.community_string.value,
-        "ip":form.ip,
-        "iduser":1,
-        "idcomunicacion":form.comunicacion.value,
-        "idslm":form.slm.value,
-        "idflm":form.flm.value,
-        "idubicacionensite":form.ubicacion_en_site.value,
-        "idprestacion":form.prestacion.value,
-        "hourBranch":formatHorarios(form.hourBranch),
-        "hourOperation":formatHorarios(form.hourBranch),
-        "sla":formatHorarios(form.hourBranch),
-        "access":formatHorarios(form.hourBranch),
-        "hourPeak":formatHorarios(form.hourBranch),
-        "HoraPrestacion":[]
-    }
 }
 
 function enviandoFormulario(form) {
@@ -395,11 +364,13 @@ function enviandoFormulario(form) {
             .then(()=>{
                 dispatch([
                     clearForm(),
-                    changeRequestApp(false)
+                    changeRequestApp(false),
+                    insertMjsSuccess("Se cargo Correctamente")
                 ]);
             })
             .catch((err)=>{
                 dispatch([
+                    insertMjsSuccess(""),
                     changeRequestApp(false),
                     insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
                 ])

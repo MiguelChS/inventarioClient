@@ -1,7 +1,4 @@
-/**
- * Created by mc185249 on 1/11/2017.
- */
-import moment from 'moment';
+
 let inicializar ={
     formulario:{
         sendForm:false,
@@ -11,16 +8,16 @@ let inicializar ={
         modelo:null,
         modulos:null,
         carga:null,
-        finGarantia:moment().format("YYYY-MM-DD"),
+        finGarantia:null,
         snmp:null,
         so:null,
         xfs:null,
         Equipos:null,
         tipoEquipo:null,
-        fInstalacion:moment().format("YYYY-MM-DD"),
-        fRetiro:moment().format("YYYY-MM-DD"),
+        fInstalacion:null,
+        fRetiro:null,
         estado:null,
-        fEntrega:moment().format("YYYY-MM-DD"),
+        fEntrega:null,
         planta:null,
         cliente:null,
         site:{
@@ -198,6 +195,19 @@ let inicializar ={
             //actualizamos el local estorage con todo lo nuevo
             localStorage.setItem(form.idform,JSON.stringify(form));
             return {...state,tabla:[...tabla]}
+        }
+
+        case "ASSIGN_AUTO_EDIT":{
+            let form = {...state.formulario};
+            let data = action.value;
+            form.site = data.site;
+            form.position = data.position ? data.position : {label:"SIN DATO",value: 0};
+            form.newPosicion = data.newPosicion;
+            form.prestacion = data.prestacion.map((obj)=>{
+                obj["hora"] = obj["hora"][obj.value];
+                return obj;
+            });
+            return {...state,formulario: form}
         }
 
         case "DES_ASSIGN":{

@@ -26,7 +26,6 @@ export default class Index extends React.Component{
         }
     }
 
-
     render(){
         const style = {
             marginRight:"0",

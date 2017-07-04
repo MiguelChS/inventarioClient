@@ -3,70 +3,55 @@ import { FormGroup , Col,Row, ControlLabel} from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 let moment = require('moment');
 
-export default class InputFecha extends React.Component{
-    constructor(props){
-        super(props);
-        let fecha1 = moment(this.props.default.date1);
-        let fecha2 = this.props.default.hasOwnProperty("date2") ? moment(this.props.default.date2) : moment();
-        this.state={
-            min:fecha1,
-            max:fecha2,
-            fecha1:fecha1,
-            fecha2:fecha2
-        }
-    }
 
-    componentDidMount(){
-        this.refs.hasOwnProperty("data1") ? this.refs.data1.refs.input.refs.input.disabled = true : null;
-        this.refs.hasOwnProperty("data2") ? this.refs.data2.refs.input.refs.input.disabled = true : null;
-    }
-
-    changeDate1(e){
-        if(this.refs.hasOwnProperty("data2")){
-            this.setState({fecha1:e,min:e},()=>{
-                this.props.returnDateInput({
-                    f1:this.state.fecha1.format("YYYY-MM-DD"),
-                    f2:this.state.fecha2.format("YYYY-MM-DD")
-                })
-            });
-        }else{
-            this.setState({fecha1:e});
-            this.props.returnDateInput(e.format("YYYY-MM-DD"));
-        }
-    }
-
-    changeDate2(e){
-        this.setState({fecha2:e,max:e},()=>{
-            this.props.returnDateInput({
-                f1:this.state.fecha1.format("YYYY-MM-DD"),
-                f2:this.state.fecha2.format("YYYY-MM-DD")
-            })
-        });
-    }
-
+class InputDate extends React.Component {
     render(){
         return(
-            <FormGroup controlId={this.props.id}>
-                <Col componentClass={ControlLabel} xs={12} sm={( typeof this.props.col == 'undefined' ? 2 : this.props.col.label)}>
-                    {this.props.label}
-                </Col>
-                <Col xs={12} sm={( typeof this.props.col == 'undefined' ? 10 : this.props.col.input)}>
-                    {(()=>{
-                        if( typeof this.props.dual != 'undefined' && this.props.dual == "true"){
-                            return <Row>
-                                        <Col xs={6}>
-                                            <DatePicker className="form-control" selected={this.state.fecha1} locale="es"  onChange={this.changeDate1.bind(this)} maxDate={this.state.max} ref="data1" mode="date" dateFormat={this.props.format} />
-                                        </Col>
-                                        <Col xs={6}>
-                                            <DatePicker className="form-control" selected={this.state.fecha2} locale="es"  onChange={this.changeDate2.bind(this)} minDate={this.state.min} ref="data2" mode="date" dateFormat={this.props.format} />
-                                        </Col>
-                                    </Row>
-                        }else{
-                            return <DatePicker ref="data1" className="form-control" selected={this.state.fecha1} locale="es"  mode="date" onChange={this.changeDate1.bind(this)} dateFormat={this.props.format}/>
-                        }
-                    })()}
-                </Col>
-            </FormGroup>
+            <div className="input-group">
+                <input type="text" className={`form-control ${this.props.className}`} value={this.props.value} disabled={true}/>
+                <span className="input-group-btn">
+                        <button className="btn btn-default"
+                                type="button"
+                                onClick={()=>{
+                                    this.props.onClick()
+                                }}
+                        >
+                            <i className="fa fa-calendar" />
+                        </button>
+                        <button className="btn btn-default"
+                                type="button"
+                                onClick={(e)=>{
+                                    e.target.value = "";
+                                    this.props.onChange(e);
+                                }}
+                        >
+                            <i className="fa fa-trash" />
+                        </button>
+                    </span>
+            </div>
         )
     }
 }
+
+export default (props)=>{
+    return(
+        <FormGroup controlId={props.id}>
+            <Col componentClass={ControlLabel} xs={12} sm={( props.col ? props.col.label : 2 )}>
+                {props.label}
+            </Col>
+            <Col xs={12} sm={(props.col ? props.col.input : 10)}>
+                <DatePicker
+                    customInput={<InputDate/>}
+                    className={props.require && !props.store ? "require-inv" : "" }
+                    selected={ props.store ? moment(props.store) : null}
+                    locale="es"
+                    onChange={(e)=>{
+                        props.returnDateInput(e ? e.format("YYYY-MM-DD") : null);
+                    }}
+                    mode="date"
+                    dateFormat={props.format}
+                />
+            </Col>
+        </FormGroup>
+    )
+};

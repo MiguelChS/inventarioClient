@@ -2,9 +2,8 @@ import React from 'react';
 import Nav from '../nav/nav.jsx'
 import {connect} from  'react-redux';
 import Modal from './componentFormulario/modal.jsx';
-import { PageInicio } from '../../actions/ActionRouter';
 import { searchSource } from '../../actions/sourceAction';
-import { changeRequestApp } from '../../actions/appAction';
+import request from '../../Request/Request';
 
 class Layout extends React.Component{
 
@@ -12,11 +11,7 @@ class Layout extends React.Component{
         //eliminaos la imagen del body
         document.getElementsByTagName("body")[0].style.backgroundImage = "none";
         //buscamos los datos source basicos
-         this.props.dispatch([
-             changeRequestApp(true),
-             searchSource(),
-             PageInicio()
-         ]);
+        this.props.dispatch(searchSource());
     }
 
     componentWillUnmount(){

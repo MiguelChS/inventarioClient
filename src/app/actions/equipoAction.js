@@ -5,6 +5,7 @@ import Request from '../Request/Request';
 import {changeDefaultModule, loadModule} from  './sourceAction';
 import { changeRequestApp } from './appAction';
 import config from '../config';
+import { formatEquipo } from '../lib'
 
 
 export function altaNroSerie(valor) {
@@ -187,6 +188,14 @@ export function assignPosition(value) {
     }
 }
 
+export function assignPosicionEdit(value) {
+    return {
+        type:"ASSIGN_AUTO_EDIT",
+        value:value
+    }
+}
+
+
 export function insertCliente(value) {
     return [
         {
@@ -230,7 +239,6 @@ export function loadStateSendForm(valor) {
     }
 }
 
-
 export function clearFormulario() {
     return [
         {
@@ -245,46 +253,6 @@ export function desAssign(valor) {
         type:"DES_ASSIGN",
         value:valor
     }
-}
-
-function formatHorarios(horario) {
-    let array = [];
-    for (let attr in horario){
-        array.push({
-            idHora:attr,
-            hora:horario[attr]
-        })
-    }
-    return array;
-}
-
-function mapFormularioPosicion(form,site) {
-    if(!form) return null;
-    return {
-        "clientid":form.nombrePoscion,
-        "dato2":form.dato2,
-        "dato3":form.dato3,
-        "idSite":site,
-        "ncrid":form.ncr,
-        "idconfiggavetas":form.config_gavetas.value,
-        "id_status":form.tabla_status.value,
-        "idscript":form.script.value,
-        "idcommand":form.command.value,
-        "idcommunitystring":form.community_string.value,
-        "ip":form.ip,
-        "iduser":1,
-        "idcomunicacion":form.comunicacion.value,
-        "idslm":form.slm.value,
-        "idflm":form.flm.value,
-        "idubicacionensite":form.ubicacion_en_site.value,
-        "idprestacion":form.prestacion.value,
-        "hourBranch":formatHorarios(form.hourBranch),
-        "hourOperation":formatHorarios(form.hourBranch),
-        "sla":formatHorarios(form.hourBranch),
-        "access":formatHorarios(form.hourBranch),
-        "hourPeak":formatHorarios(form.hourBranch),
-        "HoraPrestacion":[]
-    };
 }
 
 export function envioEquipo() {
@@ -302,29 +270,7 @@ function sendFormArray() {
             //buscar los datos en el Local Storage
             let formAux = JSON.parse(localStorage.getItem(key));
             if(!formAux.sendForm){
-                let form = {
-                    "id_tipo_eq": formAux.tipoEquipo.value,
-                    "id_tipo_equipo":formAux.Equipos.value,
-                    "f_entrega":formAux.fEntrega,
-                    "id_estado":formAux.estado.value,
-                    "id_institucion": formAux.id_institucion.value,
-                    "id_user":1,
-                    "f_retiro":formAux.fRetiro,
-                    "f_inst":formAux.fInstalacion,
-                    "f_fin_garantia":formAux.finGarantia,
-                    "f_inicio_garantia":formAux.fEntrega,
-                    "id_xfs":formAux.xfs ? formAux.xfs.value : null,
-                    "id_SO":formAux.so.value,
-                    "id_snmp":formAux.snmp.value,
-                    "id_carga":formAux.carga.value,
-                    "modulos_separados_por_coma":formAux.modulos.map( obj => `${obj.value}`),
-                    "id_modelo":formAux.modelo.value,
-                    "nro_serie":`${formAux.planta.prefijo}-${formAux.nroSerie}`,
-                    "id_planta":formAux.planta.value,
-                    "horaPrestacion":formAux.prestacion.map((pre)=>{ return{idHora:`${pre.value}`,hora:pre.hora} }),
-                    "id_posicion":formAux.newPosicion ? null : formAux.newPosicion,
-                    "newPosicion":mapFormularioPosicion(formAux.newPosicion,formAux.site.value)
-                };
+                let form = formatEquipo(formAux);
                 ArrayEnvio.push(sendFormulario(form,key))
             }
         });
@@ -374,16 +320,7 @@ function sendFormulario(form,key){
             });
             return;
         }
-        Request.customize({
-            method: 'POST',
-            url: `${config.path}/Equipo`,
-            data: form,
-            headers: {
-                'Content-Type': "application/json",
-                'Authorization':localStorage.getItem("token")
-            },
-            json: true
-        })
+        Request.post(`${config.path}/Equipo`,form)
             .then(()=>{
                     resolve(null)
             })

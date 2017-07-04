@@ -1,7 +1,32 @@
 var debug = process.env.NODE_ENV !== "production";
 var webpack = require('webpack');
 var path = require('path');
+var WebpackOnBuildPlugin = require('on-build-webpack');
+const fs = require('fs');
+let ruta = 'C:\\Users\\mc185249\\Desktop\\work\\inventarioServer\\public\\js';
 
+function readAndWrite(file) {
+    return new Promise((resolve,reject)=>{
+        fs.readFile(`./src/public/js/${file}`,(err,data)=>{
+            if(err){
+                reject(err);
+                return;
+            }
+            fs.writeFile(`${ruta}${file}`,data,(err)=>{
+                if(err){
+                    reject(err);
+                    return;
+                }
+                resolve("success");
+            });
+        });
+    });
+}
+
+function enviarBundle() {
+    return Promise.all([readAndWrite('bundle.js'),readAndWrite('bundle.js.map')])
+}
+//path.resolve(`${__dirname}/src/public/js`)
 module.exports = {
     devtool: 'source-map',
     entry: {
@@ -21,7 +46,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(`${__dirname}/src/public/js`),
+        path: ruta,
         filename: 'bundle.js'
     },
     plugins: debug ? [] : [

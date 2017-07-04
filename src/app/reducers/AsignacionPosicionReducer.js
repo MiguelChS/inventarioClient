@@ -45,12 +45,16 @@ function reducer(state=init,action) {
         case "PRE_CARGAR_HORA_PRESTACION_ASSIGN_POSICION":{
             //tranformar la hora prestacion al formato que nesecita el DataGrid
             let auxPrestacion = action.value.map((obj)=>{
+                let hora = {
+                    value : obj.value,
+                    label : obj.label,
+                };
                 if(obj.hasOwnProperty("hora")){
-                    let hora = {};
-                    hora[obj.value] = obj.hora;
-                    obj.hora = hora;
+                    let aux = {};
+                    aux[obj.value] = obj.hora;
+                    hora.hora = aux;
                 }
-                return obj;
+                return hora;
             });
             return {...state,prestacion:auxPrestacion}
         }

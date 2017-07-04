@@ -3,12 +3,27 @@
  */
 import axios from 'axios';
 
-export  default {
+export default {
     get:(url)=>{
-        return axios.get(url);
+            return axios({
+                method:'get',
+                url:url,
+                headers: {
+                    'Content-Type': "application/json",
+                    'Authorization':localStorage.getItem("token")
+                }
+            })
     },
     post:(url,param) =>{
-        return axios.post(url,param);
+        return axios({
+            method:'post',
+            url:url,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            data:param
+        });
     },
     customize:(option)=>{
         return axios(option);
