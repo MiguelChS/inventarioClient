@@ -3,3 +3,8 @@
  */
 import React from 'react';
 
+export default ()=>{
+    return(
+        <p>Aca se crean Usuario</p>
+    )
+}

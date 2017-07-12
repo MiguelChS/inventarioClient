@@ -6,7 +6,7 @@ import { hiddenModal,addModal } from '../../../../actions/modalAction.js'
 import { assignPosition,assignPosicionEdit } from '../../../../actions/equipoAction.js';
 import * as action from '../../../../actions/AsignarPosicionAction';
 import BoxFilter from '../../../boxFilter/index.jsx';
-import { sendFormulario } from '../../../../actions/formPositionAction';
+import { sendFormulario, insertCliente,insertSite} from '../../../../actions/formPositionAction';
 
 @connect((store)=>{
     return{
@@ -15,6 +15,9 @@ import { sendFormulario } from '../../../../actions/formPositionAction';
     }
 })
 export default class AsignarPosicion extends React.Component{
+    constructor(props){
+        super(props);
+    }
 
     assign(){
         let props = this.props.store;
@@ -25,8 +28,7 @@ export default class AsignarPosicion extends React.Component{
                     SiteClient:props.SiteClient,
                     position:props.posicion,
                     formid:this.props.data,
-                    prestacion:props.prestacion,
-                    newPosicion:props.newPosicion
+                    prestacion:props.prestacion
                 }),
                 hiddenModal(this.props.idModal)
             ]);
@@ -38,8 +40,7 @@ export default class AsignarPosicion extends React.Component{
                     SiteClient:props.SiteClient,
                     position:props.posicion,
                     formid:this.props.data,
-                    prestacion:props.prestacion,
-                    newPosicion:props.newPosicion
+                    prestacion:props.prestacion
                 }),
                 hiddenModal(this.props.idModal)
             ])
@@ -54,26 +55,22 @@ export default class AsignarPosicion extends React.Component{
     }
 
     newPosition(){
-        this.props.dispatch(addModal({
-            body:2,
-            size:"xl"
-        }))
+        let form;
+        if(this.props.data.hasOwnProperty("form")){
+            form = this.props.data.form;
+        }else{
+            form = JSON.parse(localStorage.getItem(this.props.data));
+        }
+        this.props.dispatch([
+            insertCliente(form.cliente),
+            insertSite(this.props.store.Site),
+            addModal({
+                body:2,
+                data:{},
+                size:"xl"
+            })
+        ])
     }
-
-    editarNuevaPosicion(){
-        let form = this.props.store.newPosicion;
-        this.props.dispatch(addModal({
-            body:2,
-            data:{
-                onEndLoadFormulario:(form)=>{
-                    this.props.dispatch(action.insertNuevaPosicion(form))
-                },
-                default:form
-            },
-            size:"xl"
-        }))
-    }
-
     componentDidMount(){
         let form;
         if(this.props.data.hasOwnProperty("form")){
@@ -107,42 +104,21 @@ export default class AsignarPosicion extends React.Component{
                         />
                     </Col>
                 </Row>
-                {(()=>{
-                    if(!props.newPosicion){
-                        return(
-                            <Row>
-                                <Col xs={12} >
-                                    <AutoComplete
-                                        label="Posicion"
-                                        col={{input:9,label:3}}
-                                        dataSource={props.posicionSource}
-                                        disabled={(this.props.request || props.newPosicion)}
-                                        store={props.posicion}
-                                        required={true}
-                                        onChange={(value)=>{
-                                            this.props.dispatch(action.insertPosicion(value))
-                                        }}
-                                    />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                    return(
-                        <div className="row text-center" style={{marginBottom:"10px"}}>
-                            <strong>Nueva posicion :</strong> {props.newPosicion.nombrePoscion}
-                            <button type="button"
-                                    style={{marginLeft:"20px"}}
-                                    onClick={this.editarNuevaPosicion.bind(this)}
-                                    className="btn btn-white btn-xs separarButton">
-                                <i className={`fa fa-pencil`}/>
-                            </button>
-                            <button type="button" className="btn btn-white btn-xs separarButton"
-                                    onClick={()=>{this.props.dispatch(action.insertNuevaPosicion(null))}}>
-                                <i className={`fa fa-trash`}/>
-                            </button>
-                        </div>
-                    )
-                })()}
+                <Row>
+                    <Col xs={12} >
+                        <AutoComplete
+                            label="Posicion"
+                            col={{input:9,label:3}}
+                            dataSource={props.posicionSource}
+                            disabled={(this.props.request || props.newPosicion)}
+                            store={props.posicion}
+                            required={true}
+                            onChange={(value)=>{
+                                this.props.dispatch(action.insertPosicion(value))
+                            }}
+                        />
+                    </Col>
+                </Row>
                 <Row>
                     <Col xs={12} >
                         {(()=> {
@@ -162,7 +138,7 @@ export default class AsignarPosicion extends React.Component{
                     <div className="col-xs-12 text-right">
                         <div className="btn-group separarButton">
                             <button type="button"
-                                    disabled={(this.props.request || props.newPosicion)}
+                                    disabled={(this.props.request || !(props.Site && props.Site.value))}
                                     onClick={this.newPosition.bind(this)} className="btn btn-white">
                                 Nueva Posicion
                         </button>

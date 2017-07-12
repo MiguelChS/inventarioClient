@@ -17,6 +17,7 @@ import Login from './LoginReducer';
 import AssignPosicion from './AsignacionPosicionReducer';
 import ModiSite from './ModificacionSite';
 import ModiEquipo from './EquipoModificacionReducer';
+import DBA from './DbaReducer';
 
 export default combineReducers({
     equipo: equipo,
@@ -32,5 +33,6 @@ export default combineReducers({
     login:Login,
     assignPosicion:AssignPosicion,
     siteModi:ModiSite,
-    equipoModi: ModiEquipo
+    equipoModi: ModiEquipo,
+    dba:DBA
 })

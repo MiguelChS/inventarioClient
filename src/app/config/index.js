@@ -3,5 +3,6 @@
  */
 export default {
     //"http://lnxsrv01:3012/api"
-    path:"http://localhost:4000/api"
+    //http://localhost:4000
+    path:"/api"
 }

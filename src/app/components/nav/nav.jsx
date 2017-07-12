@@ -41,14 +41,14 @@ function menuByRol(roles,props) {
     roles.forEach((item,index) =>{
         if((item == 1 || item == 2 || item == 3) && flag){
             resultMenu.push(
-                <NavDropdown key={index} title="Alta" id="basic-nav-dropdown">
+                <NavDropdown key={index} title="Alta" id="basic-nav-dropdown" disabled={props.request}>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageAltaSite()) }}>Site</MenuItem>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageAltaPosicion()) }}>Posicion</MenuItem>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageAltaEquipo()) }}>Equipo</MenuItem>
                 </NavDropdown>
             );
             resultMenu.push(
-                <NavDropdown key={index + 10} title="Modificacion" id="basic-nav-dropdown">
+                <NavDropdown key={index + 10} title="Modificacion" id="basic-nav-dropdown" disabled={props.request}>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageModificarEquipo()) }}>Equipo</MenuItem>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageModificacionSite()) }}>Site</MenuItem>
                     <MenuItem>Posicion</MenuItem>
@@ -60,13 +60,13 @@ function menuByRol(roles,props) {
         switch (item){
             case 4:{
                 resultMenu.push(
-                    <NavItem key={index} eventKey={1} href="#">DBA</NavItem>
+                    <NavItem key={index} eventKey={1} disabled={props.request} onClick={()=>{props.dispatch(page.PageDBA())}}>DBA</NavItem>
                 );
                 break;
             }
             case 5:{
                 resultMenu.push(
-                    <NavItem key={index} eventKey={1} href="#">Usuarios</NavItem>
+                    <NavItem key={index} eventKey={1} disabled={props.request} onClick={()=>{props.dispatch(page.PageUsuario())}}>Usuarios</NavItem>
                 );
                 break;
             }
@@ -78,7 +78,8 @@ function menuByRol(roles,props) {
 export default connect((state)=>{
     return{
         nombre: state.app.nombreUsuario,
-        roles:state.app.roles
+        roles:state.app.roles,
+        request: state.app.Request
     }
 })(NavComponent);
 

@@ -16,93 +16,127 @@ const mapStateToProps= (state)=>{
 };
 
 function map(props) {
-    let row = [];
-    for(let i = 0; i < props.tabla.length ; i++){
-        if(i == 20) break;
-        let equipo = props.tabla[i];
-        row.push(
-            <tr key={i}>
-                <td>{equipo.nro_serie}</td>
-                <td>{equipo.cliente_d1}</td>
-                <td>{equipo.institucion_nombre}</td>
-                <td>{equipo.tipo_equipo}</td>
-                <td>{equipo.pais}</td>
-                <td>{equipo.ciudad}</td>
-                <td>{equipo.estado}</td>
-                <td>{equipo.codigo_postal}</td>
-                <td>{equipo.cliente_id}</td>
-                <td>
-                    <ButtonTable
-                        data={equipo.id}
-                        icono="fa-pencil"
-                        click={(data)=>{props.dispatch(action.Editar(data,props.source,props.cliente))}}
-                    />
-                    <ButtonTable
-                        data={equipo.id}
-                        icono="fa-trash"
-                        click={(data)=>{props.dispatch(action.Delete(data))}}
-                    />
-                </td>
-            </tr>
-        )
-    }
-    return row;
+
 }
 
 
-let resultado = (props)=>{
-    return(
-        <Row style={{...style,...{marginTop:"10px"}}} bsClass="row wrapperWhite">
-            <Col xs={12} bsClass="litleHeader col">
-                <h5>Result</h5>
-            </Col>
-            <Col xs={12} bsClass="litleBody col">
-                <div style={{maxHeight:"450px",overflow:"auto"}}>
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>Serial</th>
-                            <th>Cliente</th>
-                            <th>Institucion</th>
-                            <th>Equipo</th>
-                            <th>Pais</th>
-                            <th>Ciudad</th>
-                            <th>Estado</th>
-                            <th>Codigo Postal</th>
-                            <th>Cliente ID</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {map(props)}
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <nav className="text-center">
-                        <ul className="pagination no-margins" style={{paddingTop:"10px"}}>
-                            <li>
-                                <a href="#" >
-                                    <span>&laquo;</span>
-                                </a>
-                            </li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li>
-                                <a href="#">
-                                    <span>&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </Col>
-        </Row>
-    )
-};
+class resultado extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            selectPage:0
+        }
+    }
+
+    map(){
+        let row = [];
+        for(let i = (this.state.selectPage * 20); i < this.props.tabla.length ; i++){
+            if(i == ((this.state.selectPage * 20) + 20)) break;
+            let equipo = this.props.tabla[i];
+            row.push(
+                <tr key={i}>
+                    <td>{equipo.nro_serie}</td>
+                    <td>{equipo.cliente_d1}</td>
+                    <td>{equipo.institucion_nombre}</td>
+                    <td>{equipo.tipo_equipo}</td>
+                    <td>{equipo.pais}</td>
+                    <td>{equipo.ciudad}</td>
+                    <td>{equipo.estado}</td>
+                    <td>{equipo.codigo_postal}</td>
+                    <td>{equipo.cliente_id}</td>
+                    {(()=>{
+                        if(equipo.pendiente_aprobacion) return <td></td>;
+                        return(
+                            <td>
+                                <ButtonTable
+                                    data={equipo.id}
+                                    icono="fa-pencil"
+                                    click={(data)=>{this.props.dispatch(action.Editar(data,this.props.source,this.props.cliente))}}
+                                />
+                                <ButtonTable
+                                    data={equipo.id}
+                                    icono="fa-trash"
+                                    click={(data)=>{this.props.dispatch(action.Delete(data))}}
+                                />
+                            </td>
+                        )
+
+                    })()}
+                </tr>
+            )
+        }
+        return row;
+    }
+
+    selectPage(page){
+        this.setState({selectPage:page})
+    }
+
+
+    render(){
+        return(
+            <Row style={{...style,...{marginTop:"10px"}}} bsClass="row wrapperWhite">
+                <Col xs={12} bsClass="litleHeader col">
+                    <h5>Result</h5>
+                </Col>
+                <Col xs={12} bsClass="litleBody col">
+                    <div style={{maxHeight:"450px",overflow:"auto"}}>
+                        <table className="table">
+                            <thead>
+                            <tr>
+                                <th>Serial</th>
+                                <th>Cliente</th>
+                                <th>Institucion</th>
+                                <th>Equipo</th>
+                                <th>Pais</th>
+                                <th>Ciudad</th>
+                                <th>Estado</th>
+                                <th>Codigo Postal</th>
+                                <th>Cliente ID</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {this.map()}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <nav className="text-center">
+                            <ul className="pagination no-margins" style={{paddingTop:"10px"}}>
+                                <li>
+                                    <a role="button">
+                                        <span>&laquo;</span>
+                                    </a>
+                                </li>
+                                {(()=>{
+                                    let li = [];
+                                    for(let i =0;i<(this.props.tabla.length / 20);i++){
+                                         li.push(<li key={i}>
+                                             <a role="button"
+                                                onClick={()=>{
+                                                    this.selectPage(i);
+                                                }}
+                                             >
+                                                 {i + 1}
+                                             </a>
+                                         </li>)
+                                    }
+                                    return li;
+                                })()}
+                                <li>
+                                    <a role="button">
+                                        <span>&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </Col>
+            </Row>
+        )
+    }
+}
 
 const style = {
     marginRight:"0",

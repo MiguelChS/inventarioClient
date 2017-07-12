@@ -112,7 +112,7 @@ export default class Formulario extends React.Component{
                             onChange={(value)=>{
                                 this.props.dispatch(action.insertCliente(value));
                             }}
-                            disabled={(this.props.request)}
+                            disabled={(this.props.request || this.props.hasOwnProperty("desdeEquipo"))}
                         />
                     </div>
                 </div>
@@ -123,7 +123,7 @@ export default class Formulario extends React.Component{
                             label="Site"
                             dataSource={this.store.sourceSite}
                             required={true}
-                            disabled={this.props.request}
+                            disabled={(this.props.request || this.props.hasOwnProperty("desdeEquipo"))}
                             store={this.store.site}
                             onChange={(value)=>{
                                 this.props.dispatch(action.insertSite(value));

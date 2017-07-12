@@ -29,8 +29,7 @@ let inicializar ={
             value: 0
         },
         id_institucion:null,
-        prestacion:[],
-        newPosicion:null
+        prestacion:[]
     },
     tabla:[]
 };
@@ -140,7 +139,7 @@ let inicializar ={
                     if(form.idform != obj.idform) return obj;
                     obj.numSerie = `${form.planta.prefijo}-${form.nroSerie}`;
                     obj.nameSuc = form.site.label;
-                    obj.posicion = form.newPosicion ? form.newPosicion.nombrePoscion : form.position.label;
+                    obj.posicion = form.position.label;
                     return obj;
                 });
             }else{
@@ -168,26 +167,19 @@ let inicializar ={
         case "ASSIGN_AUTO":{
             let tabla = [...state.tabla];
             let data = action.value;
-            //verificamos si posicion es null
             let labelPosicon = "";
-            if(data.newPosicion){
-                labelPosicon = data.newPosicion.nombrePoscion
-            }else{
-                labelPosicon = data.position.label;
-            }
             //buscamos la data del localStorage
             let form = JSON.parse(localStorage.getItem(data.formid));
             //insertamos en la fila de la tabla los nombre de la sucursal y la posicion
             tabla = tabla.map((obj)=>{
                 if(form.idform != obj.idform) return obj;
                 obj.nameSuc =  data.site.label;
-                obj.posicion = labelPosicon;
+                obj.posicion = data.position.label;
                 return obj;
             });
             //insertamos la posicion y site en el formulario principal y las prestaciones
             form.site = data.site;
             form.position = data.position ? data.position : {label:"SIN DATO",value: 0};
-            form.newPosicion = data.newPosicion;
             form.prestacion = data.prestacion.map((obj)=>{
                 obj["hora"] = obj["hora"][obj.value];
                 return obj;
@@ -202,7 +194,6 @@ let inicializar ={
             let data = action.value;
             form.site = data.site;
             form.position = data.position ? data.position : {label:"SIN DATO",value: 0};
-            form.newPosicion = data.newPosicion;
             form.prestacion = data.prestacion.map((obj)=>{
                 obj["hora"] = obj["hora"][obj.value];
                 return obj;
@@ -215,7 +206,6 @@ let inicializar ={
             let form = JSON.parse(localStorage.getItem(action.value));
             form.site = {label:"SIN DATO",value: 0};
             form.position = {label:"SIN DATO",value: 0};
-            form.newPosicion = null;
             localStorage.setItem(action.value,JSON.stringify(form));
             tabla = tabla.map(obj=>{
                 if(form.idform == obj.idform){
@@ -250,7 +240,7 @@ let inicializar ={
                 tabla.push({
                     numSerie: `${form.planta.prefijo}-${form.nroSerie}`,
                     nameSuc:  form.site.label,
-                    posicion: form.newPosicion ? form.newPosicion.nombrePoscion :form.position.label,
+                    posicion: form.position.label,
                     idform:form.idform,
                     sendForm:form.sendForm,
                     err:null
