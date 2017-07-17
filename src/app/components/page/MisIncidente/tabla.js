@@ -21,7 +21,6 @@ let tabla = (props)=>{
                             <th>fecha Modificacion</th>
                             <th>fecha Cierre</th>
                             <th>Comentario</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,24 +33,6 @@ let tabla = (props)=>{
                                     <td>{elem.fecha_modificacion}</td>
                                     <td>{elem.fecha_cierre}</td>
                                     <td></td>
-                                    <td>
-                                        <ButtonTable
-                                            data={elem}
-                                            icono="fa-pencil"
-                                            click={(data)=>{
-                                                props.dispatch(addModal({
-                                                    body:6,
-                                                    data:data,
-                                                    size:null
-                                                }));
-                                            }}
-                                        />
-                                        <ButtonTable
-                                            data={elem}
-                                            icono="fa-trash"
-                                            click={(data)=>{}}
-                                        />
-                                    </td>
                                 </tr>
                             )
                         })}
@@ -72,8 +53,7 @@ const style = {
 
 let mapStateToProps = (state)=>{
     return {
-        tabla: state.dba.tabla,
-        source: state.dba.stateSoucer,
+        tabla: state.misTicket.tabla,
         request: state.app.Request
     }
 };

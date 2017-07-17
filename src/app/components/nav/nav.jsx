@@ -54,6 +54,9 @@ function menuByRol(roles,props) {
                     <MenuItem>Posicion</MenuItem>
                 </NavDropdown>
             );
+            resultMenu.push(
+                <NavItem key={index + 11} eventKey={1} disabled={props.request} onClick={()=>{props.dispatch(page.PageMisTicket())}}>Mis Ticket</NavItem>
+            );
             flag = false;
         }
 

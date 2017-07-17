@@ -18,6 +18,7 @@ let init={
     ubicacion_en_site:null,
     prestacion:null,
     id_Equipo:null,
+    id_tipo_Site : null,
     //horarios
     hourBranch:null,
     hourOperation:null,
@@ -50,6 +51,9 @@ function reducer(state = init,action) {
         }
         case "INSERT_SOURCE_EQUIPO_POS":{
             return {...state,sourceEquipo:action.value}
+        }
+        case "INSERT_TYPE_SITE_POS":{
+            return {...state,id_tipo_Site:action.value}
         }
         case "INSERT_NCR_POS":{
             return {...state,ncr:action.value}

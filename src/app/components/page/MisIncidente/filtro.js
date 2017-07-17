@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { AutoComplete , Select , Input} from '../componentFormulario/index.js'
-import  * as action from '../../../actions/DbaAction'
+import  * as action from '../../../actions/MisTicketAction'
+
 var Filtro = (props)=>{
     let form = {};
     return(
@@ -24,7 +25,7 @@ var Filtro = (props)=>{
                         <div className="col-xs-12 col-md-6">
                             <Select label="Equipo" id="idEquipo"
                                     dataSource={[]}
-                                    default={form.equipo}
+                                    default={null}
                                     disabled={props.request}
                                     returnSelect={(value)=>{
 
@@ -35,7 +36,7 @@ var Filtro = (props)=>{
                             <AutoComplete
                                 label="Cliente"
                                 col={{label:2,input:10}}
-                                store={form.cliente}
+                                store={null}
                                 dataSource={[]}
                                 disabled={props.request}
                                 onChange={(value)=>{
@@ -50,7 +51,7 @@ var Filtro = (props)=>{
                             <div className="btn-group">
                                 <button className="btn btn-sm btn-white separarButton"
                                         disabled={props.request}
-                                        onClick={()=>{props.dispatch(action.getIncientes())}}
+                                        onClick={()=>{props.dispatch(action.getMisIncidentes())}}
                                         type="submit">
                                     Filtrar
                                     <i style={{marginLeft:"5px"}} className="fa fa-filter"/>

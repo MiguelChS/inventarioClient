@@ -20,6 +20,13 @@ export function insertNCR(valor) {
     }
 }
 
+export function insertTypeSite(valor) {
+    return {
+        type:"INSERT_TYPE_SITE_POS",
+        value:valor
+    }
+}
+
 export function insertIP(valor) {
     return {
         type:"INSERT_IP_POS",

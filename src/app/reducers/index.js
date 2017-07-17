@@ -12,17 +12,17 @@ import dateGrafic from './dateGraficReducer';
 import source from './SourceReducer';
 import BoxFilter from  './BoxFilterReducer';
 import App from './appReducer';
-import SiteClient from './FormSiteClientReducer';
 import Login from './LoginReducer';
 import AssignPosicion from './AsignacionPosicionReducer';
 import ModiSite from './ModificacionSite';
 import ModiEquipo from './EquipoModificacionReducer';
 import DBA from './DbaReducer';
+import ChangeStqateInicident from './changeStateIncidenteReducer';
+import MisTicket from './MisTicketReducer';
 
 export default combineReducers({
     equipo: equipo,
     site:site,
-    siteClient:SiteClient,
     modal:modal,
     AutoComplete:autoComp,
     formPosition:formPosition,
@@ -34,5 +34,7 @@ export default combineReducers({
     assignPosicion:AssignPosicion,
     siteModi:ModiSite,
     equipoModi: ModiEquipo,
-    dba:DBA
+    dba:DBA,
+    chInc:ChangeStqateInicident,
+    misTicket:MisTicket
 })

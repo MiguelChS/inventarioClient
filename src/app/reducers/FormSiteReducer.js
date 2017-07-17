@@ -7,7 +7,6 @@ let init={
     geo:null,//editable solo para propio
     geoClient:null,// editable para ambos
     idClient:null,//editable para ambos
-    idTipoSite:null,//editable para ambos
     latitud:"",//editable para propios
     longitud:"",//editable para propios
     offset:"",//editable para propios,
@@ -46,9 +45,6 @@ function reducer (state=init,action){
         }
         case "INSERT_CLIENT_SITE":{
             return {...state,idClient:action.value}
-        }
-        case "INSERT_TYPE__SITE":{
-            return {...state,idTipoSite:action.value}
         }
         case "INSERT_GEO_SITE":{
             return {...state,geo:action.value}

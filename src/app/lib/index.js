@@ -15,6 +15,7 @@ export function formatPosicion(form) {
         "dato2":form.dato2,
         "dato3":form.dato3,
         "idSite":form.site.value,
+        "id_tipe_site":form.id_tipo_Site.value,
         "ncrid":form.ncr,
         "idconfiggavetas":form.config_gavetas.value,
         "id_status":form.tabla_status.value,

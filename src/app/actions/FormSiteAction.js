@@ -19,12 +19,6 @@ export function insertClient(valor) {
         value: valor
     }
 }
-export function insertTipoSite(valor) {
-    return {
-        type:"INSERT_TYPE__SITE",
-        value: valor
-    }
-}
 
 export function insertGeoClient(valor) {
     return {
@@ -310,7 +304,6 @@ export function enviarFormulario(form) {
             idGeo:form.SitePublic ? form.SitePublic.Id_geo : form.geo.value,
             idGeoCliente:form.geoClient.value,
             idCliente:form.idClient.value,
-            idTipoSite:form.idTipoSite.value,
             latitud:form.SitePublic ? form.SitePublic.latitud : form.latitud,
             longitud:form.SitePublic ? form.SitePublic.longitud : form.longitud,
             offSet:form.SitePublic ? parseInt(form.SitePublic.offset,10) : parseInt(form.offset,10),

@@ -25,6 +25,17 @@ export default {
             data:param
         });
     },
+    put:(url,param) =>{
+        return axios({
+            method:'put',
+            url:url,
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization':localStorage.getItem("token")
+            },
+            data:param
+        });
+    },
     customize:(option)=>{
         return axios(option);
     }

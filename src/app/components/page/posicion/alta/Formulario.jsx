@@ -262,19 +262,13 @@ export default class Formulario extends React.Component{
                         />
                     </div>
                     <div className="col-xs-12 col-md-6">
-                        <InputHorario
-                            label="SLA"
+                        <AutoComplete
+                            label="Tipo Site"
+                            store={this.store.id_tipo_Site}
+                            dataSource={this.props.source.TipoSite}
                             required={true}
-                            data={{
-                                id:"horaSLA",
-                                radioConf:[
-                                    {label:"SLA",color:"red",id:7}
-                                ],
-                                hour24:false,
-                                callbackResult:(value)=>{
-                                    this.props.dispatch(action.insertHourSLA(value));
-                                },
-                                firstDefault:this.store.sla
+                            onChange={(value)=>{
+                                this.props.dispatch(action.insertTypeSite(value));
                             }}
                         />
                     </div>
@@ -360,6 +354,25 @@ export default class Formulario extends React.Component{
                     </div>
                 </div>
 
+                <div className="row">
+                    <div className="col-xs-12 col-md-6">
+                        <InputHorario
+                            label="SLA"
+                            required={true}
+                            data={{
+                                id:"horaSLA",
+                                radioConf:[
+                                    {label:"SLA",color:"red",id:7}
+                                ],
+                                hour24:false,
+                                callbackResult:(value)=>{
+                                    this.props.dispatch(action.insertHourSLA(value));
+                                },
+                                firstDefault:this.store.sla
+                            }}
+                        />
+                    </div>
+                </div>
                 <div className="row">
                     {(()=>{
                         if(this.store.hourPrestacion.length > 0){

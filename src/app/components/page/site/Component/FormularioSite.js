@@ -217,17 +217,6 @@ let FormularioSite = (props)=>{
                         }}
                     />
                 </div>
-                <div className="col-xs-12 col-md-6">
-                    <AutoComplete
-                        label="Tipo Site"
-                        dataSource={props.source.TipoSite}
-                        store={props.store.idTipoSite}
-                        required={true}
-                        onChange={(value)=>{
-                            props.dispatch(action.insertTipoSite(value));
-                        }}
-                    />
-                </div>
             </div>
 
             <div className="row">
@@ -326,10 +315,10 @@ let FormularioSite = (props)=>{
 
 function validar(form) {
     if(form.SitePublic){
-        return (form.nombreSite && form.idClient && form.idTipoSite && form.geoClient && form.telefono1);
+        return (form.nombreSite && form.idClient  && form.geoClient && form.telefono1);
     }else{
         return (form.nombreSite && form.direccion && form.geo && form.geoClient && form.geo &&
-        form.idClient && form.idTipoSite && form.latitud && form.longitud && form.offset && form.telefono1);
+        form.idClient && form.latitud && form.longitud && form.offset && form.telefono1);
     }
 }
 

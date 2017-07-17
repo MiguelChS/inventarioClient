@@ -5,6 +5,7 @@ import ModalFormPosicion from '../posicion/alta/ModalAltaPosicion';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
 import ModalFormularioSite from '../site/Component/FormularioSite';
 import ModalFormularioEquipo from '../equipo/modificacion/ModalEdit';
+import ModalChangeStateInicidente from '../DBA/CambiarEstado';
 
 export default class ModalForm extends React.Component{
 
@@ -49,6 +50,14 @@ export default class ModalForm extends React.Component{
                    data={store.data}
                />
             }
+
+            case 6 :{
+                return <ModalChangeStateInicidente
+                    idModal={store.id}
+                    data={store.data}
+                />
+            }
+
 
             default:
                 return "";

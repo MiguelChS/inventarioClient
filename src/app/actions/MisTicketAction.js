@@ -1,37 +1,27 @@
-/**
- * Created by mc185249 on 7/12/2017.
- */
 import Request from '../Request/Request';
 import { changeRequestApp } from './appAction';
 import config from '../config';
 
-export function getIncientes() {
+export function getMisIncidentes() {
     return[
         changeRequestApp(true),
-        getRequestIniciden()
+        requestMisIncidentes()
     ]
 }
 
-export function loadaTable(data) {
-    return {
-        type:"CARGAR_TABLA_DBA",
-        value:data
-    }
-}
-
-function getRequestIniciden() {
+function requestMisIncidentes() {
     return (dispatch)=>{
-        Request.get(`${config.path}/Inicidente`)
+        Request.get(`${config.path}/Incidente/Usuario`)
             .then((result)=>{
                 dispatch([
-                    //insertError(""),
-                    loadaTable(result.data),
+                    {type:"LOAD_TABLA_MIS_TICKET",value:result.data},
+                    {type:"MJSERR_INCIDENT",value:""},
                     changeRequestApp(false)
                 ]);
             })
             .catch((err)=>{
                 dispatch([
-                    //insertError(err.response ? err.response.data.err : "no hay conexion"),
+                    {type:"MJSERR_INCIDENT",value:err.response ? err.response.data.err : "no hay conexion"},
                     changeRequestApp(false)
                 ])
             });

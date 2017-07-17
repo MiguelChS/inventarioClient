@@ -11,6 +11,9 @@ import Posicion from '../components/page/posicion/alta/index.jsx';
 import * as Site from '../components/page/site/index';
 import User from '../components/page/Usuario/index';
 import Dba from '../components/page/DBA/index';
+import {getSource} from './DbaAction';
+import MisTicket from '../components/page/MisIncidente'
+
 
 export function pageLogin(){
     return changeParentApp(<PageLogin/>)
@@ -44,6 +47,14 @@ export function pageModificarEquipo() {
 export function PageUsuario() {
     return changeChildrenApp(<User/>)
 }
+
 export function PageDBA() {
-    return changeChildrenApp(<Dba/>)
+    return [
+        changeChildrenApp(<Dba/>),
+        getSource()
+    ]
+}
+
+export function PageMisTicket() {
+    return changeChildrenApp(<MisTicket/>)
 }
