@@ -2,16 +2,13 @@ import React from 'react';
 import Nav from '../nav/nav.jsx'
 import {connect} from  'react-redux';
 import Modal from './componentFormulario/modal.jsx';
-import ModalV2 from './componentFormulario/modalV2';
-import { searchSource } from '../../actions/sourceAction';
-
+import ModalV2 from './componentFormulario/modalV2'
 class Layout extends React.Component{
 
     componentDidMount(){
         //eliminaos la imagen del body
         document.getElementsByTagName("body")[0].style.backgroundImage = "none";
         //buscamos los datos source basicos
-        this.props.dispatch(searchSource());
     }
 
     componentWillUnmount(){

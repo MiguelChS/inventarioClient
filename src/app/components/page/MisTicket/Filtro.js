@@ -1,23 +1,23 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
-import { AutoComplete , Select , Input} from '../componentFormulario/index.js'
-import  * as action from '../../../actions/MisTicketAction'
+import {connect} from 'react-redux';
+import {Ibox,Select,AutoComplete} from '../componentFormulario';
+import { getInicidente } from '../../../actions/MisTicketAction';
 
-var Filtro = (props)=>{
-    let form = {};
-    return(
-        <Row style={style} bsClass="row wrapperWhite">
-            <Col xs={12} bsClass="litleHeader col">
-                <h5>Filtros</h5>
-            </Col>
-            <Col xs={12} bsClass="litleBody col">
+class Filtro extends React.Component {
+    constructor(props){
+        super(props)
+    }
+
+    render(){
+        return (
+            <Ibox Title="Filtro">
                 <form className="form-horizontal" onSubmit={(event)=>{
                     event.preventDefault();
+                    this.props.dispatch(getInicidente());
                 }}>
                     <div className="row">
                         <div className="col-xs-12 text-center">
-                            <p className="mjsErr">{form.mjsErr}</p>
+                            <p className="mjsErr">{}</p>
                         </div>
                     </div>
 
@@ -26,7 +26,7 @@ var Filtro = (props)=>{
                             <Select label="Equipo" id="idEquipo"
                                     dataSource={[]}
                                     default={null}
-                                    disabled={props.request}
+                                    disabled={this.props.request}
                                     returnSelect={(value)=>{
 
                                     }}
@@ -38,7 +38,7 @@ var Filtro = (props)=>{
                                 col={{label:2,input:10}}
                                 store={null}
                                 dataSource={[]}
-                                disabled={props.request}
+                                disabled={this.props.request}
                                 onChange={(value)=>{
 
                                 }}
@@ -50,8 +50,7 @@ var Filtro = (props)=>{
                         <div className="col-sm-12 text-center">
                             <div className="btn-group">
                                 <button className="btn btn-sm btn-white separarButton"
-                                        disabled={props.request}
-                                        onClick={()=>{props.dispatch(action.getMisIncidentes())}}
+                                        disabled={this.props.request}
                                         type="submit">
                                     Filtrar
                                     <i style={{marginLeft:"5px"}} className="fa fa-filter"/>
@@ -60,21 +59,14 @@ var Filtro = (props)=>{
                         </div>
                     </div>
                 </form>
-            </Col>
-        </Row>
-    )
-};
+            </Ibox>
+            )
+    }
 
-const style = {
-    marginRight: "0",
-    marginLeft: "0",
-    paddingBottom: "10px",
-    borderBottom: "2px solid #e7eaec"
-};
+}
 
-const mapStateToProps =(state)=>{
+export default connect(state => {
     return {
         request:state.app.Request
     }
-};
-export default connect(mapStateToProps)(Filtro)
+})(Filtro);

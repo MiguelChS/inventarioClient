@@ -1,7 +1,9 @@
+/**
+ * Created by mc185249 on 7/17/2017.
+ */
 import Request from '../Request/Request';
-import { changeRequestApp } from './appAction';
 import config from '../config';
-
+import { changeRequestApp } from './appAction';
 
 export function getInicidente() {
     return[
@@ -16,7 +18,7 @@ function mjsErr(valor) {
 
 function requestIncidente() {
     return (dispatch)=>{
-        Request.get(`${config.path}/Incidente/Usuario`)
+        Request.get('http://localhost:3005/api/Incidente/2')
             .then(result => {
                 dispatch([
                     {type:"LOAD_TABLA_MISINCIDENTES",value:result.data},

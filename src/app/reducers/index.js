@@ -19,6 +19,7 @@ import ModiEquipo from './EquipoModificacionReducer';
 import DBA from './DbaReducer';
 import ChangeStqateInicident from './changeStateIncidenteReducer';
 import MisTicket from './MisTicketReducer';
+import ModalV2 from './ModalReducerV2';
 
 export default combineReducers({
     equipo: equipo,
@@ -36,5 +37,6 @@ export default combineReducers({
     equipoModi: ModiEquipo,
     dba:DBA,
     chInc:ChangeStqateInicident,
-    misTicket:MisTicket
+    misTicket:MisTicket,
+    modalV2:ModalV2
 })
