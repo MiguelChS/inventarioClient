@@ -236,76 +236,13 @@ export function Update(data) {
     ]
 }
 
-function formatHorarios(horario) {
-    let array = [];
-    for (let attr in horario){
-        array.push({
-            idHora:attr,
-            hora:horario[attr]
-        })
-    }
-    return array;
-}
-
-function mapFormularioPosicion(form,site) {
-    if(!form) return null;
-    return {
-        "clientid":form.nombrePoscion,
-        "dato2":form.dato2,
-        "dato3":form.dato3,
-        "idSite":site,
-        "ncrid":form.ncr,
-        "idconfiggavetas":form.config_gavetas.value,
-        "id_status":form.tabla_status.value,
-        "idscript":form.script.value,
-        "idcommand":form.command.value,
-        "idcommunitystring":form.community_string.value,
-        "ip":form.ip,
-        "iduser":1,
-        "idcomunicacion":form.comunicacion.value,
-        "idslm":form.slm.value,
-        "idflm":form.flm.value,
-        "idubicacionensite":form.ubicacion_en_site.value,
-        "idprestacion":form.prestacion.value,
-        "hourBranch":formatHorarios(form.hourBranch),
-        "hourOperation":formatHorarios(form.hourOperation),
-        "sla":formatHorarios(form.sla),
-        "access":formatHorarios(form.access),
-        "hourPeak":formatHorarios(form.hourPeak),
-        "HoraPrestacion":[]
-    };
-}
-
-function formatEquipo(form) {
-    return {
-        "idEquipo":form.idform,
-        "id_tipo_eq": form.tipoEquipo.value,
-        "id_tipo_equipo":form.Equipos.value,
-        "f_entrega":form.fEntrega,
-        "id_estado":form.estado.value,
-        "id_institucion": form.id_institucion.value,
-        "id_user":1,
-        "f_retiro":form.fRetiro,
-        "f_inst":form.fInstalacion,
-        "f_fin_garantia":form.finGarantia,
-        "f_inicio_garantia":form.fEntrega,
-        "id_xfs":form.xfs ? form.xfs.value : null,
-        "id_SO":form.so.value,
-        "id_snmp":form.snmp.value,
-        "id_carga":form.carga.value,
-        "modulos_separados_por_coma":form.modulos.map( obj => `${obj.value}`),
-        "id_modelo":form.modelo.value,
-        "nro_serie":`${form.planta.prefijo}-${form.nroSerie}`,
-        "id_planta":form.planta.value,
-        "horaPrestacion":form.prestacion.map((pre)=>{ return{idHora:`${pre.value}`,hora:pre.hora} }),
-        "id_posicion":form.newPosicion ? null : form.position.value,
-        "newPosicion":mapFormularioPosicion(form.newPosicion,form.site.value)
-    };
-}
-
 function RequestUpdateEquipo(data) {
     return (dispatch)=>{
-        let form = formatEquipo(data);
+        if(!lib.verificarCargaPrestacion(data)){
+            dispatch(null)
+            return;
+        }
+        let form = lib.formatEquipo(data);
         Request.customize({
             method: 'PUT',
             url: `${config.path}/Equipo`,

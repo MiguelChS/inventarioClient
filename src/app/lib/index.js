@@ -70,7 +70,21 @@ export function formatEquipo(form) {
         "nro_serie":form.planta ? `${form.planta.prefijo}-${form.nroSerie}` : form.nroSerie,
         "id_planta":form.planta ? form.planta.value : null,
         "horaPrestacion":form.prestacion.map((pre)=>{ return{idHora:`${pre.value}`,hora:pre.hora} }),
-        "id_posicion":form.newPosicion ? null : form.position.value,
-        "newPosicion":formatPosicion(form.newPosicion ? {...form.newPosicion,site:{value:form.site.value}} : null)
+        "id_posicion": form.position.value
     };
+}
+
+export function verificarCargaPrestacion(form) {
+    let flagComplete = true;
+    if(form.id_posicion == 0){
+        form.horaPrestacion = [];
+        return flagComplete;
+    }
+    form.horaPrestacion.map( obj => {
+        if(!obj.hora){
+            flagComplete = false;
+        }
+    });
+
+    return flagComplete;
 }

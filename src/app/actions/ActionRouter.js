@@ -7,7 +7,7 @@ import PageLogin from '../components/page/Login/index'
 import PageLayout from '../components/page/Layout';
 import Inicio from '../components/page/inicio/index';
 import * as Equipo from '../components/page/equipo/index'
-import Posicion from '../components/page/posicion/alta/index.jsx';
+import * as Posicion from '../components/page/posicion';
 import * as Site from '../components/page/site/index';
 import User from '../components/page/Usuario/index';
 import Dba from '../components/page/DBA/index';
@@ -32,7 +32,7 @@ export function pageAltaEquipo(){
 }
 
 export function pageAltaPosicion(){
-    return changeChildrenApp(<Posicion/>)
+    return changeChildrenApp(<Posicion.AltaPosicion/>)
 }
 export function pageAltaSite(){
     return changeChildrenApp(<Site.Alta/>)
@@ -57,4 +57,8 @@ export function PageDBA() {
 
 export function PageMisTicket() {
     return changeChildrenApp(<MisTicket/>)
+}
+
+export function pageEditPosicion() {
+    return changeChildrenApp(<Posicion.EditPosicion/>)
 }

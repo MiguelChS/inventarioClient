@@ -20,23 +20,25 @@ import DBA from './DbaReducer';
 import ChangeStqateInicident from './changeStateIncidenteReducer';
 import MisTicket from './MisTicketReducer';
 import ModalV2 from './ModalReducerV2';
+import EditPos from './ReducerEditPosicion';
 
 export default combineReducers({
     equipo: equipo,
-    site:site,
-    modal:modal,
-    AutoComplete:autoComp,
-    formPosition:formPosition,
-    dateGrafic:dateGrafic,
-    source:source,
-    BoxFilter:BoxFilter,
-    app:App,
-    login:Login,
-    assignPosicion:AssignPosicion,
-    siteModi:ModiSite,
+    site: site,
+    modal: modal,
+    AutoComplete: autoComp,
+    formPosition: formPosition,
+    dateGrafic: dateGrafic,
+    source: source,
+    BoxFilter: BoxFilter,
+    app: App,
+    login: Login,
+    assignPosicion: AssignPosicion,
+    siteModi: ModiSite,
     equipoModi: ModiEquipo,
-    dba:DBA,
-    chInc:ChangeStqateInicident,
-    misTicket:MisTicket,
-    modalV2:ModalV2
+    dba: DBA,
+    chInc: ChangeStqateInicident,
+    misTicket: MisTicket,
+    modalV2: ModalV2,
+    editPos:EditPos
 })

@@ -51,7 +51,7 @@ function menuByRol(roles,props) {
                 <NavDropdown key={index + 10} title="Modificacion" id="basic-nav-dropdown" disabled={props.request}>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageModificarEquipo()) }}>Equipo</MenuItem>
                     <MenuItem onClick={()=>{ props.dispatch(page.pageModificacionSite()) }}>Site</MenuItem>
-                    <MenuItem>Posicion</MenuItem>
+                    <MenuItem onClick={()=>{ props.dispatch(page.pageEditPosicion()) }}>Posicion</MenuItem>
                 </NavDropdown>
             );
             resultMenu.push(

@@ -5,7 +5,7 @@ import Request from '../Request/Request';
 import {changeDefaultModule, loadModule} from  './sourceAction';
 import { changeRequestApp } from './appAction';
 import config from '../config';
-import { formatEquipo } from '../lib'
+import { formatEquipo,verificarCargaPrestacion } from '../lib'
 
 
 export function altaNroSerie(valor) {
@@ -122,7 +122,6 @@ export function cargarTipoEquipo(valor) {
     }
 }
 
-
 export function cargarFormulario() {
     return [{
         type:"CARGAR_FORMULARIO_EQUIPO",
@@ -130,7 +129,6 @@ export function cargarFormulario() {
         changeDefaultModule()
     ]
 }
-
 
 export function preCargarFormulario(form,store) {
     //modificamos el estado del source modulos
@@ -285,38 +283,12 @@ function sendFormArray() {
      }
 }
 
-function verificarCargaPrestacion(form) {
-    let flagComplete = true;
-    if(form.id_posicion == 0){
-        form.horaPrestacion = [];
-        return flagComplete;
-    }
-    form.horaPrestacion.map( obj => {
-        if(!obj.hora){
-            flagComplete = false;
-        }
-    });
-
-    return flagComplete;
-}
-
-function verificarAssignacion(form) {
-    return !(form.newPosicion && form.newPosicion.idSite == 0);
-}
-
 function sendFormulario(form,key){
     return new Promise((resolve, reject)=>{
         if(!verificarCargaPrestacion(form)){
             resolve({
                 key,
                 err:"Verifique las horas de prestacion"
-            });
-            return;
-        }
-        if(!verificarAssignacion(form)){
-            resolve({
-                key,
-                err:"Falta asignar un site a la posicion"
             });
             return;
         }

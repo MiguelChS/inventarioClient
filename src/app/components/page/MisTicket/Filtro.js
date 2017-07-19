@@ -67,6 +67,7 @@ class Filtro extends React.Component {
 
 export default connect(state => {
     return {
-        request:state.app.Request
+        request:state.app.Request,
+        source:state.source
     }
 })(Filtro);

@@ -1,7 +1,7 @@
-var debug = process.env.NODE_ENV !== "production";
+var debug = true;//process.env.NODE_ENV !== "production";
 var webpack = require('webpack');
 var path = require('path');
-var WebpackOnBuildPlugin = require('on-build-webpack');
+
 const fs = require('fs');
 let ruta = 'C:\\Users\\mc185249\\Desktop\\work\\inventarioServer\\public\\js';
 

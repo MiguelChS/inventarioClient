@@ -5,10 +5,10 @@ let init = {
 
 export default (state = init,action)=>{
     switch (action.type){
-        case "LOAD_TABLA_MISINCIDENTES":{
+        case "LOAD_TABLA_POS_EDIT":{
             return {...state,tabla:action.value}
         }
-        case "MJSERR_MISINCIDENTES":{
+        case "MJSERR_POS_EDIT":{
             return {...state,mjsErr:action.value}
         }
         default:{

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row,Col,Form,Button } from 'react-bootstrap';
 import { connect } from  'react-redux';
-import { AutoComplete , InputSerie , Select, InputFecha, Input} from '../../componentFormulario/index.js'
+import { AutoComplete , InputSerie , Select, InputFecha, Input,Tabla} from '../../componentFormulario/index.js'
 import { cargarPlanta, altaNroSerie , cargarMarca ,cargarModelo,
     cargarSNMP,cargarSO,cargarXFS,cargarCarga,cargarEstado, cargarFRetiro,
     cargarFechaGarantia,cargarFechaInstalacion,cargarFechaEntrega,cargarTipoEquipo
@@ -344,6 +344,35 @@ export default class Formulario extends React.Component{
                         }
                     })()}
                 </Row>
+                {(()=>{
+                    if(this.props.hasOwnProperty("onCloseModal")){
+                        let classOK = form.site.value ? "glyphicon glyphicon-ok text-center" : "glyphicon glyphicon-remove text-center" ;
+                        return (
+                            <div className="row">
+                                <div className="col-xs-12 col-sm-offset-2 col-sm-8">
+                                    <table className="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>Sucursal</th>
+                                            <th>Posicion</th>
+                                            <th>Asignado</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{form.site.label}</td>
+                                            <td>{form.position.label}</td>
+                                            <td><span className={classOK}/></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )
+                    }else{
+                        return null
+                    }
+                })()}
                 <Row bsClass="row boxConten">
                     <Col xs={12}>
                         <DualListBox
