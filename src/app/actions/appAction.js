@@ -1,8 +1,11 @@
 /**
  * Created by mc185249 on 5/9/2017.
  */
+import React from 'react';
 import Request from '../Request/Request';
 import config from '../config';
+import {addModal} from './modalActionV2';
+import ModalMensaje from '../components/page/componentFormulario/modalConfirmacion';
 
 import {pageLogin,PageLayaout} from './ActionRouter';
 
@@ -12,12 +15,14 @@ export function changeRequestApp(valor) {
         value: valor
     }
 }
+
 export function changeChildrenApp(valor) {
     return {
         type:"CHANGE_CHILDREN_APP",
         value: valor
     }
 }
+
 export function changeParentApp(valor) {
     return {
         type:"CHANGE_PARENT_APP",
@@ -31,12 +36,14 @@ export function insertDataUser(valor) {
         value: valor
     }
 }
+
 export function getDataUser() {
     return[
         changeRequestApp(true),
         requestDataUser()
     ]
 }
+
 function requestDataUser() {
     return function(dispatch) {
         Request.get(`${config.path}/login`)
@@ -56,7 +63,16 @@ function requestDataUser() {
             })
     }
 }
+
 export function closeSession() {
     localStorage.removeItem("token");
     return pageLogin();
+}
+
+export function modalConfimacion(data) {
+    return addModal({
+        body: ModalMensaje,
+        data: data,
+        size: "sm"
+    })
 }

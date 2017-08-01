@@ -2,6 +2,7 @@
  * Created by mc185249 on 5/9/2017.
  */
 let init={
+    id: null,
     nombreSite:"",//editable para publico y propio
     direccion:"",//editable solo para propio
     geo:null,//editable solo para propio
@@ -35,7 +36,7 @@ function reducer (state=init,action){
             return {...state,nombreSite:action.value}
         }
         case "INSERT_LUGAR_SITE":{
-            return {...state,Lugar:action.value}
+            return {...state, Lugar: action.value, SitePublic: null, sourceSitePublic: []}
         }
         case "INSERT_SITE_PUBLIC_SITE":{
             return {...state,SitePublic:action.value}

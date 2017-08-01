@@ -2,78 +2,81 @@
  * Created by mc185249 on 7/13/2017.
  */
 import React from 'react';
-import { Form,Row,Col} from 'react-bootstrap';
-import { Select,TextArea } from '../componentFormulario/index';
+import {Select, TextArea, IboxModal} from '../componentFormulario/index';
 import { connect } from 'react-redux';
-import { hiddenModal } from '../../../actions/modalAction.js'
+import {hiddenModal} from '../../../actions/modalActionV2'
 import { changeEstado } from '../../../actions/DbaAction'
 
 let CambiarEstado = (props)=>{
     let form = props.store;
     return(
-        <Form horizontal>
-            <h4 className="titleModal">Cambiar estado Inicidente</h4>
-            <div className="hr-line-dashed"/>
-            <div className="row">
-                <div className="col-xs-12 text-center">
-                    <p className="mjsErr">{form.mjsErr}</p>
-                    <p className="mjsSuccess">{form.mjsSuccess}</p>
+        <IboxModal Title="Cambiar estado Ticket">
+            <form className="form-horizontal">
+                <div className="row">
+                    <div className="col-xs-12 text-center">
+                        <p className="mjsErr">{form.mjsErr}</p>
+                        <p className="mjsSuccess">{form.mjsSuccess}</p>
+                    </div>
                 </div>
-            </div>
-            <Row>
-                <Col xs={12}>
-                    <Select
-                        label="Marca"
-                        id="idMarca"
-                        dataSource={props.sourceState}
-                        default={form.estado}
-                        required={true}
-                        returnSelect={(value)=>{
-                            props.dispatch({type:"STATE_INCIDENTE",value:value})
-                        }}
-                    />
-                </Col>
-            </Row>
-            <Row>
-                <Col xs={12} >
+                <div className="row">
+                    <div className="col-xs-12">
+                        <Select
+                            label="Estado"
+                            id="idEstadoTicket"
+                            dataSource={props.sourceState.filter(x => x.value !== 1)}
+                            default={form.estado}
+                            required={true}
+                            returnSelect={(value) => {
+                                props.dispatch({type: "STATE_INCIDENTE", value: value})
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
                         <TextArea
                             value={form.comentario}
-                            label="NCR"
-                            placeHolder="NCR"
+                            label="Comentario"
                             returnValue={(value)=>{
                                 props.dispatch({type:"COMMENT_INCIDENT",value:value})
                             }}
                         />
-                </Col>
-            </Row>
-            <Row>
-                <div className="col-xs-12 text-right">
-                    <div className="btn-group separarButton">
-                        <button type="button"
-                                className="btn btn-white"
-                                disabled={(props.request)}
-                                onClick={()=>{
-                                    if(!form.estado) return;
-                                    props.dispatch(changeEstado({
-                                        id:props.data.id,
-                                        id_estado:form.estado.value,
-                                        comentario:form.comentario,
-                                        idEquipo:props.data.data.id_equipo
-                                    }))
-                                }} >
-                            Cambiar
-                        </button>
-                    </div>
-                    <div className="btn-group separarButton">
-                        <button type="button"
-                                disabled={props.request}
-                                onClick={()=>{props.dispatch(hiddenModal(props.idModal))}}  className="btn btn-white">
-                            Cerrar
-                        </button>
                     </div>
                 </div>
-            </Row>
-        </Form>
+                <div className="row">
+                    <div className="col-xs-12 text-right">
+                        <div className="btn-group separarButton">
+                            <button type="button"
+                                    className="btn btn-white"
+                                    disabled={(props.request || !(form.estado && form.estado.value))}
+                                    onClick={() => {
+                                        if (!form.estado) return;
+                                        props.dispatch(changeEstado({
+                                            id: props.data.id,
+                                            id_estado: form.estado.value,
+                                            comentario: form.comentario,
+                                            data: props.data.data
+                                        }, props.idModal))
+                                    }}>
+                                Cambiar
+                            </button>
+                        </div>
+                        <div className="btn-group separarButton">
+                            <button type="button"
+                                    disabled={props.request}
+                                    onClick={() => {
+                                        props.dispatch([
+                                            {type: "CLEAR_INCIDENT"},
+                                            hiddenModal(props.idModal)
+                                        ])
+                                    }} className="btn btn-white">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </IboxModal>
     )
 }
 

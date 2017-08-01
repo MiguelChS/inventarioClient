@@ -12,6 +12,7 @@ import * as Site from '../components/page/site/index';
 import User from '../components/page/Usuario/index';
 import Dba from '../components/page/DBA/index';
 import {getSource} from './DbaAction';
+import {loadTableStore} from './EquipoStoreAction';
 import MisTicket from '../components/page/MisTicket'
 
 
@@ -28,7 +29,10 @@ export function PageInicio(){
 }
 
 export function pageAltaEquipo(){
-    return changeChildrenApp(<Equipo.AltaEquipo/>)
+    return [
+        changeChildrenApp(<Equipo.AltaEquipo/>),
+        loadTableStore()
+    ];
 }
 
 export function pageAltaPosicion(){

@@ -10,8 +10,15 @@ export function getInicidente() {
     ]
 }
 
-function mjsErr(valor) {
+export function mjsErr(valor) {
     return {type:"MJSERR_MISINCIDENTES",value:valor}
+}
+
+export function CambiarRow(valor) {
+    return {
+        type: "CAMBIAR_ESTADO_ROW_MISINCIDENTES",
+        value: valor
+    }
 }
 
 function requestIncidente() {

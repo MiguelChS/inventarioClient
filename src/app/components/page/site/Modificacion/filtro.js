@@ -3,61 +3,54 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row,Col } from 'react-bootstrap';
-import {AutoComplete,Input} from '../../componentFormulario/index';
-import * as action from '../../../../actions/ModificacionSiteAction';
+import {AutoComplete, Ibox} from '../../componentFormulario/index';
+import * as action from '../../../../actions/FormSiteAction';
 
 let filtro = (props)=>{
     return(
-        <Row style={style} bsClass="row wrapperWhite">
-            <Col xs={12} bsClass="litleHeader col">
-                <h5>Filtros</h5>
-            </Col>
-            <Col xs={12} bsClass="litleBody col">
-                <form className="form-horizontal">
-                    <div className="row">
-                        <div className="col-xs-12 col-md-6">
-                            <AutoComplete
-                                label="Lugar"
-                                dataSource={props.Lugar}
-                                required={true}
-                                store={props.store.Lugar}
-                                onChange={(value)=>{
-                                    props.dispatch(action.insertClient(value));
-                                }}
-                                disabled={props.request}
-                            />
-                        </div>
-                        <div className="col-xs-12 col-md-6">
-                            <AutoComplete
-                                label="Site"
-                                required={true}
-                                dataSource={props.sourceSite}
-                                store={props.store.site}
-                                onChange={(value)=>{
-                                    props.dispatch(action.insertSite(value));
-                                }}
-                                disabled={props.request}
-                            />
+        <Ibox Title="Filtro Site">
+            <form className="form-horizontal"
+                  onSubmit={(event) => {
+                      event.preventDefault();
+                      props.dispatch(action.BuscarSiteByFiltro())
+                  }}
+            >
+                <div className="row">
+                    <div className="col-xs-12 col-md-6">
+                        <AutoComplete
+                            label="Client"
+                            store={props.store.client}
+                            dataSource={props.client}
+                            required={true}
+                            onChange={(value) => {
+
+                            }}
+                            disabled={props.request}
+                        />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-12 text-center">
+                        <div className="btn-group">
+                            <button className="btn btn-sm btn-white separarButton"
+                                    disabled={props.request}
+                                    type="submit">
+                                Filtrar
+                                <i style={{marginLeft: "5px"}} className="fa fa-filter"/>
+                            </button>
                         </div>
                     </div>
-                </form>
-            </Col>
-        </Row>
+                </div>
+            </form>
+        </Ibox>
     )
 };
 
-
-const style = {
-    marginRight:"0",
-    marginLeft:"0",
-    paddingBottom: "10px",
-    borderBottom: "2px solid #e7eaec"
-};
 const mapStateToProps = (state) => {
     return{
         institucion:state.app.instituciones,
         request:state.app.Request,
+        client: state.app.cliente,
         store:state.siteModi
     }
 };

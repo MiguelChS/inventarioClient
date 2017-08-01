@@ -3,8 +3,8 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import {IboxModal,Tabla} from '../componentFormulario';
-import { hiddenModal } from '../../../actions/modalActionV2';
+import {IboxModal, Tabla} from '../componentFormulario';
+import {hiddenModal} from '../../../actions/modalActionV2';
 
 const Header = [
     {
@@ -14,11 +14,11 @@ const Header = [
             return data.nombre;
         }
     },
-    {column:"comentario",label:"Comentario"},
+    {column: "comentario", label: "Comentario"},
 ];
 
-export default connect()((props)=>{
-    return(
+export default connect()((props) => {
+    return (
         <IboxModal Title="Comentarios">
             <Tabla
                 Header={Header}
@@ -29,7 +29,7 @@ export default connect()((props)=>{
                     <div className="btn-group separarButton">
                         <button type="button"
                                 className="btn btn-white"
-                                onClick={()=>{
+                                onClick={() => {
                                     props.dispatch(hiddenModal(props.idModal))
                                 }}
                         >

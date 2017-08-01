@@ -36,6 +36,7 @@
 .DateGrafic .horaHeadText{
 	height: 25px;
 	border-bottom: 1px solid #c3bdbd;
+	white-space: nowrap;
 }
 
 .DateGrafic .cuboHoraBody{

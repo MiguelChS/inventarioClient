@@ -15,7 +15,7 @@ export default class Tabla extends React.Component{
 
     comprobarHeader(row,column){
         if(column.hasOwnProperty("render")){
-            return column.render(row[column.column])
+            return column.render(row[column.column], row)
         }else{
             if(row.hasOwnProperty(column.column)){
                 return row[column.column];
@@ -34,7 +34,7 @@ export default class Tabla extends React.Component{
     render(){
         return(
             <div className="table-responsive" style={{marginBottom:"15px"}}>
-                <table className="table table-striped">
+                <table className="table table-striped table-bordered">
                     <thead>
                         <tr>
                             {this.props.Header.map((item,index)=>{

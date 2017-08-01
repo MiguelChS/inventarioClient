@@ -4,7 +4,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import * as action from '../../../../actions/FormSiteAction';
-import {hiddenModal} from '../../../../actions/modalAction'
+import {hiddenModal} from '../../../../actions/modalActionV2'
 import { AutoComplete , Input,Label } from '../../componentFormulario/index.js'
 
 function Direccion(props) {
@@ -23,7 +23,10 @@ function Direccion(props) {
                 label="Direccion"
                 placeHolder="Direccion"
                 returnValue={(value)=>{
-                    props.dispatch(action.insertDireccion(value));
+                    props.dispatch({
+                        type: "INSERT_DIRECCION_SITE",
+                        value: value
+                    });
                 }}
                 required={true}
             />
@@ -47,7 +50,10 @@ function offSet(props) {
                 label="offSet"
                 placeHolder="offSet"
                 returnValue={(value)=>{
-                    props.dispatch(action.insertOffSet(value));
+                    props.dispatch({
+                        type: "INSERT_OFFSET_SITE",
+                        value: value
+                    });
                 }}
                 required={true}
             />
@@ -72,10 +78,16 @@ function LatLong(props) {
                 label="cordenadas"
                 placeHolder={{inputOne:"Latitud",inputTwo:"Longitud"}}
                 onChangeInputOne={(value)=>{
-                    props.dispatch(action.insertLatitud(value));
+                    props.dispatch({
+                        type: "INSERT_LATITUD_SITE",
+                        value: value
+                    });
                 }}
                 onChangeInputTwo={(value)=>{
-                    props.dispatch(action.insertLongitud(value));
+                    props.dispatch({
+                        type: "INSERT_LONGITUD_SITE",
+                        value: value
+                    });
                 }}
                 required={true}
             />
@@ -184,10 +196,22 @@ function codigoPostal(props) {
     }
 }
 
+function componentModal(props, component) {
+    if (!props.hasOwnProperty("idModal")) return null;
+    return component;
+}
+
 let FormularioSite = (props)=>{
-    if(!props.store.Lugar || (props.store.Lugar.value != 1 && (!props.store.SitePublic || !props.store.SitePublic.value))) return null;
+    if (!props.store.Lugar || (props.store.Lugar.value !== 1 && (!props.store.SitePublic || !props.store.SitePublic.value))) return null;
     return(
         <form className="form-horizontal">
+            <div className="row">
+                <div className="col-xs-12 text-center">
+                    <p className="mjsSuccess">{props.store.mjsSuccess}</p>
+                    <p className="mjsErr">{props.store.msjErr}</p>
+                </div>
+            </div>
+
             <div className="row">
                 <div className="col-xs-12 col-md-6">
                     <Input
@@ -195,7 +219,10 @@ let FormularioSite = (props)=>{
                         label="Nombre Site"
                         placeHolder="Nombre de Site"
                         returnValue={(value)=>{
-                            props.dispatch(action.insertNameSite(value));
+                            props.dispatch({
+                                type: "INSERT_NAME_SITE_SITE",
+                                value: value
+                            })
                         }}
                         required={true}
                     />
@@ -213,7 +240,10 @@ let FormularioSite = (props)=>{
                         store={props.store.idClient}
                         required={true}
                         onChange={(value)=>{
-                            props.dispatch(action.insertClient(value));
+                            props.dispatch({
+                                type: "INSERT_CLIENT_SITE",
+                                value: value
+                            });
                         }}
                     />
                 </div>
@@ -230,7 +260,10 @@ let FormularioSite = (props)=>{
                         store={props.store.geoClient}
                         required={true}
                         onChange={(value)=>{
-                            props.dispatch(action.insertGeoClient(value));
+                            props.dispatch({
+                                type: "INSERT_GEO_CLIENT_SITE",
+                                value: value
+                            });
                         }}
                     />
                 </div>
@@ -246,7 +279,10 @@ let FormularioSite = (props)=>{
                         label="Telefono1"
                         placeHolder="Numero telefono"
                         returnValue={(value)=>{
-                            props.dispatch(action.insertTelefono1(value));
+                            props.dispatch({
+                                type: "INSERT_PHONE1_SITE",
+                                value: value
+                            });
                         }}
                         required={true}
                     />
@@ -260,7 +296,10 @@ let FormularioSite = (props)=>{
                         label="Telefono2"
                         placeHolder="Numero telefono"
                         returnValue={(value)=>{
-                            props.dispatch(action.insertTelefono2(value));
+                            props.dispatch({
+                                type: "INSERT_PHONE2_SITE",
+                                value: value
+                            });
                         }}
                     />
                 </div>
@@ -270,7 +309,10 @@ let FormularioSite = (props)=>{
                         label="Telefono3"
                         placeHolder="Numero telefono"
                         returnValue={(value)=>{
-                            props.dispatch(action.insertTelefono3(value));
+                            props.dispatch({
+                                type: "INSERT_PHONE3_SITE",
+                                value: value
+                            });
                         }}
                     />
                 </div>
@@ -294,18 +336,32 @@ let FormularioSite = (props)=>{
                 </div>
             </div>
             <div className="hr-line-dashed"/>
-            <div className="row text-center">
-                <div className="btn-group separarButton">
+            <div className="row">
+                <div className="col-xs-12 text-center">
                     <button
                         type="button"
                         disabled={props.request}
                         onClick={()=>{
                             if(!validar(props.store)) return;
-                            props.dispatch(action.enviarFormulario(props.store))
+                            props.onLoadFormulario(props.store, props.idModal);
                         }}
-                        className="btn btn-white">
-                        Nuevo Site
+                        className="btn btn-white separarButton">
+                        {props.btnAcepted}
                     </button>
+                    {componentModal(props,
+                        <button
+                            type="button"
+                            disabled={props.request}
+                            onClick={() => {
+                                props.dispatch([
+                                    hiddenModal(props.idModal),
+                                    action.clearForm()
+                                ])
+                            }}
+                            className="btn btn-white separarButton">
+                            Cerrar
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -315,10 +371,16 @@ let FormularioSite = (props)=>{
 
 function validar(form) {
     if(form.SitePublic){
-        return (form.nombreSite && form.idClient  && form.geoClient && form.telefono1);
+        return (form.nombreSite &&
+            form.idClient && form.idClient.value &&
+            form.geoClient && form.geoClient.value &&
+            form.telefono1);
     }else{
-        return (form.nombreSite && form.direccion && form.geo && form.geoClient && form.geo &&
-        form.idClient && form.latitud && form.longitud && form.offset && form.telefono1);
+        return (form.nombreSite && form.direccion &&
+            form.geo && form.geo.value &&
+            form.geoClient && form.geoClient.value &&
+            form.idClient && form.idClient.value &&
+            form.latitud && form.longitud && form.offset && form.telefono1);
     }
 }
 

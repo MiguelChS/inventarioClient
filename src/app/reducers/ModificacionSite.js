@@ -3,8 +3,8 @@
  */
 let init = {
     client:null,
-    site:null,
-    sourceSite:[]
+    mjsErr: "",
+    tabla: []
 };
 
 function reducer(state = init,action) {
@@ -17,6 +17,21 @@ function reducer(state = init,action) {
         }
         case "INSERT_SOURCER_SITE_MODI_SITE":{
             return {...state,site:action.value}
+        }
+        case "MJS_ERR_MODI_SITE": {
+            return {...state, mjsErr: action.value}
+        }
+        case "TABLA_MODI_SITE": {
+            return {...state, tabla: action.value}
+        }
+        case "UPDATE_ROW_MODI_SITE": {
+            return {
+                ...state, tabla: state.tabla.map(x => {
+                    if (x.id !== action.value.id) return x;
+
+                    return {...x, ...action.value}
+                })
+            }
         }
         default :{
             return state;

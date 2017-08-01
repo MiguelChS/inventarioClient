@@ -21,6 +21,8 @@ import ChangeStqateInicident from './changeStateIncidenteReducer';
 import MisTicket from './MisTicketReducer';
 import ModalV2 from './ModalReducerV2';
 import EditPos from './ReducerEditPosicion';
+import formEquipo from './formularioEquipo';
+import storeEquipo from './EquipoStore';
 
 export default combineReducers({
     equipo: equipo,
@@ -40,5 +42,7 @@ export default combineReducers({
     chInc: ChangeStqateInicident,
     misTicket: MisTicket,
     modalV2: ModalV2,
-    editPos:EditPos
+    editPos: EditPos,
+    formEquipo: formEquipo,
+    storeEquipo: storeEquipo
 })

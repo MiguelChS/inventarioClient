@@ -18,6 +18,17 @@ function reducer(state = init,action) {
         case "ERR_DBA":{
             return {...state,mjsErr:action.value}
         }
+        case "CAMBIAR_ROW_DBA": {
+            return {
+                ...state, tabla: state.tabla.map(x => {
+                    if (x.id === action.value.id) {
+                        x.id_estado = action.value.id_estado;
+                        x.Estado = state.stateSoucer.find(x => x.value === action.value.id_estado).label
+                    }
+                    return x;
+                })
+            }
+        }
         default:{
             return state;
         }

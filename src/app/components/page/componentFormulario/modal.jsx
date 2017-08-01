@@ -1,7 +1,6 @@
 import React from 'react';
 import {Modal} from 'react-bootstrap';
-import AssignPosition from '../equipo/alta/AsignarPosicion.jsx';
-import ModalFormPosicion from '../posicion/alta/ModalAltaPosicion';
+import ModalFormPosicion from '../posicion/alta/ModalPosicion';
 import DateGrafic from '../../DateGrafic/dateGrafic.jsx';
 import ModalFormularioSite from '../site/Component/FormularioSite';
 import ModalFormularioEquipo from '../equipo/modificacion/ModalEdit';
@@ -12,12 +11,6 @@ export default class ModalForm extends React.Component{
     componenteResult(){
         let store = this.props.store;
         switch (store.body){
-            case 1:{
-                return <AssignPosition
-                    idModal={store.id}
-                    data={store.data}
-                />
-            }
 
             case 2:{
                 return <ModalFormPosicion

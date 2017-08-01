@@ -1,29 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { addModal } from '../../../actions/modalAction.js'
-import {Ibox,Tabla} from '../componentFormulario'
+import {addModal} from '../../../actions/modalActionV2';
+import {Ibox, Tabla} from '../componentFormulario';
+import ModalComentario from './modalComentarios';
+import CambiarEstado from './CambiarEstado';
 
 let tabla = (props)=>{
     let Header = [
         {column:"Estado",label:"Estado"},
         {column:"fecha_creacion",label:"Creado"},
-        {column:"fecha_modificacion",label:"Ultima Modificacion"},
-        {column:"fecha_cierre",label:"Cierre"},
-        {column:"id_estado",
-            label:"Correguir",
-            render:(data)=>{
-                if(data != 3) return "";
-                return(
-                    <button  key={1} className="btn btn-white btn-xs separarButton"
-                             style={{marginRight:"10px"}}
-                             onClick={()=>{
-                                 alert("vas a editar lo q esta mal")
-                             }}>
-                        <i className='fa fa-pencil'/>
-                    </button>
-                )
+        {
+            column: "autor",
+            label: "Autor",
+            render: function (data) {
+                return data.nombre
             }
         },
+        {
+            column: "",
+            label: "Tipo Ticket",
+            render: function (data, row) {
+                let tipoIncidente = props.TipoAccionIncidente.find(x => x.value === row.data.tipo_action);
+                return tipoIncidente ? tipoIncidente.label : "";
+            }
+        },
+        {column:"fecha_modificacion",label:"Ultima Modificacion"},
+        {column:"fecha_cierre",label:"Cierre"},
         {column:"comentario",
             label:"Comentario",
             render:(data)=>{
@@ -46,6 +48,35 @@ let tabla = (props)=>{
             },
             longText:true
         },
+        {
+            column: "",
+            label: "",
+            render: function (data, row) {
+                if (row.id_estado === 1 || row.id_estado === 2) {
+                    return [
+                        <button key={1} className="btn btn-white btn-xs separarButton"
+                                onClick={() => {
+                                    props.dispatch([
+                                        addModal({
+                                            size: null,
+                                            data: row,
+                                            body: CambiarEstado
+                                        })
+                                    ])
+                                }}>
+                            <i className="fa fa-pencil"/>
+                        </button>,
+                        <button key={2} className="btn btn-white btn-xs separarButton"
+                                onClick={() => {
+
+                                }}>
+                            <i className="fa fa-trash"/>
+                        </button>
+                    ]
+                }
+                return "";
+            }
+        },
     ];
     return(
     <Ibox Title="Resultado">
@@ -61,7 +92,8 @@ let mapStateToProps = (state)=>{
     return {
         tabla: state.dba.tabla,
         source: state.dba.stateSoucer,
-        request: state.app.Request
+        request: state.app.Request,
+        TipoAccionIncidente: state.source.TipoAccionIncidente
     }
 };
 

@@ -13,3 +13,5 @@ export TextArea from './textArea.jsx';
 export Ibox from './Ibox';
 export Tabla from './Tabla';
 export IboxModal from './IboxModal';
+export BoxFilter from './BoxFilter';
+export InputHorarioV2 from './inputHorarioV2';

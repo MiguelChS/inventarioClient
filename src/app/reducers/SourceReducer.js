@@ -14,7 +14,7 @@ let init = {
     tipoEquipo:[],
     modulos:[],
     site:[],
-    position:[],
+    posicion: [],
     gavetas:[],
     tablaStatus:[],
     commandScript:[],
@@ -27,23 +27,25 @@ let init = {
     ubicacionSite:[],
     EquiposAll:[],
     TypeHora:[],
-    siteClient:[],
     geoClient:[],
     pais:[],
     geoNCR:[],
     TipoLugar:[],
-    TipoSite:[],
-    //datos extras de source
-    complete: false,
-    idTemporalesPosi:[]
+    TipoSite: [],
+
 };
 
 function reducer(state=init,action) {
     switch (action.type){
         case "LOAD_SOURCE":{
-            return {...state,...action.value,complete:true}
+            return {...state, ...action.value}
         }
-
+        case "SITE_SOURCE": {
+            return {...state, site: action.value, posicion: []}
+        }
+        case "POSICION_SOURCE": {
+            return {...state, posicion: action.value}
+        }
         case "CHANGE_SELECTED_MODULES":{
             return {...state,modulos:{...action.value}}
         }
@@ -85,32 +87,7 @@ function reducer(state=init,action) {
             return {...state,modulos:action.value}
         }
 
-        case "INSERT_POSITION_TEMPORAL":{
-            let data = action.value;
-            let position = {...state.position};
-            position[data.idSiteClient].push({
-                label:data.label,
-                value:-1,
-                dataForm: data.Form
-            });
-            return {...state,
-                position:position,
-                idTemporalesPosi:[
-                    ...state.idTemporalesPosi,
-                    {idParent:data.idSiteClient}
-                ]}
-        }
-        case "INSERT_SITE_TEMPORAL":{
-            let data = action.value;
-            let site = [...state.site];
-            site.push({
-                label:data.label,
-                value:data.label,
-                dataForm:data.Form,
-                temporal:true
-            });
-            return {...state,site:site}
-        }
+
         default:
             return state;
     }

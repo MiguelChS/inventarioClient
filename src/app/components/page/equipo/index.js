@@ -1,2 +1,2 @@
-export AltaEquipo from './alta/Index.jsx';
+export AltaEquipo from './alta/Index';
 export ModificacionEquipo from './modificacion/Index.js';

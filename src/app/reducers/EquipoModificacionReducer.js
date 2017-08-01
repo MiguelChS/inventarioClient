@@ -8,7 +8,6 @@ let init = {
     site:null,
     equipo:null,
     serie:null,
-    siteSource:[],
     pais:null,
     tabla:[]
 };
@@ -16,7 +15,7 @@ let init = {
 function reducer(state=init,action) {
     switch (action.type){
         case "INSERT_CLIENTE_EQUIPO_MOD":{
-            return {...state,cliente:action.value}
+            return {...state, cliente: action.value, institucion: null, site: null}
         }
         case "INSERT_EQUIPO_EQUIPO_MOD":{
             return {...state,equipo:action.value}
@@ -35,9 +34,6 @@ function reducer(state=init,action) {
         }
         case "INSERT_SERIE_MOD":{
             return {...state,serie:action.value}
-        }
-        case "INSERT_SOURCE_SITE_EQUIPO_MOD":{
-            return {...state,siteSource:action.value}
         }
         case "LOAD_TABLA_EQUIPO_MOD":{
             return {...state,tabla:action.value}

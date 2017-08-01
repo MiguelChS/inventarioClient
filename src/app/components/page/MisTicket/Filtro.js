@@ -17,7 +17,7 @@ class Filtro extends React.Component {
                 }}>
                     <div className="row">
                         <div className="col-xs-12 text-center">
-                            <p className="mjsErr">{}</p>
+                            <p className="mjsErr">{this.props.mjsErr}</p>
                         </div>
                     </div>
 
@@ -68,6 +68,7 @@ class Filtro extends React.Component {
 export default connect(state => {
     return {
         request:state.app.Request,
-        source:state.source
+        source: state.source,
+        mjsErr: state.misTicket.mjsErr
     }
 })(Filtro);

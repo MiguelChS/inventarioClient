@@ -11,6 +11,18 @@ export default (state = init,action)=>{
         case "MJSERR_MISINCIDENTES":{
             return {...state,mjsErr:action.value}
         }
+
+        case "CAMBIAR_ESTADO_ROW_MISINCIDENTES": {
+            return {
+                ...state, tabla: state.tabla.map(x => {
+                    if (x.id === action.value) {
+                        x.Estado = "Pendiente";
+                        x.id_estado = 2;
+                    }
+                    return x;
+                })
+            }
+        }
         default:{
             return state;
         }

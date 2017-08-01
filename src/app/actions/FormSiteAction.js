@@ -2,95 +2,20 @@
  * Created by mc185249 on 5/9/2017.
  */
 import Request from '../Request/Request';
-import { changeRequestApp } from './appAction';
+import {changeRequestApp, modalConfimacion} from './appAction';
+import {addModal, hiddenModal} from './modalActionV2';
 import config from '../config';
 import moment from 'moment';
+import {formatSite} from '../lib';
+import {CambiarRow} from './MisTicketAction';
 
 
-export function insertNameSite(valor) {
-    return {
-        type:"INSERT_NAME_SITE_SITE",
-        value: valor
-    }
-}
-export function insertClient(valor) {
-    return {
-        type:"INSERT_CLIENT_SITE",
-        value: valor
-    }
-}
-
-export function insertGeoClient(valor) {
-    return {
-        type:"INSERT_GEO_CLIENT_SITE",
-        value: valor
-    }
-}
-export function insertTelefono1(valor) {
-    return {
-        type:"INSERT_PHONE1_SITE",
-        value: valor
-    }
-}
-
-export function insertTelefono2(valor) {
-    return {
-        type:"INSERT_PHONE2_SITE",
-        value: valor
-    }
-}
-
-export function insertTelefono3(valor) {
-    return {
-        type:"INSERT_PHONE3_SITE",
-        value: valor
-    }
-}
-
-
-export function insertDireccion(valor) {
-    return {
-        type:"INSERT_DIRECCION_SITE",
-        value: valor
-    }
-}
 export function insertGeo(valor) {
     return {
         type:"INSERT_GEO_SITE",
         value: valor
     }
 }
-export function insertLatitud(valor) {
-    return {
-        type:"INSERT_LATITUD_SITE",
-        value: valor
-    }
-}
-export function insertLongitud(valor) {
-    return {
-        type:"INSERT_LONGITUD_SITE",
-        value: valor
-    }
-}
-export function insertOffSet(valor) {
-    return {
-        type:"INSERT_OFFSET_SITE",
-        value: valor
-    }
-}
-export function insertTypeDireccion(valor) {
-    return {
-        type:"INSERT_TYPE_DIRECCION_SITE",
-        value: valor
-    }
-}
-export function insertPreCarga(valor) {
-    return {
-        type:"INSERT_PRE_LOAD_SITE",
-        value: valor
-    }
-}
-
 export function insertPais(valor) {
     let actionDispach = {
         type:"INSERT_PAIS_SITE",
@@ -109,7 +34,6 @@ export function insertPais(valor) {
         searchEstado(valor.value)
     ]
 }
-
 export function insertEstado(valor,pais) {
     let actionDispach = {
         type:"INSERT_ESTADO_SITE",
@@ -128,7 +52,6 @@ export function insertEstado(valor,pais) {
         searchCiudad(pais,valor.value)
     ]
 }
-
 export function insertCiudad(valor,pais,estado) {
     let actionDispach = {
         type:"INSERT_CIUDAD_SITE",
@@ -146,50 +69,36 @@ export function insertCiudad(valor,pais,estado) {
         insertGeo(null)
     ]
 }
-export function insertMjsErr(valor) {
-    return {
-        type:"INSERT_MJS_ERR_SITE",
-        value: valor
-    }
-}
-
-export function insertMjsSuccess(valor) {
-    return {
-        type:"INSERT_MJS_SUCCESS_SITE",
-        value: valor
-    }
-}
-
 
 export function insertSourceEstado(valor) {
     return {
-        type:"INSERT_SOURCE_ESTADO_SITE",
+        type: "INSERT_SOURCE_ESTADO_SITE",
         value: valor
     }
 }
 export function insertSourceCiudad(valor) {
     return {
-        type:"INSERT_SOURCE_CIUDAD_SITE",
+        type: "INSERT_SOURCE_CIUDAD_SITE",
         value: valor
     }
 }
 export function insertSourceCodigoPostal(valor) {
     return {
-        type:"INSERT_SOURCE_CODIGO_POSTAL_SITE",
+        type: "INSERT_SOURCE_CODIGO_POSTAL_SITE",
         value: valor
     }
 }
 export function searchEstado(pais) {
-    return function(dispatch) {
-        Request.get(`${config.path}/geoEstado/${pais}`)
-            .then((result)=>{
+    return function (dispatch) {
+        Request.get(`${config.path}/source/geoEstado/${pais}`)
+            .then((result) => {
                 dispatch([
                     insertSourceEstado(result.data.estado),
                     insertMjsErr(""),
                     changeRequestApp(false)
                 ]);
             })
-            .catch((err)=>{
+            .catch((err) => {
                 dispatch([
                     insertMjsErr(err.response ? err.response.data.err : "no hay conexion"),
                     changeRequestApp(false)
@@ -197,17 +106,18 @@ export function searchEstado(pais) {
             });
     }
 }
-export function searchCiudad(pais,estado) {
-    return function(dispatch) {
-        Request.get(`${config.path}/geoCiudad/${pais}/${estado}`)
-            .then((result)=>{
+
+export function searchCiudad(pais, estado) {
+    return function (dispatch) {
+        Request.get(`${config.path}/source/geoCiudad/${pais}/${estado}`)
+            .then((result) => {
                 dispatch([
                     insertSourceCiudad(result.data.ciudad),
                     insertMjsErr(""),
                     changeRequestApp(false)
                 ]);
             })
-            .catch((err)=>{
+            .catch((err) => {
                 dispatch([
                     insertMjsErr(err.response ? err.response.data.err : "no hay conexion"),
                     changeRequestApp(false)
@@ -215,17 +125,18 @@ export function searchCiudad(pais,estado) {
             });
     }
 }
-export function searchCodigoPostal(pais,estado,ciudad) {
-    return function(dispatch) {
-        Request.get(`${config.path}/geoCodigoPostal/${pais}/${estado}/${ciudad}`)
-            .then((result)=>{
+
+export function searchCodigoPostal(pais, estado, ciudad) {
+    return function (dispatch) {
+        Request.get(`${config.path}/source/geoCodigoPostal/${pais}/${estado}/${ciudad}`)
+            .then((result) => {
                 dispatch([
                     insertSourceCodigoPostal(result.data.codigoPostal),
                     insertMjsErr(""),
                     changeRequestApp(false)
                 ]);
             })
-            .catch((err)=>{
+            .catch((err) => {
                 dispatch([
                     insertMjsErr(err.response ? err.response.data.err : "no hay conexion"),
                     changeRequestApp(false)
@@ -233,55 +144,56 @@ export function searchCodigoPostal(pais,estado,ciudad) {
             });
     }
 }
-export function insertLugar(valor){
-    let action ={
-        type:"INSERT_LUGAR_SITE",
-        value:valor
-    };
-    if(!valor || valor.value == 1) return [
-        action,
-        insertSitePublic(null),
-        insertMjsSuccess(""),
-        insertSourceSitePublic([])
-    ];
 
-    return[
-        action,
-        insertMjsSuccess(""),
-        insertSitePublic(null),
-        insertSourceSitePublic([]),
+
+export function insertMjsErr(valor) {
+    return {
+        type: "INSERT_MJS_ERR_SITE",
+        value: valor
+    }
+}
+
+export function insertMjsSuccess(valor) {
+    return {
+        type: "INSERT_MJS_SUCCESS_SITE",
+        value: valor
+    }
+}
+
+
+export function BuscarSitebyLugar(idLugar) {
+    return [
         changeRequestApp(true),
-        getSitePublic(action.value)
+        requestBuscarSitebyLugar(idLugar)
     ]
 }
-export function insertSitePublic(valor){
-    return {
-        type:"INSERT_SITE_PUBLIC_SITE",
-        value:valor
-    }
-}
-export function insertSourceSitePublic(valor){
-    return {
-        type:"INSERT_SOURCE_SITE_PUBLIC_POSTAL_SITE",
-        value:valor
-    }
-}
-export function getSitePublic(data) {
-    return function(dispatch) {
-        Request.get(`${config.path}/getSitePublic/${data.value}`)
-            .then((result)=>{
+
+export function requestBuscarSitebyLugar(idLugar) {
+    return function (dispatch) {
+        Request.get(`${config.path}/source/getSitePublic/${idLugar}`)
+            .then((result) => {
                 dispatch([
                     insertSourceSitePublic(result.data),
-                    changeRequestApp(false)
+                    changeRequestApp(false),
+                    insertMjsErr("")
                 ]);
             })
-            .catch((err)=>{
+            .catch((err) => {
                 dispatch([
-                    changeRequestApp(false)
+                    changeRequestApp(false),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
                 ])
             });
     }
 }
+
+export function insertSourceSitePublic(valor) {
+    return {
+        type: "INSERT_SOURCE_SITE_PUBLIC_POSTAL_SITE",
+        value: valor
+    }
+}
+
 
 export function clearForm() {
     return{
@@ -289,41 +201,19 @@ export function clearForm() {
     }
 }
 
-export function enviarFormulario(form) {
+export function InsertarFormSite(form) {
     let auxClient = `00000${form.idClient.value}`;
+    auxClient = `TE${moment().format('YYYYMMDDHHmmss')}${auxClient.substr(auxClient.length - 5, auxClient.length)}`;
+    form.siteCountryCode = auxClient;
     return[
         changeRequestApp(true),
-        requestFormulario({
-            nombreSite:form.nombreSite,
-            nombrePublico:form.SitePublic ? form.SitePublic.value : null,
-            idTipoLugar:form.Lugar.value,
-            direction:form.SitePublic ? form.SitePublic.Direccion : form.direccion,
-            telefono1:form.telefono1,
-            telefono2:form.telefono2,
-            telefono3:form.telefono3,
-            idGeo:form.SitePublic ? form.SitePublic.Id_geo : form.geo.value,
-            idGeoCliente:form.geoClient.value,
-            idCliente:form.idClient.value,
-            latitud:form.SitePublic ? form.SitePublic.latitud : form.latitud,
-            longitud:form.SitePublic ? form.SitePublic.longitud : form.longitud,
-            offSet:form.SitePublic ? parseInt(form.SitePublic.offset,10) : parseInt(form.offset,10),
-            siteCountryCode:`TE${moment().format('YYYYMMDDHHmmss')}${auxClient.substr(auxClient.length - 5,auxClient.length)}`
-        })
+        requestInsertarFormSite(formatSite(form))
     ];
 }
 
-function requestFormulario(form) {
+function requestInsertarFormSite(form) {
     return (dispatch)=>{
-        Request.customize({
-            method: 'POST',
-            url: `${config.path}/Site`,
-            data: form,
-            headers: {
-                'Content-Type': "application/json",
-                'Authorization':localStorage.getItem("token")
-            },
-            json: true
-        })
+        Request.post(`${config.path}/Site`, form)
             .then(()=>{
                 dispatch([
                     clearForm(),
@@ -335,6 +225,167 @@ function requestFormulario(form) {
                 dispatch([
                     changeRequestApp(false),
                     insertMjsSuccess(""),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            })
+    }
+}
+
+
+export function BuscarSiteByFiltro() {
+    return [
+        changeRequestApp(true),
+        requestBuscarSiteByFiltro()
+    ]
+}
+
+export function errorFilter(valor) {
+    return {
+        type: "MJS_ERR_MODI_SITE",
+        value: valor
+    }
+}
+
+function requestBuscarSiteByFiltro() {
+    return (dispatch) => {
+        Request.get(`${config.path}/Site/filtro/3`)
+            .then((result) => {
+                dispatch([
+                    changeRequestApp(false),
+                    errorFilter(""),
+                    {type: "TABLA_MODI_SITE", value: result.data}
+                ])
+            })
+            .catch((err) => {
+                dispatch([
+                    changeRequestApp(false),
+                    errorFilter(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            })
+    }
+}
+
+
+export function BuscarSitebyId(idSite, configModal, error) {
+    return [
+        changeRequestApp(true),
+        requestBuscarSitebyId(idSite, configModal, error)
+    ]
+}
+
+function formatPrecargar(form) {
+    if (form.Lugar.value !== 1) {
+        form.SitePublic = {
+            value: form.SitePublic,
+            label: form.SitePublic,
+            "Direccion": form.direccion,
+            "Id_Tipo_Lugar": form.Lugar.value,
+            "latitud": form.latitud,
+            "longitud": form.longitud,
+            "offset": form.offset,
+            "Id_geo": form.geo.value,
+            "pais": form.pais.value,
+            "estado": form.estado.label,
+            "ciudad": form.ciudad.label,
+            "codigo_postal": form.geo.label
+        }
+    } else {
+        delete form.SitePublic
+    }
+    return form;
+}
+
+function requestBuscarSitebyId(idSite, configModal, error) {
+    return (dispatch) => {
+        Request.get(`${config.path}/Site/${idSite}`)
+            .then((result) => {
+                dispatch([
+                    changeRequestApp(false),
+                    error(""),
+                    {type: "INSERT_PRE_LOAD_SITE", value: formatPrecargar(result.data)},
+                    addModal(configModal)
+                ])
+            })
+            .catch((err) => {
+                dispatch([
+                    changeRequestApp(false),
+                    error(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            })
+    }
+}
+
+
+export function ActulizarSite(form, idModal) {
+    return [
+        changeRequestApp(true),
+        requestActulizarSite(form, idModal)
+    ]
+}
+
+function ActulizarRowTabla(valor) {
+    return {type: "UPDATE_ROW_MODI_SITE", value: valor}
+}
+
+function requestActulizarSite(form, idModal) {
+    return (dispatch) => {
+        let aux = formatSite(form);
+        Request.put(`${config.path}/Site/`, aux)
+            .then((result) => {
+                dispatch([
+                    changeRequestApp(false),
+                    hiddenModal(idModal),
+                    modalConfimacion({
+                        mensaje: "Se actulizo correctamente",
+                        hidenAcepte: true,
+                    }),
+                    insertMjsErr(""),
+                    ActulizarRowTabla({
+                        cliente: form.idClient.label,
+                        direccion: aux.direccion,
+                        lugar: form.Lugar.label,
+                        nombre: form.nombreSite,
+                        pendiente_aprobacion: result.data,
+                        id: form.id
+                    })
+                ])
+            })
+            .catch((err) => {
+                dispatch([
+                    changeRequestApp(false),
+                    insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
+                ])
+            })
+    }
+}
+
+
+export function ActuliazarSiteCorreccion(form, idModal) {
+    return [
+        changeRequestApp(true),
+        requestActuliazarSiteCorreccion(form, idModal)
+    ]
+}
+
+function requestActuliazarSiteCorreccion(form, idModal) {
+    return (dispatch) => {
+        let aux = formatSite(form);
+        Request.put(`${config.path}/Site/correccion/${form.idTicket}`, aux)
+            .then((result) => {
+                dispatch([
+                    changeRequestApp(false),
+                    hiddenModal(idModal),
+                    modalConfimacion({
+                        mensaje: "Se actulizo correctamente",
+                        hidenAcepte: true,
+                    }),
+                    insertMjsErr(""),
+                    CambiarRow(form.idTicket)
+                ])
+            })
+            .catch((err) => {
+                dispatch([
+                    changeRequestApp(false),
                     insertMjsErr(err.response ? err.response.data.err : "no hay conexion")
                 ])
             })

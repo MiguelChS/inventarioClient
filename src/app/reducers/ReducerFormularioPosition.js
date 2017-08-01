@@ -17,22 +17,50 @@ let init={
     flm:null,
     ubicacion_en_site:null,
     prestacion:null,
-    id_Equipo:null,
     id_tipo_Site : null,
     //horarios
-    hourBranch:null,
-    hourOperation:null,
-    sla:null,
-    access:null,
-    hourPeak:null,
-    hourPrestacion:[],
+    hourBranch: [
+        {
+            idHora: 1,
+            hora: null
+        },
+        {
+            idHora: 2,
+            hora: null,
+        },
+        {
+            idHora: 4,
+            hora: null
+        }
+    ],
+    hourOperation: [{
+        idHora: 3,
+        hora: null
+    }],
+    sla: [{
+        idHora: 7,
+        hora: null
+    }],
+    access: [{
+        idHora: 8,
+        hora: null
+    }],
+    hourPeak: [
+        {
+            idHora: 5,
+            hora: null,
+        },
+        {
+            idHora: 6,
+            hora: null
+        }
+    ],
+    horaPrestacion: [],
     //datos extras
     dato2:null,
     dato3:null,
+
     //datos de comportamienrto de formulario
-    sourceSite:[],
-    sourceClient:[],
-    sourceEquipo:[],
     cliente:null,
     mjsErr:"",
     mjsSuccess:""
@@ -42,15 +70,6 @@ function reducer(state = init,action) {
     switch (action.type){
         case "INSERT_NOMBRE_POSICION_POS":{
             return {...state,nombrePoscion:action.value}
-        }
-        case "INSERT_SOURCE_SITE_POS":{
-            return {...state,sourceSite:action.value}
-        }
-        case "INSERT_SOURCE_SITE_CLIENT_POS":{
-            return {...state,sourceClient:action.value}
-        }
-        case "INSERT_SOURCE_EQUIPO_POS":{
-            return {...state,sourceEquipo:action.value}
         }
         case "INSERT_TYPE_SITE_POS":{
             return {...state,id_tipo_Site:action.value}
@@ -63,9 +82,6 @@ function reducer(state = init,action) {
         }
         case "INSERT_SITE_POS":{
             return {...state,site:action.value}
-        }
-        case "INSERT_SITE_CLIENT_POS":{
-            return {...state,siteClient:action.value}
         }
         case "INSERT_GAVETA_POS":{
             return {...state,config_gavetas:action.value}
@@ -91,22 +107,6 @@ function reducer(state = init,action) {
         case "INSERT_FLM_POS":{
             return {...state,flm:action.value}
         }
-        case "INSERT_HOUR_PRESTACION_POS":{
-            let data = action.value;
-            let idVentana = Object.keys(data)[0];
-            return {...state,
-                hourPrestacion:state.hourPrestacion.map( pre =>{
-                    if(pre.value == idVentana){
-                        pre["hora"] = data;
-                    }
-                    return pre;
-                })
-            }
-        }
-
-        case "CLEAR_HOURPRESTACION_POS":{
-            return {...state,hourPrestacion:[]}
-        }
         case "INSERT_PRESTACION_POS":{
             return {...state,prestacion:action.value}
         }
@@ -128,14 +128,11 @@ function reducer(state = init,action) {
         case "INSERT_HOUR_PEAK_POS":{
             return {...state,hourPeak:action.value}
         }
-        case "INSERT_EQUIPO_POS":{
-            return {...state,id_Equipo:action.value}
-        }
-        case "INSERT_PRIMERA_CARGA_HOUR_PRESTACION_POS":{
-            return {...state,hourPrestacion:action.value}
+        case "INSERT_HOUR_PRESTACION_POS": {
+            return {...state, horaPrestacion: action.value}
         }
         case "INSERT_CLIENTE_POS":{
-            return {...state,cliente:action.value}
+            return {...state, cliente: action.value, site: null}
         }
         case "INSERT_mjsErr_POS":{
             return {...state,mjsErr:action.value}

@@ -8,6 +8,7 @@ var Filtro = (props)=>{
         <Ibox Title="Filtro">
             <form className="form-horizontal" onSubmit={(event)=>{
                 event.preventDefault();
+                props.dispatch(action.getIncientes());
             }}>
                 <div className="row">
                     <div className="col-xs-12 text-center">
@@ -45,7 +46,6 @@ var Filtro = (props)=>{
                         <div className="btn-group">
                             <button className="btn btn-sm btn-white separarButton"
                                     disabled={props.request}
-                                    onClick={()=>{props.dispatch(action.getIncientes())}}
                                     type="submit">
                                 Filtrar
                                 <i style={{marginLeft:"5px"}} className="fa fa-filter"/>

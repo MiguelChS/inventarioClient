@@ -4,7 +4,7 @@ import Graphic from './Graphic/index.jsx';
 import ResultGraphic from './ResultGraphic/index.jsx';
 import { connect } from  'react-redux';
 import { addDateGrafic,deleteDateGrafic } from '../../actions/dateGraficAction';
-import { hiddenModal } from  '../../actions/modalAction';
+import { hiddenModal } from  '../../actions/modalActionV2';
 
 @connect((store)=>{
     return{

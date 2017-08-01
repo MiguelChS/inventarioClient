@@ -19,12 +19,15 @@ const FormTipoLugar = (props)=>{
                         default={props.store.Lugar}
                         required={true}
                         returnSelect={(value)=>{
-                            props.dispatch(action.insertLugar(value));
+                            if (value && value.value && value.value !== 1) {
+                                props.dispatch(action.BuscarSitebyLugar(value.value))
+                            }
+                            props.dispatch({type: "INSERT_LUGAR_SITE", value: value});
                         }}
                     />
                 </div>
                 {(()=>{
-                    if(!props.store.Lugar || props.store.Lugar.value == 1) return null;
+                    if (!props.store.Lugar || props.store.Lugar.value === 1) return null;
                     return(
                         <div className="col-xs-12 col-md-6">
                             <AutoComplete
@@ -33,7 +36,10 @@ const FormTipoLugar = (props)=>{
                                 dataSource={props.store.sourceSitePublic}
                                 store={props.store.SitePublic}
                                 onChange={(value)=>{
-                                    props.dispatch(action.insertSitePublic(value));
+                                    props.dispatch({
+                                        type: "INSERT_SITE_PUBLIC_SITE",
+                                        value: value
+                                    });
                                 }}
                                 disabled={props.request}
                             />
