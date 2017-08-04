@@ -15,7 +15,7 @@ export default class BoxFilter extends React.Component{
 
     componentDidMount(){
         console.log(this.props.data);
-        let result = this.props.data.map((obj)=>{
+        let result = this.props.data.map((obj) => {
             return {
                 data:{...obj},
                 hora:obj.hasOwnProperty("hora") ? obj.hora : null
